@@ -16,6 +16,8 @@ import datetime
 import os.path, time
 import operator
 
+# SAMT2 uses a np.float32 as data type for the grid values.
+# This comes from ARCGIS and saves memory compared to double
 
 DTYPE = np.float32
 ctypedef np.float32_t DTYPE_t
@@ -156,8 +158,14 @@ cdef class grid:
         self.mat=np.zeros((self.nrows,self.ncols),dtype=DTYPE)
         for i in range(self.nrows):
             line =reader.next()
-            for j in range(self.ncols):
-                self.mat[i,j]=float(line[j])
+            # print line
+            # print len(line),self.nrows,self.ncols
+            if(line[0]):
+                for j in range(self.ncols):
+                    self.mat[i,j]=float(line[j])
+            else:
+                for j in range(1,self.ncols+1):
+                    self.mat[i,j-1]=float(line[j])
         f.close()
         return True
     def write_ascii(self,char *filename):
@@ -518,7 +526,7 @@ cdef class grid:
         plt.show()
         del mx
         return True
-    def show(self, sub1=False,title='', X='', Y=''):
+    def show(self, sub1=False,title='', X='', Y='',flag=0):
         """ shows color with options title, X,Y only pos values"""
         cdef int i,j
         cdef double gridmin, gridmax
@@ -535,6 +543,8 @@ cdef class grid:
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
+        if(flag==1):
+            return mx
         print 'show:', gridmin, gridmax, self.nodata
         plt.ioff()
         plt.clf()
