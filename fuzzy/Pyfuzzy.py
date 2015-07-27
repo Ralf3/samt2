@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import sys
-import os
-sys.path.append(os.environ["SAMTHOME2"]+"/src/grid")	
-import grid
+sys.path.append('os.environ["SAMTHOME2"]+"/src/grid"')
+import grid as samt2
 import numpy as np
 cimport numpy as np
+import nlopt
 
 DTYPE = np.float32
 ctypedef np.float32_t DTYPE_t
@@ -188,13 +188,13 @@ cdef class rule:
         codes the inputs and outputs with int
         has a cf
     """
-    cdef int a
-    cdef int b
-    cdef int c
-    cdef int y1
-    cdef float cf
-    cdef int inpn 
-    cdef float mu
+    cdef int a      # input 1
+    cdef int b      # input 2 or 0
+    cdef int c      # input 3 or 0
+    cdef int y1     # output
+    cdef float cf   # cf value
+    cdef int inpn   # number of inputs
+    cdef float mu   # membershipfunction
     def __init__(self,para):
         if(len(para)==3):  # only one input
             self.a=para[0]
@@ -271,6 +271,13 @@ class fuzzy:
         self.inputs=[]       # store the input
         self.outputs=[]      # store the outputs
         self.rules=[]        # store the ruels
+        self.ruleList=[]     # debug 
+        self.muList=[]       # debug
+        self.outputList=[]   # debug
+        self.X=None          # empty training data
+        self.Y=None          # empty training data
+        self.d0=[]           # difference between the outputs
+        self.w=0             # rsme weight before training
         return
     def add_input(self,inp):
         self.inputs.append(inp)
@@ -311,7 +318,7 @@ class fuzzy:
         return len(self.outputs)
     def set_output(self,i,val):
         if(len(self.outputs)>i):
-            self.outputs[i]=val
+            self.outputs[i].setv(val)
             return
     def get_output(self,i):
         return self.outputs[i].getv()
@@ -322,9 +329,47 @@ class fuzzy:
         self.inputs[0].calc(x)   # calc the membership of input 1
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
+
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
+        for i in range(len(self.outputs)):
+            if(self.outputs[i].getm()>0):
+                su1+=self.outputs[i].getm()*self.outputs[i].getv()
+                tmu+=self.outputs[i].getm()
+                self.outputs[i].setm(0.0)
+        if(tmu==0):
+            return -9999
+        return su1/tmu
+    # same as calc1 but with debugging
+    def get_ruleList(self):
+        return self.ruleList
+    def get_muList(self):
+        return self.muList
+    def get_outputList(self):
+        return self.outputList
+    def calct1(self,float x):
+        cdef float su1=0.0
+        cdef float tmu=0.0
+        cdef int i
+        del self.ruleList[:]     # empty the debug
+        del self.muList[:]       # empty the debug
+        del self.outputList[:]   # empty the debug
+        self.inputs[0].calc(x)   # calc the membership of input 1
+        for i in range(len(self.rules)): # calc the membership of all rules
+            self.rules[i].calc(self.inputs,self.flag)
+            
+        for i in range(len(self.rules)): # set the membership to the outputs
+            if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
+                self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
+        for i in range(len(self.rules)): # debug part
+             if(np.around(self.outputs[self.rules[i].geto()].getm(),5)==
+                np.around(self.rules[i].getm(),5)
+                and
+                self.rules[i].getm()>0.001):
+                self.ruleList.append(i)    # append the rule number
+                self.muList.append(self.rules[i].getm()) # add the mu
+                self.outputList.append(self.outputs[self.rules[i].geto()].getv())
         for i in range(len(self.outputs)):
             if(self.outputs[i].getm()>0):
                 su1+=self.outputs[i].getm()*self.outputs[i].getv()
@@ -341,6 +386,7 @@ class fuzzy:
         self.inputs[1].calc(x2)   # calc the membership of input 2
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
+            
             # print i,self.rules[i].getm()
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
@@ -353,6 +399,38 @@ class fuzzy:
         if(tmu==0):
             return -9999
         return su1/tmu
+    def calct2(self,float x1,float x2):
+        cdef float su1=0.0
+        cdef float tmu=0.0
+        cdef int i
+        del self.ruleList[:]     # empty the debug
+        del self.muList[:]       # empty the debug
+        del self.outputList[:]   # empty the debug
+        self.inputs[0].calc(x1)   # calc the membership of input 1
+        self.inputs[1].calc(x2)   # calc the membership of input 2
+        for i in range(len(self.rules)): # calc the membership of all rules
+            self.rules[i].calc(self.inputs,self.flag)
+            
+            # print i,self.rules[i].getm()
+        for i in range(len(self.rules)): # set the membership to the outputs
+            if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
+                self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
+        for i in range(len(self.rules)): # debug part
+            if(np.around(self.outputs[self.rules[i].geto()].getm(),5)==
+                np.around(self.rules[i].getm(),5)
+                and
+                self.rules[i].getm()>0.001):
+                self.ruleList.append(i)    # append the rule number
+                self.muList.append(self.rules[i].getm()) # add the mu
+                self.outputList.append(self.outputs[self.rules[i].geto()].getv())
+        for i in range(len(self.outputs)):
+            if(self.outputs[i].getm()>0):
+                su1+=self.outputs[i].getm()*self.outputs[i].getv()
+                tmu+=self.outputs[i].getm()
+                self.outputs[i].setm(0.0)
+        if(tmu==0):
+            return -9999
+        return su1/tmu  
     def calc3(self,float x1,float x2,float x3):
         cdef float su1=0.0
         cdef float tmu=0.0
@@ -362,6 +440,7 @@ class fuzzy:
         self.inputs[2].calc(x3)   # calc the membership of input 3
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
+            
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
@@ -373,7 +452,40 @@ class fuzzy:
         if(tmu==0):
             return -9999
         return su1/tmu
- 
+    def calct3(self,float x1,float x2,float x3):
+        cdef float su1=0.0
+        cdef float tmu=0.0
+        cdef int i
+        del self.ruleList[:]     # empty the debug
+        del self.muList[:]       # empty the debug
+        del self.outputList[:]   # empty the debug
+        self.inputs[0].calc(x1)   # calc the membership of input 1
+        self.inputs[1].calc(x2)   # calc the membership of input 2
+        self.inputs[2].calc(x3)   # calc the membership of input 3
+        for i in range(len(self.rules)): # calc the membership of all rules
+            self.rules[i].calc(self.inputs,self.flag)
+            
+        for i in range(len(self.rules)): # set the membership to the outputs
+            if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
+                self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
+                # print 'calct3:', i, self.rules[i].getm()
+        for i in range(len(self.rules)): # debug part
+            if(np.around(self.outputs[self.rules[i].geto()].getm(),5)==
+                np.around(self.rules[i].getm(),5)
+                and
+                self.rules[i].getm()>0.001):
+                self.ruleList.append(i)    # append the rule number
+                self.muList.append(self.rules[i].getm()) # add the mu
+                self.outputList.append(self.outputs[self.rules[i].geto()].getv())
+        for i in range(len(self.outputs)):
+            if(self.outputs[i].getm()>0):
+                su1+=self.outputs[i].getm()*self.outputs[i].getv()
+                tmu+=self.outputs[i].getm()
+                self.outputs[i].setm(0.0)
+        if(tmu==0):
+            return -9999
+        return su1/tmu
+    
     def grid_calc1(self, g1):
         cdef int i,j
         cdef np.ndarray[DTYPE_t,ndim=2] mat1=g1.get_matp()
@@ -384,7 +496,7 @@ class fuzzy:
             for j in range(jj):
                 if(int(mat1[i,j])!=g1.get_nodata()):
                     matx[i,j]=self.calc1(mat1[i,j])
-        gx=grid.grid()
+        gx=samt2.grid()
         (nrows,ncols,x,y,csize,nodata)=g1.get_header()
         gx.set_header(nrows,ncols,x,y,csize,nodata)
         gx.set_mat(matx)
@@ -401,10 +513,12 @@ class fuzzy:
             return None
         for i in range(ii1):
             for j in range(jj1):
-                if(int(mat1[i,j])!=g1.get_nodata() and
-                   int(mat2[i,j])!=g2.get_nodata()):
+                if(int(mat1[i,j])==g1.get_nodata() or
+                   int(mat2[i,j])==g2.get_nodata()):
+                    matx[i,j]=g1.get_nodata()
+                else:
                     matx[i,j]=self.calc2(mat1[i,j],mat2[i,j])
-        gx=grid.grid()
+        gx=samt2.grid()
         (nrows,ncols,x,y,csize,nodata)=g1.get_header()
         gx.set_header(nrows,ncols,x,y,csize,nodata)
         gx.set_mat(matx)
@@ -423,15 +537,100 @@ class fuzzy:
             return None
         for i in range(ii1):
             for j in range(jj1):
-                if(int(mat1[i,j])!=g1.get_nodata() and
-                   int(mat2[i,j])!=g2.get_nodata() and
-                   int(mat3[i,j])!=g3.get_nodata()):
+                if(int(mat1[i,j])==g1.get_nodata() or
+                   int(mat2[i,j])==g2.get_nodata() or
+                   int(mat3[i,j])==g3.get_nodata()):
+                    matx[i,j]=g1.get_nodata()
+                else:
                     matx[i,j]=self.calc3(mat1[i,j],mat2[i,j],mat3[i,j])
-        gx=grid.grid()
+        gx=samt2.grid()
         (nrows,ncols,x,y,csize,nodata)=g1.get_header()
         gx.set_header(nrows,ncols,x,y,csize,nodata)
         gx.set_mat(matx)
         return gx
+    def read_training_data(self,filename,header=0,sep=' '):
+        """ reads a table of training data with header lines
+            and a separator in a numpy array
+            The table consists of x1,y or x1,x2,y or x1,x2,x3,y
+        """
+        ts=np.loadtxt(filename, skiprows=header,delimiter=sep)
+        if(ts.shape[1]!=len(self.inputs)+1):
+            print "error in read_trainig_data:", ts.shape, "!=",
+            print len(self.inputs)+1
+            return False
+        sl=len(self.inputs)
+        self.X=ts[:,0:sl]
+        self.Y=ts[:,sl]
+        return True
+    def myfunc(self,x,grad):
+        """ this is the fit function for opimization
+            it consists of the RSME part for accuracy of training
+            and the regularization part to avoid overlapping of yi
+        """
+        cdef int i
+        cdef float y, error=0.0, rsme=0.0, reg=0.0
+        # print 'len(x):',len(x),'x',x
+        for i in range(len(x)-1):
+            if(x[i]>=x[i+1]):     # check an overlaypping
+                return np.inf     # punish it
+        # set the x as output
+        for i in range(len(x)):
+            self.set_output(i,x[i])
+        # evaluate the fuzzy model using training data
+        for i in range(self.X.shape[0]):
+            if(self.X.shape[1]==1):
+                y=self.calc1(self.X[i,0])
+            if(self.X.shape[1]==2):
+                y=self.calc2(self.X[i,0],self.X[i,1])
+            if(self.X.shape[1]==3):
+                y=self.calc3(self.X[i,0],self.X[i,1],self.X[i,2])
+            error+=(self.Y[i]-y)**2
+        rsme=np.sqrt(error)/self.X.shape[0]
+        if(self.w==0):
+            self.w=rsme/(len(x)*100.0)
+            for i in range(1,len(x)):
+                self.d0.append(x[i]-x[i-1])
+        # add the regularization
+        for i in range(1,len(x)):
+            reg+=1.0/((x[i]-x[i-1])**2/self.d0[i-1]+0.01)
+        # print 'rsme:',rsme,'reg:',reg
+        return rsme+self.w*reg
+
+
+def start_training(f):
+    """ define the training parameters
+    """
+    opt=nlopt.opt(nlopt.GN_DIRECT_L,f.get_len_output())
+    # build the boundaries
+    minout=[]
+    maxout=[]
+    startout=[]
+    for i in range(f.get_len_output()-1):
+        minout.append(f.get_output(i))
+    for i in range(1,f.get_len_output()):
+        maxout.append(f.get_output(i))
+    for i in range(f.get_len_output()):
+        startout.append(f.get_output(i))
+    minout.insert(0,minout[0]-(minout[1]-minout[0]))
+    maxout.append(maxout[-1]+(maxout[-2]-maxout[-1]))
+    print 'minout:',minout
+    print 'maxout:',maxout
+    print 'start:', startout
+    opt.set_lower_bounds(np.array(minout))
+    opt.set_upper_bounds(np.array(maxout))
+    opt.set_initial_step((f.get_output(1)-f.get_output(0))/100.)
+    opt.set_min_objective(f.myfunc)
+    opt.set_ftol_rel((f.get_output(1)-f.get_output(0))/10000.)
+    opt.set_maxtime(60)  # 60 s
+    xopt=opt.optimize(np.array(startout))
+    opt_val=opt.last_optimum_value()
+    result=opt.last_optimize_result()
+    print ' *************Result of Optimization*****************'
+    print 'max:', opt_val
+    print 'parameter:', xopt
+    # set the best values
+    for i in range(f.get_len_output()):
+        f.set_output(i,xopt[i])
 
 
 def read_model(modelname, DEBUG=0):
