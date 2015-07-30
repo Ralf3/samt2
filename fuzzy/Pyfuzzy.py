@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
-sys.path.append('os.environ["SAMTHOME2"]+"/src/grid"')
+# sys.path.append('os.environ["SAMTHOME2"]+"/src/grid"')
+sys.path.append('/home/ralf/master/samt2')
 import grid as samt2
 import numpy as np
 cimport numpy as np
@@ -33,8 +34,8 @@ cdef class member:
     cdef float lo
     cdef float ro
     cdef float ru
-    cdef int    flag 
-    cdef char* name
+    cdef int   flag
+    cdef bytes name
     def __init__(self,name, flag1, para):
         self.name=name
         if(flag1==LEFT):
@@ -130,6 +131,7 @@ class input:
         self.name=name
         m=None
     def set_member(self,name,flag,para):
+        # print "set_member:" ,name, flag, para
         if(flag=='left'):
             mb=member(name,LEFT,para)
         if(flag=='trapez' or flag=='trapeze'):
@@ -163,10 +165,10 @@ cdef class output:
         has mu
         has name
     """
-    cdef char* name
+    cdef bytes name
     cdef float val
     cdef float mu 
-    def __init__(self,char* name, float val):
+    def __init__(self, bytes  name, float val):
         self.name=name
         self.val=val
         self.mu=0.0
@@ -249,6 +251,14 @@ cdef class rule:
             if(len(inv)==1):
                 self.mu=inv[0].get_mu(self.a)*self.cf
                 return
+    def get_rule(self):
+        """ returns a (i1,[i2],[i3], o, cf) """
+        if(self.inpn==1):
+            return (self.a, self.y1,self.cf)
+        if(self.inpn==2):
+            return (self.a, self.b, self.y1,self.cf)
+        if(self.inpn==3):
+            return (self.a, self.b, self.c, self.y1,self.cf)
     def geto(self):
         return self.y1
     def getm(self):
@@ -270,7 +280,7 @@ class fuzzy:
         self.flag=flag
         self.inputs=[]       # store the input
         self.outputs=[]      # store the outputs
-        self.rules=[]        # store the ruels
+        self.rules=[]        # store the rules
         self.ruleList=[]     # debug 
         self.muList=[]       # debug
         self.outputList=[]   # debug
@@ -595,7 +605,57 @@ class fuzzy:
             reg+=1.0/((x[i]-x[i-1])**2/self.d0[i-1]+0.01)
         # print 'rsme:',rsme,'reg:',reg
         return rsme+self.w*reg
-
+    def store_model(self, name):
+        """ writes a model to the harddisk
+            extension  .fis will be added
+        """
+        file=open(name+'.fis','w')
+        # print out the inputs and the members for each input
+        for inp in self.inputs:
+            s="input %s %d\n" % (inp.get_n(), inp.get_len())
+            file.write(s)
+            for j in range(inp.get_len()):
+                mem = inp.get_member(j)
+                if(mem.get_flag()==LEFT):
+                    s="member %s left\n" % mem.get_name()
+                    file.write(s)
+                    s="%f %f\n" % (mem.get_ro(),mem.get_ru())
+                    file.write(s)
+                if(mem.get_flag()==RIGHT):
+                    s="member %s right\n" % mem.get_name()
+                    file.write(s)
+                    s="%f %f\n" % (mem.get_lu(),mem.get_lo())
+                    file.write(s)
+                if(mem.get_flag()==TRAPEZ):
+                    s="member %s trapez\n" % mem.get_name()
+                    file.write(s)
+                    s="%f %f %f %f\n" % (mem.get_lu(),mem.get_lo(),
+                                         mem.get_ro(),mem.get_ru())
+                    file.write(s)
+                if(mem.get_flag()==DREIECK):
+                    s="member %s triangular\n" % mem.get_name()
+                    file.write(s)
+                    s="%f %f %f\n" % (mem.get_lu(),mem.get_lo(),mem.get_ru())
+                    file.write(s)
+        # print out the output and their values
+        s="outputs Output %d\n" % len(self.outputs)
+        file.write(s)
+        for out in self.outputs:
+            s="output %s %f\n" % (out.get_name(),out.getv())
+            file.write(s)
+        # print the rules as a table
+        s="rules %d\n" % len(self.rules)
+        file.write(s)
+        for rule in self.rules:
+            if(len(self.inputs)==1):
+                s="%d %f %f\n" % (rule.get_rule())
+            if(len(self.inputs)==2):
+                s="%d %d %f %f\n" % (rule.get_rule())
+            if(len(self.inputs)==3):
+                s="%d %d %d %f %f\n" % (rule.get_rule())
+            file.write(s)
+        file.close()
+        return True
 
 def start_training(f):
     """ define the training parameters
