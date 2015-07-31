@@ -354,7 +354,6 @@ class fuzzy:
         self.inputs[0].calc(x)   # calc the membership of input 1
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
-
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
@@ -366,6 +365,24 @@ class fuzzy:
         if(tmu==0):
             return -9999
         return su1/tmu
+    # same as calc1 but returns the membership of the outputs
+    def calc1_r(self,float x):
+        cdef float su1=0.0
+        cdef float tmu=0.0
+        cdef int i
+        cdef np.ndarray[np.float_t, ndim=1] res=np.zeros(len(self.outputs))
+        self.inputs[0].calc(x)   # calc the membership of input 1
+        for i in range(len(self.rules)): # calc the membership of all rules
+            self.rules[i].calc(self.inputs,self.flag)
+            self.outputs[self.rules[i].geto()].setm(0.0)
+        for i in range(len(self.rules)): # set the membership to the outputs
+            if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
+                self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
+        for i in range(len(self.outputs)):
+            res[i]=self.outputs[i].getm()
+            # print i, res[i],self.outputs[i].getm()
+            self.outputs[i].setm(0.0)
+        return res
     # same as calc1 but with debugging
     def get_ruleList(self):
         return self.ruleList
@@ -424,6 +441,26 @@ class fuzzy:
         if(tmu==0):
             return -9999
         return su1/tmu
+    # same as calc2 but returns the membership of the outputs
+    def calc2_r(self, float x1, float x2):
+        cdef float su1=0.0
+        cdef float tmu=0.0
+        cdef int i
+        cdef np.ndarray[np.float_t, ndim=1] res=np.zeros(len(self.outputs)) 
+        self.inputs[0].calc(x1)   # calc the membership of input 1
+        self.inputs[1].calc(x2)   # calc the membership of input 2
+        for i in range(len(self.rules)): # calc the membership of all rules
+            self.rules[i].calc(self.inputs,self.flag)
+            
+            # print i,self.rules[i].getm()
+        for i in range(len(self.rules)): # set the membership to the outputs
+            if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
+                self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
+        for i in range(len(self.outputs)):
+            res[i]=self.outputs[i].getm()
+            self.outputs[i].setm(0.0)
+        return res
+    # same as calc2 but with debugging
     def calct2(self,float x1,float x2):
         cdef float su1=0.0
         cdef float tmu=0.0
@@ -477,6 +514,38 @@ class fuzzy:
         if(tmu==0):
             return -9999
         return su1/tmu
+    #same as calc2 but returns the membership of the outputs
+    def calc3_r(self,float x1,float x2,float x3):
+        cdef float su1=0.0
+        cdef float tmu=0.0
+        cdef int i
+        cdef np.ndarray[np.float_t, ndim=1] res=np.zeros(len(self.outputs)) 
+        del self.ruleList[:]     # empty the debug
+        del self.muList[:]       # empty the debug
+        del self.outputList[:]   # empty the debug
+        self.inputs[0].calc(x1)   # calc the membership of input 1
+        self.inputs[1].calc(x2)   # calc the membership of input 2
+        self.inputs[2].calc(x3)   # calc the membership of input 3
+        for i in range(len(self.rules)): # calc the membership of all rules
+            self.rules[i].calc(self.inputs,self.flag)
+            
+        for i in range(len(self.rules)): # set the membership to the outputs
+            if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
+                self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
+                # print 'calct3:', i, self.rules[i].getm()
+        for i in range(len(self.rules)): # debug part
+            if(np.around(self.outputs[self.rules[i].geto()].getm(),5)==
+                np.around(self.rules[i].getm(),5)
+                and
+                self.rules[i].getm()>0.001):
+                self.ruleList.append(i)    # append the rule number
+                self.muList.append(self.rules[i].getm()) # add the mu
+                self.outputList.append(self.outputs[self.rules[i].geto()].getv())
+        for i in range(len(self.outputs)):
+            res[i]=self.outputs[i].getm()
+            self.outputs[i].setm(0.0)
+        return res
+    # same as calc3 but with debugging
     def calct3(self,float x1,float x2,float x3):
         cdef float su1=0.0
         cdef float tmu=0.0
@@ -510,7 +579,7 @@ class fuzzy:
         if(tmu==0):
             return -9999
         return su1/tmu
-    
+    # grip operations based on samt2
     def grid_calc1(self, g1):
         cdef int i,j
         cdef np.ndarray[DTYPE_t,ndim=2] mat1=g1.get_matp()
@@ -573,7 +642,9 @@ class fuzzy:
         gx.set_header(nrows,ncols,x,y,csize,nodata)
         gx.set_mat(matx)
         return gx
-    
+
+    # genral function to read training data for ruletraining and
+    # for output adaptation
     def read_training_data(self,filename,header=0,sep=' '):
         """ reads a table of training data with header lines
             and a separator in a numpy array
@@ -589,6 +660,7 @@ class fuzzy:
         self.Y=ts[:,sl]
         return self.X, self.Y
 
+    # help function for output adaptation
     def myfunc(self,x,grad):
         """ this is the fit function for opimization
             it consists of the RSME part for accuracy of training
@@ -623,6 +695,7 @@ class fuzzy:
         # print 'rsme:',rsme,'reg:',reg
         return rsme+self.w*reg
 
+    # write routine to store modified models
     def store_model(self, name):
         """ writes a model to the harddisk
             extension  .fis will be added
@@ -674,8 +747,9 @@ class fuzzy:
             file.write(s)
         file.close()
         return True
-  
-    def train_rules(self, patterns, targets, alpha):
+
+    # rule training as replacement of C++ code in the fuzzy generator
+    def train_rules(self, patterns, targets, alpha=0.75):
         """ fuzzy rule training:
             starts with a fuzzy model and set all cf=0
             and remove all outputs from the rules
@@ -742,7 +816,8 @@ class fuzzy:
                         selector=s
                 rule.seto(selector)
         return True
-    
+
+# an external function for output adaptation based on nlopt
 def start_training(f):
     """ define the training parameters
     """
@@ -778,7 +853,7 @@ def start_training(f):
     for i in range(f.get_len_output()):
         f.set_output(i,xopt[i])
 
-
+# read in of a model in Python code
 def read_model(modelname, DEBUG=0):
     f1=fuzzy()
     f = open(modelname, 'r')
