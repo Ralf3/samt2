@@ -19,6 +19,7 @@ cdef int RIGHT=3
 # fuzzy controls
 cdef int FUZZYMIN=0
 cdef int FUZZYMUL=1
+cdef int FUZZYTRAIN=2
 # state of parser for read_model
 cdef int INPUT=1
 cdef int OUTPUT=2
@@ -251,6 +252,17 @@ cdef class rule:
             if(len(inv)==1):
                 self.mu=inv[0].get_mu(self.a)*self.cf
                 return
+        if(flag==FUZZYTRAIN):
+            if(len(inv)==3):
+                mu=inv[0].get_mu(self.a)*inv[1].get_mu(self.b)\
+                    *inv[2].get_mu(self.c)
+                return mu
+            if(len(inv)==2):
+                mu=inv[0].get_mu(self.a)*inv[1].get_mu(self.b)
+                return mu
+            if(len(inv)==1):
+                mu=inv[0].get_mu(self.a)
+                return mu
     def get_rule(self):
         """ returns a (i1,[i2],[i3], o, cf) """
         if(self.inpn==1):
@@ -261,6 +273,9 @@ cdef class rule:
             return (self.a, self.b, self.c, self.y1,self.cf)
     def geto(self):
         return self.y1
+    def seto(self,y1):
+        self.y1=y1
+        return 
     def getm(self):
         return self.mu
     def get_cf(self):
@@ -558,6 +573,7 @@ class fuzzy:
         gx.set_header(nrows,ncols,x,y,csize,nodata)
         gx.set_mat(matx)
         return gx
+    
     def read_training_data(self,filename,header=0,sep=' '):
         """ reads a table of training data with header lines
             and a separator in a numpy array
@@ -571,7 +587,8 @@ class fuzzy:
         sl=len(self.inputs)
         self.X=ts[:,0:sl]
         self.Y=ts[:,sl]
-        return True
+        return self.X, self.Y
+
     def myfunc(self,x,grad):
         """ this is the fit function for opimization
             it consists of the RSME part for accuracy of training
@@ -605,6 +622,7 @@ class fuzzy:
             reg+=1.0/((x[i]-x[i-1])**2/self.d0[i-1]+0.01)
         # print 'rsme:',rsme,'reg:',reg
         return rsme+self.w*reg
+
     def store_model(self, name):
         """ writes a model to the harddisk
             extension  .fis will be added
@@ -648,15 +666,83 @@ class fuzzy:
         file.write(s)
         for rule in self.rules:
             if(len(self.inputs)==1):
-                s="%d %f %f\n" % (rule.get_rule())
+                s="%d %d %f\n" % (rule.get_rule())
             if(len(self.inputs)==2):
-                s="%d %d %f %f\n" % (rule.get_rule())
+                s="%d %d %d %f\n" % (rule.get_rule())
             if(len(self.inputs)==3):
-                s="%d %d %d %f %f\n" % (rule.get_rule())
+                s="%d %d %d %d %f\n" % (rule.get_rule())
             file.write(s)
         file.close()
         return True
+  
+    def train_rules(self, patterns, targets, alpha):
+        """ fuzzy rule training:
+            starts with a fuzzy model and set all cf=0
+            and remove all outputs from the rules
+            
+            iterates over all rule inputs:
+               iterates over all patterns (targets):
+                  select all rules > alpha 
 
+               determines the mean of all matching patterns/targets
+                   using: tsum/musum
+            
+               selects the ouput with the minimal distance to the targets
+               
+               determines the cf values:
+                  cf=musum/rulecount
+               
+            alpha is used as a cut off value to eleminate small mu
+        """   
+        cdef int i,j, rulecount, selector, ninputs
+        cdef float musum, tsum, delta, mu, outputval, a=alpha
+        cdef np.ndarray[np.float_t,ndim=2] pat=np.array(patterns)
+        cdef np.ndarray[np.float_t,ndim=1] tar=np.array(targets)
+        # check if target and pattern have the same size
+        if(pat.shape[0]!=tar.shape[0]):
+            print "error in train_rules: target", tar.shape[0],
+            print " and pattern", pat.shape[1]
+            print "do not match!"
+            return False
+        # check if the pattern do match with the fuzzy model
+        if(len(self.inputs)!=pat.shape[1]):
+            print "error in train_rules: pattern:",pat.shape[0]
+            print "\tdo not match with the defined inputs:", len(self.inputs)
+            return False
+        ninputs=pat.shape[1]
+        # remove the outputs from the rules
+        for rule in self.rules:
+            rule.set_cf(0.0)
+            rule.seto(0)
+        # iterate over all rules
+        for rule in self.rules:
+            musum=0.0
+            tsum=0.0
+            rulecount=0
+            for i in range(tar.shape[0]):
+                self.inputs[0].calc(pat[i,0])
+                if(ninputs==2 or ninputs==3):
+                    self.inputs[1].calc(pat[i,1])
+                if(ninputs==3):
+                    self.inputs[2].calc(pat[i,2])
+                mu=rule.calc(self.inputs,flag=FUZZYTRAIN)
+                # print i,mu,pat[i,:],tar[i]
+                if(mu>a):  # > alpha
+                    tsum+=tar[i]*mu
+                    musum+=mu
+                    rulecount+=1
+            if(rulecount>0):  # did we find a matching rule?
+                rule.set_cf(musum/float(rulecount))
+                delta=np.finfo(np.float64).max
+                tsum=tsum/musum
+                for s in range(len(self.outputs)):
+                    if(np.fabs(self.outputs[s].getv()-tsum)<delta):
+                        output_val=self.outputs[s].getv()
+                        delta=np.fabs(self.outputs[s].getv()-tsum)
+                        selector=s
+                rule.seto(selector)
+        return True
+    
 def start_training(f):
     """ define the training parameters
     """
@@ -762,8 +848,9 @@ def read_model(modelname, DEBUG=0):
         sl=s.rsplit(' ')
         line+=1
         para=[]
-        for i in sl:
-            para.append(int(i))
+        for i in range(len(sl)-1):
+            para.append(int(sl[i]))
+        para.append(float(sl[-1]))
         if(DEBUG==1):
             print line, para
         rulex=rule(para)

@@ -1,0 +1,40 @@
+input x1 10
+member vs left
+0.000000 1.000000
+member s1 triangular
+1.000000 2.000000 3.000000
+member s2 triangular
+2.000000 3.000000 4.000000
+member s3 triangular
+3.000000 4.000000 5.000000
+member m1 triangular
+4.000000 5.000000 6.000000
+member m2 triangular
+5.000000 6.000000 7.000000
+member m3 triangular
+6.000000 7.000000 8.000000
+member h1 triangular
+7.000000 8.000000 9.000000
+member h2 triangular
+8.000000 9.000000 10.000000
+member h3 right
+10.000000 11.000000
+outputs Output 7
+output o0 0.000000
+output o1 0.100000
+output o2 0.300000
+output o3 0.500000
+output o4 0.700000
+output o5 0.900000
+output o6 1.000000
+rules 10
+0 1 0.854792
+1 2 0.865299
+2 3 0.862423
+3 4 0.885047
+4 5 0.883095
+5 6 0.837593
+6 4 0.896646
+7 3 0.851378
+8 2 0.886926
+9 0 0.000000
