@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 # sys.path.append('os.environ["SAMTHOME2"]+"/src/grid"')
-sys.path.append('/home/ralf/master/samt2')
+sys.path.append('/home/ralf/samt2')
 import grid as samt2
 import numpy as np
 cimport numpy as np
@@ -291,6 +291,7 @@ class fuzzy:
         has list of outputs: outputst
         has list of rules:   rules
     """
+    
     def __init__(self,flag=FUZZYMUL):
         self.flag=flag
         self.inputs=[]       # store the input
@@ -303,6 +304,7 @@ class fuzzy:
         self.Y=None          # empty training data
         self.d0=[]           # difference between the outputs
         self.w=0             # rsme weight before training
+        self.res=None
         return
     def add_input(self,inp):
         self.inputs.append(inp)
@@ -370,7 +372,9 @@ class fuzzy:
         cdef float su1=0.0
         cdef float tmu=0.0
         cdef int i
-        cdef np.ndarray[np.float_t, ndim=1] res=np.zeros(len(self.outputs))
+        # define the self.res
+        if(self.res==None):
+            self.res=np.zeros(len(self.outputs))
         self.inputs[0].calc(x)   # calc the membership of input 1
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
@@ -379,10 +383,10 @@ class fuzzy:
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
         for i in range(len(self.outputs)):
-            res[i]=self.outputs[i].getm()
+            self.res[i]=self.outputs[i].getm()
             # print i, res[i],self.outputs[i].getm()
             self.outputs[i].setm(0.0)
-        return res
+        return self.res
     # same as calc1 but with debugging
     def get_ruleList(self):
         return self.ruleList
@@ -446,7 +450,9 @@ class fuzzy:
         cdef float su1=0.0
         cdef float tmu=0.0
         cdef int i
-        cdef np.ndarray[np.float_t, ndim=1] res=np.zeros(len(self.outputs)) 
+        # define the self.res
+        if(self.res==None):
+            self.res=np.zeros(len(self.outputs))
         self.inputs[0].calc(x1)   # calc the membership of input 1
         self.inputs[1].calc(x2)   # calc the membership of input 2
         for i in range(len(self.rules)): # calc the membership of all rules
@@ -457,9 +463,9 @@ class fuzzy:
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
         for i in range(len(self.outputs)):
-            res[i]=self.outputs[i].getm()
+            self.res[i]=self.outputs[i].getm()
             self.outputs[i].setm(0.0)
-        return res
+        return self.res
     # same as calc2 but with debugging
     def calct2(self,float x1,float x2):
         cdef float su1=0.0
@@ -519,13 +525,16 @@ class fuzzy:
         cdef float su1=0.0
         cdef float tmu=0.0
         cdef int i
-        cdef np.ndarray[np.float_t, ndim=1] res=np.zeros(len(self.outputs)) 
         del self.ruleList[:]     # empty the debug
         del self.muList[:]       # empty the debug
         del self.outputList[:]   # empty the debug
         self.inputs[0].calc(x1)   # calc the membership of input 1
         self.inputs[1].calc(x2)   # calc the membership of input 2
         self.inputs[2].calc(x3)   # calc the membership of input 3
+        # define the self.res
+        if(self.res==None):
+            self.res=np.zeros(len(self.outputs))
+
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
             
@@ -542,9 +551,9 @@ class fuzzy:
                 self.muList.append(self.rules[i].getm()) # add the mu
                 self.outputList.append(self.outputs[self.rules[i].geto()].getv())
         for i in range(len(self.outputs)):
-            res[i]=self.outputs[i].getm()
+            self.res[i]=self.outputs[i].getm()
             self.outputs[i].setm(0.0)
-        return res
+        return self.res
     # same as calc3 but with debugging
     def calct3(self,float x1,float x2,float x3):
         cdef float su1=0.0

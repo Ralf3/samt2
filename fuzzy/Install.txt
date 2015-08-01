@@ -1,0 +1,20 @@
+The SAMTFUZZY part need now nlopt for parameteroptimization.
+Please install nlopt from:
+
+http://ab-initio.mit.edu/wiki/index.php/NLopt
+
+Take care that you have installed the Python language bindings. 
+(./configure --enable-shared  --with-gnu-ld) worked in my environment.
+After "sudo make install" and "sudo ldconfig" the nlopt can be used inside
+of Python (import nlopt).
+
+The Pyfuzzy.py should be compiled using "make" Please adapt the  
+"sys.path.append(...)" according your needs. To use Pyfuzzy you must compile
+SAMT2 too. Please compile SAMT2 typing "make" in the directory ../samt2
+
+To compile everything you have to install Cython, "Python dev", numpy,
+matplotlib etc. firstly. But this should be clear for a Python programmer.
+
+Happy hacking,
+
+Ralf3.
