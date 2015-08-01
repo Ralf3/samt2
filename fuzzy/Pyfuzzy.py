@@ -311,18 +311,18 @@ class fuzzy:
         return
     def get_number_of_inputs(self):
         return len(self.inputs)
-    def get_input_name(self,i):
+    def get_input_name(self,int i):
         if(i<len(self.inputs)):
             return self.inputs[i].name
         return None
-    def get_min_input(self,i):
+    def get_min_input(self,int i):
         if(i>=len(self.inputs)):
             return None
         lo=self.inputs[i].member[0].get_lo()
         if(lo!=-9999):
             return lo
         return self.inputs[i].member[0].get_ro()
-    def get_max_input(self,i):
+    def get_max_input(self,int i):
         if(i>=len(self.inputs)):
             return None
         sel=len(self.inputs[i].member)
@@ -338,16 +338,16 @@ class fuzzy:
     def add_rule(self,rule):
         self.rules.append(rule)
         return
-    def set_flag(self,flag):
+    def set_flag(self,int flag):
         self.flag=flag
         return
     def get_len_output(self):
         return len(self.outputs)
-    def set_output(self,i,val):
+    def set_output(self,int i,float val):
         if(len(self.outputs)>i):
             self.outputs[i].setv(val)
             return
-    def get_output(self,i):
+    def get_output(self,int i):
         return self.outputs[i].getv()
     def calc1(self,float x):
         cdef float su1=0.0
