@@ -16,11 +16,11 @@ fx.set_output(i,val)          # set the output to a new val
 # Fuzzy calculation =======================================================
 fx.calc1(x)         # returns a double from fuzzy(double x)  
 fx.calc2(x,y)       # returns a double from fuzzy(double x,double y)
-fx.calc3(x,y,z)     # returns a double from fuzzy(x,y,z)  
+fx.calc3(x,y,)      # returns a double from fuzzy(x,y,z)  
 # Fuzzy calculation debug mode ============================================
-fx.calc1(x)         # returns a double from fuzzy(double x)  
-fx.calc2(x,y)       # returns a double from fuzzy(double x,double y)
-fx.calc3(x,y,z)     # returns a double from fuzzy(x,y,z)  
+fx.calct1(x)        # returns a double from fuzzy(double x)  
+fx.calct2(x,y)      # returns a double from fuzzy(double x,double y)
+fx.calct3(x,y,z)    # returns a double from fuzzy(x,y,z)  
 fx.get_ruleList()   # returns a List of rules which were used in calctX
 fx.get_muList()	    # returns the List of mu-vals of the ruleList
 fx.get_outputList() # returns the List of outputs 
