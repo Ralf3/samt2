@@ -8,8 +8,8 @@ member m trapez
 member hoch right
 0.600 0.750
 input struktur 3
-member hoch trapeze
--0.1 0 100 200
+member hoch left
+100 200
 member mittel trapez
 100 200 250 300
 member gering right

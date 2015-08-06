@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 import sys
 # sys.path.append('os.environ["SAMTHOME2"]+"/src/grid"')
-sys.path.append('/home/ralf/samt2')
+sys.path.append('/home/ralf/master/samt2')
 import grid as samt2
 import numpy as np
 cimport numpy as np
 import nlopt
+import pylab as plt
 
 DTYPE = np.float32
 ctypedef np.float32_t DTYPE_t
@@ -305,7 +306,10 @@ class fuzzy:
         self.d0=[]           # difference between the outputs
         self.w=0             # rsme weight before training
         self.res=None
+        self.name=None       # name of the model
         return
+    def set_name(self,name):
+        self.name=name
     def add_input(self,inp):
         self.inputs.append(inp)
         return
@@ -824,8 +828,178 @@ class fuzzy:
                         delta=np.fabs(self.outputs[s].getv()-tsum)
                         selector=s
                 rule.seto(selector)
-        return True
 
+        return True
+    
+    def show_model(self, tag1=2, default1=-9999):
+        """ visualize a fuzzy model up to three inputs
+            - for a one dimensional model it uses the range of the input
+              and plots it against the model output
+            - for a two dimensional model it uses the range of both inputs
+              and plots a two dimenional colored picture of it.
+            - three inputs are more difficult:
+              it uses the input with the 1 in the 'tag1:  0,1,2'
+              for example"and uses the given default1 value for it,
+              the plot it like this for the two dimensional case
+        """
+        cdef int i,j, res=5 # resolution of the plots
+        cdef int sel1,sel2,seld # for three inputs select two of them + default
+        cdef int ninputs=len(self.inputs)
+        cdef float a,b,c      # the range for the inputs
+        cdef np.ndarray[np.float_t,ndim=1] y=np.zeros(res)
+        cdef np.ndarray[np.float_t,ndim=2] z=np.zeros((res,res))
+
+        cdef np.ndarray[np.float_t,ndim=1] r1=None
+        cdef np.ndarray[np.float_t,ndim=1] r2=None
+        cdef np.ndarray[np.float_t,ndim=2] X=None
+        cdef np.ndarray[np.float_t,ndim=2] Y=None
+        if(ninputs==1):
+            # define the paramters for input1
+            a=self.inputs[0].get_member(0).get_lu()
+            if(np.isclose(a,-9999.0)):
+                a=self.inputs[0].get_member(0).get_ro()
+            b=self.inputs[0].get_member(-1).get_ru()
+            if(np.isclose(b,-9999.0)):
+                b=self.inputs[0].get_member(-1).get_lo()
+            print "a0:", a, "b0:",b
+            if(a>=b):  # check the input range
+                return False
+            r1=np.linspace(a,b,res)   
+            # plot the on dimensional model simulation
+            for i in np.arange(res):
+                y[i]=self.calc1(r1[i])
+            plt.plot(r1,y)
+            plt.grid(True)
+            plt.xlabel(self.inputs[0].get_n())
+            plt.ylabel('y')
+            plt.title('plot: ' + self.name)
+            plt.show()
+            return True
+        if(ninputs==2):
+            # define the paramters for input1
+            a=self.inputs[0].get_member(0).get_lu()
+            if(np.isclose(a,-9999.0)):
+                a=self.inputs[0].get_member(0).get_ro()
+            b=self.inputs[0].get_member(-1).get_ru()
+            if(np.isclose(b,-9999.0)):
+                b=self.inputs[0].get_member(-1).get_lo()
+            print "a0:", a, "b0:",b
+            if(a>=b):  # check the input range
+                return False
+            r1=np.linspace(a,b,res)   
+            # fill the input2
+            a=self.inputs[1].get_member(0).get_lu()
+            if(np.isclose(a,-9999.0)):
+                a=self.inputs[1].get_member(0).get_ro()
+            b=self.inputs[1].get_member(-1).get_ru()
+            if(np.isclose(b,-9999.0)):
+                b=self.inputs[1].get_member(-1).get_lo()
+            print "a0:", a, "b0:",b
+            if(a>=b):  # check the input range
+                return False
+            r2=np.linspace(a,b,res)
+            for i in np.arange(res):
+                for j in np.arange(res): 
+                    z[j,i]=self.calc2(r1[i],r2[j])
+            (X,Y)=plt.meshgrid(r1,r2)
+            print z
+            im = plt.imshow(z,cmap=plt.cm.RdBu,
+                            extent=(r1[0],r1[-1],r2[-1],r2[0]),
+                            aspect='auto') # drawing the function
+            cset = plt.contour(z,
+                                np.linspace(1.05*np.min(z),0.95*np.max(z),5),
+                                extent=(r1[0],r1[-1],r2[0],r2[-1]),
+                                linewidths=2,cmap=plt.cm.gray)
+            plt.clabel(cset,inline=True,fmt='%1.1f',fontsize=10)
+            plt.colorbar(im) # adding the colobar on the right
+            plt.xlabel(self.inputs[0].get_n())
+            plt.ylabel(self.inputs[1].get_n())
+            plt.grid(True)
+            plt.title('plot: ' + self.name)
+            plt.show()
+            return True
+        if(ninputs==3):
+            # define the selectors
+            if(tag1==0):
+                sel1=1
+                sel2=2
+                seld=0
+            if(tag1==1):
+                sel1=0
+                sel2=2
+                seld=1
+            if(tag1==2):
+                sel1=0
+                sel2=1
+                seld=2
+            # define the ranges
+            # define the paramters for input1
+            a=self.inputs[sel1].get_member(0).get_lu()
+            if(np.isclose(a,-9999.0)):
+                a=self.inputs[sel1].get_member(0).get_ro()
+            b=self.inputs[sel1].get_member(-1).get_ru()
+            if(np.isclose(b,-9999.0)):
+                b=self.inputs[sel1].get_member(-1).get_lo()
+            print "a0:", a, "b0:",b
+            if(a>=b):  # check the input range
+                return False
+            r1=np.linspace(a,b,res)
+            # define the paramters for input1   
+            a=self.inputs[sel2].get_member(0).get_lu()
+            if(np.isclose(a,-9999.0)):
+                a=self.inputs[sel2].get_member(0).get_ro()
+            b=self.inputs[sel2].get_member(-1).get_ru()
+            if(np.isclose(b,-9999.0)):
+                b=self.inputs[sel2].get_member(-1).get_lo()
+            print "a1:", a, "b1:",b
+            if(a>=b):  # check the input range
+                return False    
+            r2=np.linspace(a,b,res)
+            # the default value c is used when given or the half of the range
+            if(default1!=-9999):
+                c=np.float(default1)
+            else:
+                a=self.inputs[seld].get_member(0).get_lu()
+                if(np.isclose(a,-9999.0)):
+                    a=self.inputs[seld].get_member(0).get_ro()
+                b=self.inputs[seld].get_member(-1).get_ru()
+                if(np.isclose(b,-9999.0)):
+                    b=self.inputs[seld].get_member(-1).get_lo()
+                c=(b-a)/2.0    
+            print "a1:", a, "b1:",b, "c:", c
+            if(a>=b):  # check the input range
+                return False
+            for i in np.arange(res):
+                for j in np.arange(res):
+                    if(tag1==2): 
+                        z[j,i]=self.calc3(r1[i],r2[j],c)
+                        continue
+                    if(tag1==1):
+                        z[j,i]=self.calc3(r1[i],c,r2[j])
+                        continue
+                    if(tag1==0):
+                        z[j,i]=self.calc3(c,r1[i],r2[j])
+                        continue
+            # (X,Y)=plt.meshgrid(r1,r2)
+            print z
+            print r1
+            print r2
+            im = plt.imshow(z,cmap=plt.cm.RdBu,
+                            extent=(r1[0],r1[-1],r2[-1],r2[0]),
+                            aspect='auto') # drawing the function
+            cset = plt.contour(z,
+                                np.linspace(np.min(z),np.max(z),5),
+                                extent=(r1[0],r1[-1],r2[0],r2[-1]),
+                                linewidths=2,cmap=plt.cm.gray)
+            plt.clabel(cset,inline=True,fmt='%1.1f',fontsize=10)
+            plt.colorbar(im) # adding the colobar on the right
+            plt.xlabel(self.inputs[sel1].get_n())
+            plt.ylabel(self.inputs[sel2].get_n())
+            plt.grid(True)
+            s="plot: %s %s = %3.3f" % (self.name,self.inputs[tag1].get_n(),c)
+            plt.title(s)
+            plt.show()
+            return True
 # an external function for output adaptation based on nlopt
 def start_training(f):
     """ define the training parameters
@@ -865,7 +1039,11 @@ def start_training(f):
 # read in of a model in Python code
 def read_model(modelname, DEBUG=0):
     f1=fuzzy()
-    f = open(modelname, 'r')
+    try:
+        f = open(modelname, 'r')
+    except IOError:
+        print 'error in read_model: can not open file: ', modelname
+    f1.set_name(modelname.split('/')[-1])
     s=f.readline().rstrip()
     line=1
     sl=s.rsplit(' ')
