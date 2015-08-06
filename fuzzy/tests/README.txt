@@ -25,5 +25,16 @@ The test procedures take the models and the data to produce new trained models:
 	hab.fis
 
 The test scripts can be easily modified to test your own models/data
- 
+
+-------------------------------------------------------------------------
+
+Some files for testing have been added: 
+     	  alge_daphnie.fis 
+	  alge_phosphor.fis
+	  daphnie_alge.fis
+	  cyano_phosphor.fis
+
+They are use in a dynamic fuzzy approach, published in:
+http://www.rroij.com/open-access/the-use-of-the-dynamic-fuzzy-method-in-ecosystemmodeling.pdf
+
 
