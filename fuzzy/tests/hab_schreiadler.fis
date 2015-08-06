@@ -1,17 +1,17 @@
 input nahr 5
-member sk left
-0.100 0.200
+member sk trapez
+-0.100 0.000 0.100 0.200
 member k trapez
 0.100 0.200 0.250 0.300
 member m trapez
 0.250 0.300 0.400 0.500
 member g trapez
 0.400 0.500 0.700 0.800
-member sg right
-0.700 0.800 
+member sg trapez
+0.700 0.800 1.000 1.010
 input walddist 3
-member kurz left
-300 500
+member kurz trapez
+-10 0 300 500
 member mittel trapez
 300 500 700 1000
 member weit right
