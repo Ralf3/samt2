@@ -842,7 +842,7 @@ class fuzzy:
               for example"and uses the given default1 value for it,
               the plot it like this for the two dimensional case
         """
-        cdef int i,j, res=5 # resolution of the plots
+        cdef int i,j, res=100 # resolution of the plots
         cdef int sel1,sel2,seld # for three inputs select two of them + default
         cdef int ninputs=len(self.inputs)
         cdef float a,b,c      # the range for the inputs
@@ -864,7 +864,7 @@ class fuzzy:
             print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
-            r1=np.linspace(a,b,res)   
+            r1=np.linspace(a,b,res)
             # plot the on dimensional model simulation
             for i in np.arange(res):
                 y[i]=self.calc1(r1[i])
@@ -901,8 +901,6 @@ class fuzzy:
             for i in np.arange(res):
                 for j in np.arange(res): 
                     z[j,i]=self.calc2(r1[i],r2[j])
-            (X,Y)=plt.meshgrid(r1,r2)
-            print z
             im = plt.imshow(z,cmap=plt.cm.RdBu,
                             extent=(r1[0],r1[-1],r2[-1],r2[0]),
                             aspect='auto') # drawing the function
@@ -980,10 +978,6 @@ class fuzzy:
                     if(tag1==0):
                         z[j,i]=self.calc3(c,r1[i],r2[j])
                         continue
-            # (X,Y)=plt.meshgrid(r1,r2)
-            print z
-            print r1
-            print r2
             im = plt.imshow(z,cmap=plt.cm.RdBu,
                             extent=(r1[0],r1[-1],r2[-1],r2[0]),
                             aspect='auto') # drawing the function
@@ -1000,6 +994,7 @@ class fuzzy:
             plt.title(s)
             plt.show()
             return True
+
 # an external function for output adaptation based on nlopt
 def start_training(f):
     """ define the training parameters

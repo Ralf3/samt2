@@ -34,6 +34,12 @@ fx.grid_calc1(g1)       # returns a grid
 fx.grid_calc2(g1,g2)    # returns a grid 
 fx.grid_calc3(g1,g2,g3) # returns a grid
 
+# Fuzzy show model ========================================================
+fx.show_model(tag1=2,default1=-9999)  # shows a fuzzy model for one, two or 
+# three inputs. If more then two inputs are defined tag1=[0,1,2] selectes
+# the default input. I default1!=-9999 then it will be used otherwise
+# mean of the range is used as default value for the input==tag1 
+
 # FUZZY rule training =====================================================
 fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
 				                  # and returns pat, tar 
