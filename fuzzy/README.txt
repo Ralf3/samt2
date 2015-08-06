@@ -36,7 +36,7 @@ fx.grid_calc3(g1,g2,g3) # returns a grid
 
 # Fuzzy show model ========================================================
 fx.show_model(tag1=2,default1=-9999)  # shows a fuzzy model for one, two or 
-# three inputs. If more then two inputs are defined tag1=[0,1,2] selectes
+# three inputs. If more then two inputs are defined tag1=[0,1,2] selects
 # the default input. I default1!=-9999 then it will be used otherwise
 # mean of the range is used as default value for the input==tag1 
 

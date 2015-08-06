@@ -861,7 +861,7 @@ class fuzzy:
             b=self.inputs[0].get_member(-1).get_ru()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[0].get_member(-1).get_lo()
-            print "a0:", a, "b0:",b
+            # print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)
@@ -883,7 +883,7 @@ class fuzzy:
             b=self.inputs[0].get_member(-1).get_ru()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[0].get_member(-1).get_lo()
-            print "a0:", a, "b0:",b
+            #print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)   
@@ -894,21 +894,29 @@ class fuzzy:
             b=self.inputs[1].get_member(-1).get_ru()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[1].get_member(-1).get_lo()
-            print "a0:", a, "b0:",b
+            #print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r2=np.linspace(a,b,res)
             for i in np.arange(res):
                 for j in np.arange(res): 
                     z[j,i]=self.calc2(r1[i],r2[j])
+                       # contour range
+            a=0.2*np.max(z)
+            b=0.8*np.max(z)
+            if(np.max(z)==0.0):
+               a=0.2*np.min(z)
+               b=0.8*np.min(z)
+               
+            #print 'contour:',a,b
             im = plt.imshow(z,cmap=plt.cm.RdBu,
                             extent=(r1[0],r1[-1],r2[-1],r2[0]),
                             aspect='auto') # drawing the function
             cset = plt.contour(z,
-                                np.linspace(1.05*np.min(z),0.95*np.max(z),5),
+                                np.linspace(a,b,4),
                                 extent=(r1[0],r1[-1],r2[0],r2[-1]),
-                                linewidths=2,cmap=plt.cm.gray)
-            plt.clabel(cset,inline=True,fmt='%1.1f',fontsize=10)
+                                linewidths=1,colors='k')
+            plt.clabel(cset,inline=True,fmt='%1.3f',fontsize=10)
             plt.colorbar(im) # adding the colobar on the right
             plt.xlabel(self.inputs[0].get_n())
             plt.ylabel(self.inputs[1].get_n())
@@ -938,7 +946,7 @@ class fuzzy:
             b=self.inputs[sel1].get_member(-1).get_ru()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[sel1].get_member(-1).get_lo()
-            print "a0:", a, "b0:",b
+            #print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)
@@ -949,7 +957,7 @@ class fuzzy:
             b=self.inputs[sel2].get_member(-1).get_ru()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[sel2].get_member(-1).get_lo()
-            print "a1:", a, "b1:",b
+            #print "a1:", a, "b1:",b
             if(a>=b):  # check the input range
                 return False    
             r2=np.linspace(a,b,res)
@@ -964,7 +972,7 @@ class fuzzy:
                 if(np.isclose(b,-9999.0)):
                     b=self.inputs[seld].get_member(-1).get_lo()
                 c=(b-a)/2.0    
-            print "a1:", a, "b1:",b, "c:", c
+            #print "a1:", a, "b1:",b, "c:", c
             if(a>=b):  # check the input range
                 return False
             for i in np.arange(res):
@@ -978,14 +986,20 @@ class fuzzy:
                     if(tag1==0):
                         z[j,i]=self.calc3(c,r1[i],r2[j])
                         continue
+            # contour range
+            a=0.2*np.max(z)
+            b=0.8*np.max(z)
+            if(np.max(z)==0.0):
+               a=0.2*np.min(z)
+               b=0.8*np.min(z)
             im = plt.imshow(z,cmap=plt.cm.RdBu,
                             extent=(r1[0],r1[-1],r2[-1],r2[0]),
                             aspect='auto') # drawing the function
             cset = plt.contour(z,
-                                np.linspace(np.min(z),np.max(z),5),
+                                np.linspace(a,b,4),
                                 extent=(r1[0],r1[-1],r2[0],r2[-1]),
-                                linewidths=2,cmap=plt.cm.gray)
-            plt.clabel(cset,inline=True,fmt='%1.1f',fontsize=10)
+                                linewidths=1,colors='k') 
+            plt.clabel(cset,inline=True,fmt='%1.3f',fontsize=10)
             plt.colorbar(im) # adding the colobar on the right
             plt.xlabel(self.inputs[sel1].get_n())
             plt.ylabel(self.inputs[sel2].get_n())
