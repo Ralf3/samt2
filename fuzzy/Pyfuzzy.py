@@ -1045,7 +1045,7 @@ def start_training(f):
     for i in range(f.get_len_output()):
         startout.append(f.get_output(i))
     minout.insert(0,minout[0]-(minout[1]-minout[0]))
-    maxout.append(maxout[-1]+(maxout[-2]-maxout[-1]))
+    maxout.append(maxout[-1]+(maxout[-1]-maxout[-2]))
     print 'minout:',minout
     print 'maxout:',maxout
     print 'start:', startout

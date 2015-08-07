@@ -48,6 +48,7 @@ fx.train_rules(pat, tar, alpha): # uses pat and tar for trainig,
 
 # Fuzzy training: apdat the outputs========================================
 fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
+fx.get_rsme()           # returns the rsme based on the training data  
 start_training(fx)      # starts the training using GN_DIRECT_L from nlopt
 
 Remark: the notebook  Fuzzy_Output_Training.ipynb contains an example
