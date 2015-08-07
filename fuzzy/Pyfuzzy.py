@@ -672,7 +672,27 @@ class fuzzy:
         self.X=ts[:,0:sl]
         self.Y=ts[:,sl]
         return self.X, self.Y
-
+    def get_rsme(self):
+        """ takes the training data and calulates the rmse
+            inherits from myfunc
+        """
+        cdef int i
+        cdef float y, error=0.0, rsme=0.0, reg=0.0
+        if(self.X==None or self.Y==None):
+            print 'error in get_rsme: X or Y are not defined'
+            return -9999.0
+        # evaluate the fuzzy model using training data
+        for i in range(self.X.shape[0]):
+            if(self.X.shape[1]==1):
+                y=self.calc1(self.X[i,0])
+            if(self.X.shape[1]==2):
+                y=self.calc2(self.X[i,0],self.X[i,1])
+            if(self.X.shape[1]==3):
+                y=self.calc3(self.X[i,0],self.X[i,1],self.X[i,2])
+            error+=(self.Y[i]-y)**2
+        rsme=np.sqrt(error)/self.X.shape[0]
+        return rsme
+        
     # help function for output adaptation
     def myfunc(self,x,grad):
         """ this is the fit function for opimization
@@ -1031,9 +1051,9 @@ def start_training(f):
     print 'start:', startout
     opt.set_lower_bounds(np.array(minout))
     opt.set_upper_bounds(np.array(maxout))
-    opt.set_initial_step((f.get_output(1)-f.get_output(0))/100.)
+    opt.set_initial_step((f.get_output(1)-f.get_output(0))/500.)
     opt.set_min_objective(f.myfunc)
-    opt.set_ftol_rel((f.get_output(1)-f.get_output(0))/10000.)
+    opt.set_ftol_rel((f.get_output(1)-f.get_output(0))/100000.)
     opt.set_maxtime(60)  # 60 s
     xopt=opt.optimize(np.array(startout))
     opt_val=opt.last_optimum_value()
@@ -1052,6 +1072,7 @@ def read_model(modelname, DEBUG=0):
         f = open(modelname, 'r')
     except IOError:
         print 'error in read_model: can not open file: ', modelname
+        return None
     f1.set_name(modelname.split('/')[-1])
     s=f.readline().rstrip()
     line=1

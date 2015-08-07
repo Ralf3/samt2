@@ -49,4 +49,8 @@ fx.train_rules(pat, tar, alpha): # uses pat and tar for trainig,
 # Fuzzy training: apdat the outputs========================================
 fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
 start_training(fx)      # starts the training using GN_DIRECT_L from nlopt
- 
+
+Remark: the notebook  Fuzzy_Output_Training.ipynb contains an example
+for fuzzy training. It can be started with:
+ipython notebook 
+in the fuzzy directory. It is a little tutorial for the fuzzy training. 

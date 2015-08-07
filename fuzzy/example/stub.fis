@@ -1,0 +1,70 @@
+input x1 7
+member vs left
+-3.0 -2.0
+member s triangular
+-3.0 -2.0 -1.0
+member ms triangular
+-2.0 -1.0 0.0
+member m triangular
+-1.0 0.0 1.0
+member mh triangular
+0.0 1.0 2.0
+member h triangular
+1.0 2.0 3.0
+member vh right
+2.0 3.0
+input x2 5
+member s left
+-2.0 -1.0
+member ms triangular
+-2.0 -1.0 0.0
+member mh triangular
+-1.0 0.0 1.0
+member h triangular
+0.0 1.0 2.0
+member vh right
+1.0 2.0
+outputs Output 7
+output vl -16.0
+output l -10.0
+output ml -4.0
+output m 0.0
+output mh 1.0
+output h 4.0
+output vh 9.0
+rules 35
+0 0 1 1
+0 1 5 1
+0 2 6 1
+0 3 5 1
+0 4 1 1
+1 0 1 1
+1 1 3 1
+1 2 5 1
+1 3 3 1
+1 4 1 1
+2 0 0 1
+2 1 2 1
+2 2 4 1
+2 3 2 1
+2 4 0 1
+3 0 0 1
+3 1 2 1
+3 2 3 1
+3 3 2 1
+3 4 0 1
+4 0 0 1
+4 1 2 1
+4 2 4 1
+4 3 2 1
+4 4 0 1
+5 0 1 1
+5 1 3 1
+5 2 4 1
+5 3 3 1
+5 4 1 1
+6 0 1 1
+6 1 5 1
+6 2 6 1
+6 3 5 1
+6 4 1 1
