@@ -31,6 +31,7 @@ gx.get_header()          # returns nrows, ncols, x, y, csize, nodata
 # Show data =================================================================
 gx.show_hist(bins=20)  # shows a hist with bins 
 gx.show(sub=False)     # shows a color picture of mat or sub (subarray)
+gx.show_contour(sub=False,title='',X='',Y='',clines=6,flag=0) 
 gx.showbw(sub=False)   # shows a bw picture of mat or sub (subarray)
                        # options: title, X, Y label
 gx.show3d(stride=10, sub=False)   
@@ -62,7 +63,9 @@ gx.replace(v1,v2)      # replaces v1 with v2
 gx.add(v)              # adds the value v to all elements of mat
 gx.mul(v)              # multiplies all elements of math with v
 gx.log1()              # calc: mat[mat<0]=0.0; lg(1+x)
- 
+gx.set_nan()	       # replaces the nodata with numpy.nan
+gx.reset_nan()	       # replaces numpy.nan with nodata
+
 # Complex destructive operations ============================================
 gx.grid_inv()          # mat:=gridmax-mat+gridmin for all cells
 gx.grid_inv_ab(a)      # mat:=a-mat for all cells

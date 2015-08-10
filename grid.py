@@ -660,6 +660,60 @@ cdef class grid:
             plt.ylabel(Y)
         plt.show()
         return True
+    def show_contour(self,sub1=False,title='',X='',Y='',clines=6,flag=0):
+        """ shows a grid using a contour plot,
+            default clines= number of contour lines
+        """
+        cdef int i,j,cl
+        cdef double gridmin, gridmax,d
+        cdef np.ndarray[DTYPE_t,ndim=2] mx=np.copy(self.mat)
+        cdef np.ndarray[ITYPE_t,ndim=1] Xt,Yt
+        cdef np.ndarray[ITYPE_t,ndim=2] X1,Y1
+        cl=clines
+        if(self.nrows<=0 or self.ncols<=0):
+            return None
+        if(sub1==True):
+            mx=np.copy(self.sub)
+        gridmax=-np.finfo(np.double).max
+        gridmin=np.finfo(np.double).max
+        for i in range(self.nrows):
+            for j in range(self.ncols):
+                if(int(mx[i,j])!=self.nodata and mx[i,j]<gridmin):
+                    gridmin=mx[i,j]
+                if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
+                    gridmax=mx[i,j]
+        d=gridmin-(gridmax-gridmin)/100.0
+        print 'show:', gridmin, gridmax, self.nodata
+        for i in range(self.nrows):
+            for j in range(self.ncols):
+                if(int(mx[i,j])==self.nodata):
+                    mx[i,j]=d
+        if(flag!=0):
+            return mx
+        plt.ioff()
+        plt.clf()
+        plt.subplot(111)
+        cmap=plt.get_cmap('jet',500)
+        cmap.set_under('white')
+        im = plt.imshow(mx,cmap=cmap)
+        Xt = np.arange(0,self.nrows)
+        Yt = np.arange(0,self.ncols)
+        X1, Y1 = np.meshgrid(Yt, Xt)
+        # drawing the function
+        cset = plt.contour(X1,Y1,mx,cl,linewidths=1,colors='k')
+        plt.clabel(cset,inline=True,fmt='%1.3f',fontsize=10)
+        plt.colorbar(im) # adding the colobar on the right
+
+        if(title==''):
+            plt.title('nrows:' + str(self.nrows) + ' ncols:' + str(self.ncols))
+        else:
+            plt.title(title)
+        if(X!=''):
+              plt.xlabel(X)
+        if(Y!=''):
+            plt.ylabel(Y)
+        plt.show()
+        return True
     def shows(self, vals1, int flag=0):
         """ shows all regions which are in the array: vals
         """
