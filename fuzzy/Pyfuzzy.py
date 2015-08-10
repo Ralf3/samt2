@@ -731,9 +731,9 @@ class fuzzy:
     # write routine to store modified models
     def store_model(self, name):
         """ writes a model to the harddisk
-            extension  .fis will be added
+            it should have the extension  .fis
         """
-        file=open(name+'.fis','w')
+        file=open(name, 'w')
         # print out the inputs and the members for each input
         for inp in self.inputs:
             s="input %s %d\n" % (inp.get_n(), inp.get_len())
