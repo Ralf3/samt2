@@ -54,21 +54,26 @@ gx.sample(nr=100,ix=10)# generates x,y,z as sample from gx without
 gx.sample_det(val)     # returns the coord. with mat==val
 gx.sample_neg(i,j,dist,n) # samples random [i,j] with a dist from
 			  # the list i,j, returns an nd.array 
+gx.statr(a,b)          # returns the total,mean,std of cells>=a and cells<=b
 
 # Simple destructive operations (overwrites the mat) ========================
 gx.norm()              # normalizes the mat in [0.0,1.0]
+gx.znorm()	       # normalizes the mat: mat=(mat-mean(mat))/std(mat)
+gx.fabs()	       # mat=np.fabs(mat)
 gx.classify(nr=10)     # classifies the continious grid into nr classes
 gx.reclass(m,k)        # -inf,m1 ==> k1, (m1,m2] ==> k2, ... m=[], k=[]
 gx.replace(v1,v2)      # replaces v1 with v2
 gx.add(v)              # adds the value v to all elements of mat
 gx.mul(v)              # multiplies all elements of math with v
-gx.log1()              # calc: mat[mat<0]=0.0; lg(1+x)
+gx.mul_add(mu,add)     # mat=mat*mu+add
+gx.log(d=1.0)          # calc: mat[mat<0]=0.0; lg(1+x)
+gx.ln(d=1.0)           # calc: mat[mat<0]=0.0; ln(1+x)
 gx.set_nan()	       # replaces the nodata with numpy.nan
 gx.reset_nan()	       # replaces numpy.nan with nodata
 
 # Complex destructive operations ============================================
-gx.grid_inv()          # mat:=gridmax-mat+gridmin for all cells
-gx.grid_inv_ab(a)      # mat:=a-mat for all cells
+gx.inv()               # mat:=gridmax-mat+gridmin for all cells
+gx.inv_ab(a)           # mat:=a-mat for all cells
 gx.lut(table)          # mat:=table[mat] for all cells (table=dict)
 gx.select(vals,val1=1,val2=0) # set all values in vals (np.array) with val1
 			      # otherwise with val2
@@ -87,6 +92,7 @@ gx.kernel(w)             # uses convolve with the kernel w
 gx.kernel_sci(ai,bj,s)   # convolves a gaussian kernel to mat
 gx.kernel_squ(ai,bj)     # convolves a rectangular kernel to mat
 gx.kernel_cir(r)         # convolves a circle kernel to mat
+gx.knn(k,min1,max1) 	 # knn with +1/0 as majority measure
 
 # Flood fill algorithm ======================================================
 gx.floodFill(x,y,l,mark=-1)  # floods an area (x,y) with level l mark it
@@ -95,10 +101,12 @@ gx.floodFill_size(x,y,l,s=5,mark=-1)
 
 # Add and Mul other grids ===================================================
 gx.add_grid(g1)          # gx.mat+=g1.mat
+gx.diff_grid(g1)	 # gx.mat-=g1.mat
 gx.mul_grid(g1)          # gx.mat*=g1.mat
 gx.set_all(val)          # gx.mat=val
 gx.min_grid(g1)          # gx.mat=min(gx.mat,g1.mat)
 gx.max_grid(g1)          # gx.mat=max(gx.mat,g1.mat)
+gx.and_grid(g1)		 # includes nodata from both grids
 gx.or_grid(g1)           # replaces nodata in gx.mat with gx.mat1
 
 # Point algorithms  x=int y=int z=float =====================================
