@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
-# sys.path.append('os.environ["SAMTHOME2"]+"/src/grid"')
+import os
+# sys.path.append(os.environ["SAMTHOME2"]+"/src/grid")
 sys.path.append('/home/ralf/master/samt2')
 import grid as samt2
 import numpy as np

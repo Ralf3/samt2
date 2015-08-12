@@ -978,7 +978,7 @@ cdef class grid:
         cdef np.ndarray[ITYPE_t,ndim=1] y=np.zeros(nr,dtype=np.int)
         cdef np.ndarray[np.double_t,ndim=1] z=np.zeros(nr)
         cdef np.ndarray[ITYPE_t,ndim=2] c=np.zeros((self.nrows*self.ncols,2),
-                                                   dtype=np.int)
+                                                    dtype=np.int)
         cdef int i,j,k, count=0
         if(nr<1):
             return None,None,None
