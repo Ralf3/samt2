@@ -1,0 +1,71 @@
+input cyano 6
+member vs left
+0.000 0.100
+member ms triangular
+0.000 0.100 0.500
+member m triangular
+0.100 0.500 1.000
+member mh triangular
+0.500 1.000 1.500
+member h triangular
+1.000 1.500 2.500
+member vh right
+1.500 2.500
+input phosphor 6
+member s left
+0 0.1
+member sm triangular
+0 0.1 0.2
+member m triangular
+0.1 0.2 0.3
+member mh triangular
+0.2 0.3 0.5
+member h triangular
+0.3 0.5 1
+member vh right
+0.5 1
+outputs Output 7
+output n2 -0.005
+output n1 -0.003
+output z 0.000
+output p1 0.005
+output p2 0.010
+output p3 0.015
+output p4 0.020
+rules 36
+0 0 2 1
+0 1 2 1
+0 2 3 1
+0 3 4 1
+0 4 4 1
+0 5 5 1
+1 0 1 1
+1 1 2 1
+1 2 3 1
+1 3 4 1
+1 4 5 1
+1 5 6 1
+2 0 0 1
+2 1 1 1
+2 2 2 1
+2 3 4 1
+2 4 5 1
+2 5 6 1
+3 0 0 1
+3 1 0 1
+3 2 1 1
+3 3 2 1
+3 4 5 1
+3 5 5 1
+4 0 0 1
+4 1 0 1
+4 2 1 1
+4 3 2 1
+4 4 4 1
+4 5 5 1
+5 0 0 1
+5 1 0 1
+5 2 1 1
+5 3 1 1
+5 4 1 1
+5 5 2 1

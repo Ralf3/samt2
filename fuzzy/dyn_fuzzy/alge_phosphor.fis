@@ -1,0 +1,62 @@
+input alge 5
+member s left
+0.000 0.100
+member sm triangular
+0.000 0.100 0.200
+member m triangular
+0.100 0.200 0.500
+member mh triangular
+0.200 0.500 1.000
+member h right
+0.500 1.000
+input phosphor 6
+member s left
+0 0.1
+member sm triangular
+0 0.1 0.2
+member m triangular
+0.1 0.2 0.3
+member mh triangular
+0.2 0.3 0.5
+member h triangular
+0.3 0.5 1
+member vh right
+0.5 1
+outputs Output 6
+output z 0.004
+output s 0.008
+output ms 0.012
+output m 0.016
+output mh 0.020
+output h 0.024
+rules 30
+0 0 0 1
+0 1 1 1
+0 2 1 1
+0 3 2 1
+0 4 2 1
+0 5 2 1
+1 0 0 1
+1 1 2 1
+1 2 3 1
+1 3 3 1
+1 4 4 1
+1 5 4 1
+2 0 0 1
+2 1 1 1
+2 2 3 1
+2 3 4 1
+2 4 5 1
+2 5 4 1
+3 0 0 1
+3 1 1 1
+3 2 3 1
+3 3 3 1
+3 4 2 1
+3 5 2 1
+4 0 0 1
+4 1 1 1
+4 2 2 1
+4 3 2 1
+4 4 1 1
+4 5 0 1

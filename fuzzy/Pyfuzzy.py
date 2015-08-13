@@ -863,7 +863,7 @@ class fuzzy:
               for example"and uses the given default1 value for it,
               the plot it like this for the two dimensional case
         """
-        cdef int i,j, res=100 # resolution of the plots
+        cdef int i,j, res=101 # resolution of the plots
         cdef int sel1,sel2,seld # for three inputs select two of them + default
         cdef int ninputs=len(self.inputs)
         cdef float a,b,c      # the range for the inputs
@@ -904,7 +904,7 @@ class fuzzy:
             b=self.inputs[0].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[0].get_member(-1).get_lo()
-            print "a0:", a, "b0:",b
+            # print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)   
@@ -915,7 +915,7 @@ class fuzzy:
             b=self.inputs[1].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[1].get_member(-1).get_lo()
-            print "a0:", a, "b0:",b
+            # print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r2=np.linspace(a,b,res)

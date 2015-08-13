@@ -1,0 +1,63 @@
+input daphnie 6
+member s left
+0.000 0.050
+member ms triangular
+0.000 0.050 0.100
+member m triangular
+0.050 0.100 0.200
+member mh triangular
+0.100 0.200 0.300
+member h triangular
+0.200 0.300 0.500
+member vh right
+0.300 0.500
+input alge 5
+member s left
+0 0.1
+member sm triangular
+0 0.1 0.2
+member m triangular
+0.1 0.2 0.5
+member mh triangular
+0.2 0.5 1
+member h right
+0.5 1
+outputs Output 7
+output n2 -0.020
+output n1 -0.010
+output z 0.000
+output p1 0.010
+output p2 0.020
+output p3 0.030
+output p4 0.040
+rules 30
+0 0 2 1
+0 1 3 1
+0 2 4 1
+0 3 5 1
+0 4 6 1
+1 0 1 1
+1 1 2 1
+1 2 3 1
+1 3 5 1
+1 4 6 1
+2 0 0 1
+2 1 1 1
+2 2 2 1
+2 3 4 1
+2 4 6 1
+3 0 0 1
+3 1 1 1
+3 2 2 1
+3 3 4 1
+3 4 6 1
+4 0 0 1
+4 1 0 1
+4 2 2 1
+4 3 5 1
+4 4 5 1
+5 0 0 1
+5 1 0 1
+5 2 2 1
+5 3 4 1
+5 4 4 1
