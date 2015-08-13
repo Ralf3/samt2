@@ -55,3 +55,4 @@ Remark: the notebook  Fuzzy_Output_Training.ipynb contains an example
 for fuzzy training. It can be started with:
 ipython notebook 
 in the fuzzy directory. It is a little tutorial for the fuzzy training. 
+An example for dynamic fuzzy models can be found there: Daphnie
