@@ -898,24 +898,24 @@ class fuzzy:
             return True
         if(ninputs==2):
             # define the paramters for input1
-            a=self.inputs[0].get_member(0).get_lu()
+            a=self.inputs[0].get_member(0).get_lo()
             if(np.isclose(a,-9999.0)):
                 a=self.inputs[0].get_member(0).get_ro()
-            b=self.inputs[0].get_member(-1).get_ru()
+            b=self.inputs[0].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[0].get_member(-1).get_lo()
-            #print "a0:", a, "b0:",b
+            print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)   
             # fill the input2
-            a=self.inputs[1].get_member(0).get_lu()
+            a=self.inputs[1].get_member(0).get_lo()
             if(np.isclose(a,-9999.0)):
                 a=self.inputs[1].get_member(0).get_ro()
-            b=self.inputs[1].get_member(-1).get_ru()
+            b=self.inputs[1].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[1].get_member(-1).get_lo()
-            #print "a0:", a, "b0:",b
+            print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r2=np.linspace(a,b,res)
@@ -961,10 +961,10 @@ class fuzzy:
                 seld=2
             # define the ranges
             # define the paramters for input1
-            a=self.inputs[sel1].get_member(0).get_lu()
+            a=self.inputs[sel1].get_member(0).get_lo()
             if(np.isclose(a,-9999.0)):
                 a=self.inputs[sel1].get_member(0).get_ro()
-            b=self.inputs[sel1].get_member(-1).get_ru()
+            b=self.inputs[sel1].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[sel1].get_member(-1).get_lo()
             #print "a0:", a, "b0:",b
@@ -972,10 +972,10 @@ class fuzzy:
                 return False
             r1=np.linspace(a,b,res)
             # define the paramters for input1   
-            a=self.inputs[sel2].get_member(0).get_lu()
+            a=self.inputs[sel2].get_member(0).get_lo()
             if(np.isclose(a,-9999.0)):
                 a=self.inputs[sel2].get_member(0).get_ro()
-            b=self.inputs[sel2].get_member(-1).get_ru()
+            b=self.inputs[sel2].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[sel2].get_member(-1).get_lo()
             #print "a1:", a, "b1:",b
@@ -986,10 +986,10 @@ class fuzzy:
             if(default1!=-9999):
                 c=np.float(default1)
             else:
-                a=self.inputs[seld].get_member(0).get_lu()
+                a=self.inputs[seld].get_member(0).get_lo()
                 if(np.isclose(a,-9999.0)):
                     a=self.inputs[seld].get_member(0).get_ro()
-                b=self.inputs[seld].get_member(-1).get_ru()
+                b=self.inputs[seld].get_member(-1).get_ro()
                 if(np.isclose(b,-9999.0)):
                     b=self.inputs[seld].get_member(-1).get_lo()
                 c=(b-a)/2.0    
