@@ -12,6 +12,9 @@ fx.get_output_name()          # returns the name of the output
 fx.get_len_output()           # returns the number of outputs
 fx.get_output(i)              # returs the value of the output i
 fx.set_output(i,val)          # set the output to a new val
+fx.get_inputs()               # returns the list of inputs
+fx.get_outputs()              # returns the list of outputs
+fx.get_rules()                # returns the list of rules
 
 # Fuzzy calculation =======================================================
 fx.calc1(x)         # returns a double from fuzzy(double x)  
@@ -56,3 +59,18 @@ for fuzzy training. It can be started with:
 ipython notebook 
 in the fuzzy directory. It is a little tutorial for the fuzzy training. 
 An example for dynamic fuzzy models can be found there: Daphnie
+
+# some help functions =====================================================
+o.get_name()	      # the name of the output
+o.get_v()	      # the value of the output
+o.get_m()	      # the mu of the output
+
+i.get_member()	      # the list of membership funtions
+i.get_n()	      # the name of the input
+i.get_mu()	      # the mu of the input
+
+m.get_lo()	      # upper left
+m.get_lu()            # lower left
+m.get_ru()	      # lower right
+m.get_ro()	      # upper right 
+m.get_flag()	      # DREIECK=0 TRAPEZ=1 LEFT=2 RIGHT=3

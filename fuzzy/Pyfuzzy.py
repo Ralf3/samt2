@@ -133,6 +133,8 @@ class input:
         self.mu=[]
         self.name=name
         m=None
+    def get_member(self):
+        return self.member
     def set_member(self,name,flag,para):
         # print "set_member:" ,name, flag, para
         if(flag=='left'):
@@ -309,6 +311,12 @@ class fuzzy:
         self.res=None
         self.name=None       # name of the model
         return
+    def get_inputs(self):
+        return self.inputs
+    def get_outputs(self):
+        return self.outputs
+    def get_rules(self):
+        return self.rules
     def set_name(self,name):
         self.name=name
     def add_input(self,inp):
