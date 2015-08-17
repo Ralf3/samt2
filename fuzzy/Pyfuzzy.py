@@ -884,10 +884,10 @@ class fuzzy:
         cdef np.ndarray[np.float_t,ndim=2] Y=None
         if(ninputs==1):
             # define the paramters for input1
-            a=self.inputs[0].get_member(0).get_lu()
+            a=self.inputs[0].get_member(0).get_lo()
             if(np.isclose(a,-9999.0)):
                 a=self.inputs[0].get_member(0).get_ro()
-            b=self.inputs[0].get_member(-1).get_ru()
+            b=self.inputs[0].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[0].get_member(-1).get_lo()
             # print "a0:", a, "b0:",b
@@ -975,7 +975,7 @@ class fuzzy:
             b=self.inputs[sel1].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[sel1].get_member(-1).get_lo()
-            #print "a0:", a, "b0:",b
+            print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)
@@ -986,7 +986,7 @@ class fuzzy:
             b=self.inputs[sel2].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[sel2].get_member(-1).get_lo()
-            #print "a1:", a, "b1:",b
+            print "a1:", a, "b1:",b
             if(a>=b):  # check the input range
                 return False    
             r2=np.linspace(a,b,res)
@@ -1000,8 +1000,8 @@ class fuzzy:
                 b=self.inputs[seld].get_member(-1).get_ro()
                 if(np.isclose(b,-9999.0)):
                     b=self.inputs[seld].get_member(-1).get_lo()
-                c=(b-a)/2.0    
-            #print "a1:", a, "b1:",b, "c:", c
+                c=(b-a)/2.0+a    
+            print "a:", a, "b:",b, "c:", c
             if(a>=b):  # check the input range
                 return False
             for i in np.arange(res):
@@ -1063,7 +1063,7 @@ def start_training(f):
     opt.set_initial_step((f.get_output(1)-f.get_output(0))/500.)
     opt.set_min_objective(f.myfunc)
     opt.set_ftol_rel((f.get_output(1)-f.get_output(0))/100000.)
-    opt.set_maxtime(60)  # 60 s
+    opt.set_maxtime(60)  # 120 s
     xopt=opt.optimize(np.array(startout))
     opt_val=opt.last_optimum_value()
     result=opt.last_optimize_result()
