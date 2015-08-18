@@ -699,7 +699,7 @@ class fuzzy:
             if(self.X.shape[1]==3):
                 y=self.calc3(self.X[i,0],self.X[i,1],self.X[i,2])
             error+=(self.Y[i]-y)**2
-        rsme=np.sqrt(error)/self.X.shape[0]
+        rsme=np.sqrt(error/self.X.shape[0])
         return rsme
         
     # help function for output adaptation
@@ -726,7 +726,7 @@ class fuzzy:
             if(self.X.shape[1]==3):
                 y=self.calc3(self.X[i,0],self.X[i,1],self.X[i,2])
             error+=(self.Y[i]-y)**2
-        rsme=np.sqrt(error)/self.X.shape[0]
+        rsme=np.sqrt(error/self.X.shape[0])
         if(self.w==0):
             self.w=rsme/(len(x)*100.0)
             for i in range(1,len(x)):
