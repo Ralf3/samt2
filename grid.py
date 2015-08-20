@@ -1277,7 +1277,7 @@ cdef class grid:
                         else:
                             lut[int(mat[i,j-1])]=1
         return lut
-    def cond(self, float min, float max, float val=-9999):
+    def cond(self, float min, float max, float min1=-9999, float max1=-9999):
         """ retrict all values in the range from [min,max] """
         cdef int i,j
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
@@ -1287,10 +1287,10 @@ cdef class grid:
             for j in range(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     if(mat[i,j]<min):
-                        mat[i,j]=min
+                        mat[i,j]=min1
                         continue
                     if(mat[i,j]>=max):
-                        mat[i,j]=val
+                        mat[i,j]=max1
         return True
     def cut(self, float max1, float val=-9999):
         """ clamps the max or set it to nodata """

@@ -78,8 +78,9 @@ gx.lut(table)          # mat:=table[mat] for all cells (table=dict)
 gx.select(vals,val1=1,val2=0) # set all values in vals (np.array) with val1
 			      # otherwise with val2
 gx.border(val)         # returns a lut with {id,freq} from neighbor of mat==val
-gx.cut(min,max,val=-9999) # if(mat<min): mat:=min
-			  # if(mat>max): mat=val
+gx.cut(max,val=-9999)  # clamps the max or set it nodata
+g.cond(min,max,min1=-9999,max1=-9999) # if(mat<min): mat=min1
+			  	      # if(mat>=max): mat=max1
 gx.cut_off(min,max,val=-9999) # removes the [min,max] from mat
 
 # Maximum subarray ==========================================================
