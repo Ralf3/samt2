@@ -133,7 +133,7 @@ class input:
         self.mu=[]
         self.name=name
         m=None
-    def get_member(self):
+    def get_member_list(self):
         return self.member
     def set_member(self,name,flag,para):
         # print "set_member:" ,name, flag, para

@@ -65,7 +65,7 @@ o.get_name()	      # the name of the output
 o.get_v()	      # the value of the output
 o.get_m()	      # the mu of the output
 
-i.get_member()	      # the list of membership funtions
+i.get_member_list()   # the list of membership funtions
 i.get_n()	      # the name of the input
 i.get_mu()	      # the mu of the input
 
