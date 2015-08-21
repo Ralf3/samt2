@@ -855,9 +855,8 @@ cdef class grid:
                 if(int(mat[i,j])!=self.nodata and mat[i,j]>maxval):
                     maxval=mat[i,j]
         return minval,maxval
-    def get_min(self, int mark=-1):
+    def get_min(self, double minval=np.finfo(np.double).max, int mark=-1):
         """ tells the minval and the position """
-        cdef double minval=np.finfo(np.double).max
         cdef int i,j,x=-1, y=-1
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):

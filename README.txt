@@ -45,7 +45,7 @@ gx.save_bw(name)       # save a bw png
 # Statistics ================================================================
 gx.info()              # describes the grid
 gx.mean_std()          # returns the mean and the std
-gx.get_min(mark=-1)    # returns the position and minval>mark: x,y,min 
+gx.get_min(minval=inv,mark=-1) # returns the position and minval>mark: x,y,min 
 gx.get_max()           # returns the position and maxval: x,y,max 
 gx.unique()            # returns a dict with index:count of an int value mat
 gx.corr(gx)            # calculates the corrcoef between two arrays 
