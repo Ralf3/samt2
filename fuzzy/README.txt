@@ -46,6 +46,8 @@ fx.show_model(tag1=2,default1=-9999)  # shows a fuzzy model for one, two or
 # FUZZY rule training =====================================================
 fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
 				                  # and returns pat, tar 
+fx.set_trainX(X)  # set the numpy array X[0:n,0:n_inputs] as training data 
+fx.set_trainY(Y)  # set the numpy array Y[n] training as data directly
 fx.train_rules(pat, tar, alpha): # uses pat and tar for trainig,
                                  # alpha=0.75 cuts the rules 
 

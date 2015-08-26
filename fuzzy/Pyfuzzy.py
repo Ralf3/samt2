@@ -664,7 +664,15 @@ class fuzzy:
         gx.set_header(nrows,ncols,x,y,csize,nodata)
         gx.set_mat(matx)
         return gx
-
+    def set_trainX(self,X):
+        """ X must be a numpy array with a shape: n,n_inputs """
+        if(X.shape[1]!=len(self.inputs)):
+            print 'error in set_trainX: use X[n,n_inputs]'
+            return False
+        self.X=np.array(X)
+        return True
+    def set_trainY(self,Y):
+        self.Y=np.array(Y)
     # genral function to read training data for ruletraining and
     # for output adaptation
     def read_training_data(self,filename,header=0,sep=' '):
