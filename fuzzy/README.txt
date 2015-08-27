@@ -19,7 +19,7 @@ fx.get_rules()                # returns the list of rules
 # Fuzzy calculation =======================================================
 fx.calc1(x)         # returns a double from fuzzy(double x)  
 fx.calc2(x,y)       # returns a double from fuzzy(double x,double y)
-fx.calc3(x,y,)      # returns a double from fuzzy(x,y,z)  
+fx.calc3(x,y,z)     # returns a double from fuzzy(x,y,z)  
 # Fuzzy calculation debug mode ============================================
 fx.calct1(x)        # returns a double from fuzzy(double x)  
 fx.calct2(x,y)      # returns a double from fuzzy(double x,double y)
@@ -53,7 +53,7 @@ fx.train_rules(pat, tar, alpha): # uses pat and tar for trainig,
 
 # Fuzzy training: apdat the outputs========================================
 fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
-fx.get_rsme()           # returns the rsme based on the training data  
+fx.get_rmse()           # returns the rmse based on the training data  
 start_training(fx)      # starts the training using GN_DIRECT_L from nlopt
 
 Remark: the notebook  Fuzzy_Output_Training.ipynb contains an example
