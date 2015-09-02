@@ -755,13 +755,13 @@ class fuzzy:
             error+=(self.Y[i]-y)**2
         rsme=np.sqrt(error/self.X.shape[0])
         if(self.w==0):
-            self.w=rsme/(len(x)*100.0)
+            self.w=rsme/(len(x)+1)
             for i in range(1,len(x)):
                 self.d0.append(x[i]-x[i-1])
         # add the regularization
         for i in range(1,len(x)):
             reg+=1.0/((x[i]-x[i-1])**2/self.d0[i-1]+0.01)
-        # print 'rsme:',rsme,'reg:',reg
+        # print 'rmsme:',rsme,'reg:',reg, 'rmse+w*reg:',rsme+self.w*reg
         return rsme+self.w*reg
 
     # write routine to store modified models

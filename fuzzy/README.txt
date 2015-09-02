@@ -55,8 +55,8 @@ fx.train_rules(pat, tar, alpha): # uses pat and tar for trainig,
 fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
 fx.get_rmse()           # returns the rmse based on the training data  
 fx.get_mae()            # returns the mae based on the training data  
-start_training(fx)      # starts the training using GN_DIRECT_L from nlopt
-
+start_training(fx)      # starts the training using GN_DIRECT_L 
+		
 Remark: the notebook  Fuzzy_Output_Training.ipynb contains an example
 for fuzzy training. It can be started with:
 ipython notebook 
