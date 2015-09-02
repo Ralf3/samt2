@@ -38,7 +38,8 @@ gx.show3d(stride=10, sub=False)
 		       # shows a 3D view of a grid with stride=10
 gx.showi()             # draws a plot interactive using ion() no nodata!
 gx.shows(array)        # selects, shows all int in grid which are in array
-gx.showr(val1,val2)    # selects, shows all cells between val1 and val2
+gx.showr(val1,val2,bw=0) # selects, shows all cells between val1 and val2 bw=1
+			 # gets a grey image
 gx.save_color(name)    # save a png
 gx.save_bw(name)       # save a bw png
 

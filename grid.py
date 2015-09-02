@@ -742,7 +742,7 @@ cdef class grid:
         plt.show()
         del mx
         return True
-    def showr(self,DTYPE_t val1, DTYPE_t val2, int flag=0):
+    def showr(self,DTYPE_t val1, DTYPE_t val2, int flag=0, int bw=0):
         """ shows all in [val1,val2]
         """
         cdef int i,j,x,y
@@ -758,6 +758,8 @@ cdef class grid:
         plt.clf()
         plt.subplot(111)
         cmap = plt.get_cmap('jet', 500)
+        if(bw==0):
+            cmap = plt.get_cmap('Greys', 500)
         cmap.set_under('white')
         img=plt.imshow(mx,cmap=cmap)
         (x,y,mi)=self.get_min()
