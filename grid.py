@@ -1021,8 +1021,8 @@ cdef class grid:
         cdef int i,j
         cdef np.ndarray[ITYPE_t,ndim=1] x=np.array([],dtype=np.int)
         cdef np.ndarray[ITYPE_t,ndim=1] y=np.array([],dtype=np.int)
-        for i in np.arange(self.nrows):
-            for j in np.arange(self.ncols):
+        for i in range(self.nrows):
+            for j in range(self.ncols):
                 if(mat[i,j]==val):
                     x=np.append(x,j)
                     y=np.append(y,i)
