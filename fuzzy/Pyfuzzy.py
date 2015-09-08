@@ -307,7 +307,7 @@ class fuzzy:
         self.X=None          # empty training data
         self.Y=None          # empty training data
         self.d0=[]           # difference between the outputs
-        self.w=0             # rsme weight before training
+        self.rmse0=0         # rsme before training
         self.res=None
         self.name=None       # name of the model
         return
@@ -736,7 +736,7 @@ class fuzzy:
             and the regularization part to avoid overlapping of yi
         """
         cdef int i
-        cdef float y, error=0.0, rsme=0.0, reg=0.0
+        cdef float y, error=0.0, rmse=0.0, reg=0.0
         # print 'len(x):',len(x),'x',x
         for i in range(len(x)-1):
             if(x[i]>=x[i+1]):     # check an overlaypping
@@ -753,16 +753,17 @@ class fuzzy:
             if(self.X.shape[1]==3):
                 y=self.calc3(self.X[i,0],self.X[i,1],self.X[i,2])
             error+=(self.Y[i]-y)**2
-        rsme=np.sqrt(error/self.X.shape[0])
-        if(self.w==0):
-            self.w=rsme/(len(x)+1)
+        rmse=np.sqrt(error/self.X.shape[0])
+        if(self.rmse0==0):  # fill th rmse and the distances before training
+            self.rmse0=rmse
             for i in range(1,len(x)):
                 self.d0.append(x[i]-x[i-1])
+        rmse/=self.rmse0
         # add the regularization
         for i in range(1,len(x)):
-            reg+=1.0/((x[i]-x[i-1])**2/self.d0[i-1]+0.01)
-        # print 'rmsme:',rsme,'reg:',reg, 'rmse+w*reg:',rsme+self.w*reg
-        return rsme+self.w*reg
+            reg+=((x[i]-x[i-1])/(self.d0[i-1]))**2
+        # print 'rmse:',rmse,'reg:',reg, 'rmse+reg/len(x):',rmse+reg/(10*len(x))
+        return rmse+reg/(10*len(x)) # heuristic can be adapted
 
     # write routine to store modified models
     def store_model(self, name):
