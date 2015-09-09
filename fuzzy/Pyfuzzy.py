@@ -673,7 +673,7 @@ class fuzzy:
         return True
     def set_trainY(self,Y):
         self.Y=np.array(Y)
-    # genral function to read training data for ruletraining and
+    # general function to read training data for ruletraining and
     # for output adaptation
     def read_training_data(self,filename,header=0,sep=' '):
         """ reads a table of training data with header lines
@@ -761,9 +761,9 @@ class fuzzy:
         rmse/=self.rmse0
         # add the regularization
         for i in range(1,len(x)):
-            reg+=((x[i]-x[i-1])/(self.d0[i-1]))**2
+            reg+=1.0/(((x[i]-x[i-1])/(self.d0[i-1]))**2)
         # print 'rmse:',rmse,'reg:',reg, 'rmse+reg/len(x):',rmse+reg/(10*len(x))
-        return rmse+reg/(10*len(x)) # heuristic can be adapted
+        return rmse+reg/(100*len(x)) # heuristic can be adapted
 
     # write routine to store modified models
     def store_model(self, name):
