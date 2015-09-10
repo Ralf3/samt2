@@ -1195,7 +1195,7 @@ cdef class grid:
                 if(int(mat[i,j])!=self.nodata):
                     if(gridmin>mat[i,j]):
                         gridmin=mat[i,j]
-        print 'grid_inv:', gridmax, gridmin
+        # print 'grid_inv:', gridmax, gridmin
         for i in range(self.nrows):
             for j in range(self.ncols):
                 if(int(mat[i,j])!=self.nodata):

@@ -762,7 +762,7 @@ class fuzzy:
         # add the regularization
         for i in range(1,len(x)):
             reg+=1.0/(((x[i]-x[i-1])/(self.d0[i-1]))**2)
-        # print 'rmse:',rmse,'reg:',reg, 'rmse+reg/len(x):',rmse+reg/(10*len(x))
+        # print 'rmse:',rmse,'reg:',reg, 'rmse+reg/len(x):',rmse+reg/(100*len(x))
         return rmse+reg/(100*len(x)) # heuristic can be adapted
 
     # write routine to store modified models
