@@ -1091,7 +1091,7 @@ def start_training(f):
     opt.set_initial_step((f.get_output(1)-f.get_output(0))/500.)
     opt.set_min_objective(f.myfunc)
     opt.set_ftol_rel((f.get_output(1)-f.get_output(0))/100000.)
-    opt.set_maxtime(60)  # 120 s
+    opt.set_maxtime(80)  # 120 s
     xopt=opt.optimize(np.array(startout))
     opt_val=opt.last_optimum_value()
     result=opt.last_optimize_result()

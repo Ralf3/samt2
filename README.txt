@@ -22,6 +22,7 @@ gx.get_matp()            # returns a pointer to mat
 gx.set_mat(mat)          # set the np.ndarray with the same size to self.mat
 gx.get(i,j)              # retruns the mat[i,j]
 gx.set(i,j,val)          # mat[i,j]=val
+gx.set_all(val)		 # mat[:,:]=val
 gx.size()                # returns nrows and ncols
 gx.get_nodata()          # returns the nodata
 gx.get_csize()           # returns the cell size

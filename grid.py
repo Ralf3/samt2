@@ -363,6 +363,12 @@ cdef class grid:
         """ set a single values """
         cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
         mat[i,j]=val
+        return True
+    def set_all(self,DTYPE_t val):
+        """ set all values """
+        cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
+        mat[:,:]=val
+        return True
     def size(self):
         """ returns the size: nrows, ncols """
         return self.nrows, self.ncols
@@ -2002,7 +2008,7 @@ cdef class grid:
         cdef np.ndarray[np.double_t, ndim=2] V_temp=np.copy(cfd1)
         cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
         cdef int k,i,j,iterations
-        cdef double h=1.0/self.nrows
+        cdef double h2=1.0/(self.csize*self.csize)
         cdef double error=2*eps
         for k in range(len(x)):
             # cfd1[y[k],x[k]]=z[k]
@@ -2013,9 +2019,8 @@ cdef class grid:
             error=0.0
             for i in range(1,self.nrows+1):
                 for j in range(1,self.ncols+1):
-                    cfd1[i,j] = 0.25*(V_temp[i+1,j] + V_temp[i-1,j] +
-                                      V_temp[i,j-1] + V_temp[i,j+1] +
-                                      rho[i,j]*h**2)
+                    cfd1[i,j] = 0.25*(V_temp[i+1,j] + cfd1[i-1,j] +
+                                      cfd1[i,j-1] + V_temp[i,j+1]) + rho[i,j]*h2
                     error += abs(cfd1[i,j]-V_temp[i,j])
             # print iterations,error
             iterations += 1
