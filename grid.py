@@ -2010,6 +2010,7 @@ cdef class grid:
         cdef int k,i,j,iterations
         cdef double h2=1.0/(self.csize*self.csize)
         cdef double error=2*eps
+        cdef double f
         for k in range(len(x)):
             # cfd1[y[k],x[k]]=z[k]
             # rho[self.nrows-1-y[k],x[k]]=z[k] 23.1.2015
@@ -2017,8 +2018,8 @@ cdef class grid:
         while iterations<iter and error> eps:
             V_temp = np.copy(cfd1)
             error=0.0
-            for i in range(1,self.nrows+1):
-                for j in range(1,self.ncols+1):
+            for i in range(1,self.nrows):
+                for j in range(1,self.ncols):
                     cfd1[i,j] = 0.25*(V_temp[i+1,j] + cfd1[i-1,j] +
                                       cfd1[i,j-1] + V_temp[i,j+1]) + rho[i,j]*h2
                     error += abs(cfd1[i,j]-V_temp[i,j])
@@ -2027,9 +2028,10 @@ cdef class grid:
             # error /= float(self.nrows**2)
         print 'cfd_poisson error=',error, 'iterartions=', iterations
         # transform it back to self.mat
+        f=np.max(z)/np.max(cfd1)
         for i in range(self.nrows):
             for j in range(self.ncols):
-                mat[i,j]=np.float32(cfd1[i+1,j+1])
+                mat[i,j]=np.float32(cfd1[i+1,j+1])*f
         return True
 
     # implementation of flow algorithms
