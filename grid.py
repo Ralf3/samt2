@@ -24,7 +24,7 @@ ctypedef np.float32_t DTYPE_t
 ctypedef np.int_t ITYPE_t
 ctypedef np.double_t DOUBLE_t
 
-cdef class rect:
+cdef class rect(object):
     """ an implementation of a rectangular region with
         i1:i2 and j1:j2
     """
@@ -45,7 +45,7 @@ cdef class rect:
     #def __repr__(self):
     #    return "%d %d : %d %d" % (self.ii1,self.jj1,self.ii2,self.jj2)
 
-cdef class grid:
+cdef class grid(object):
     """ implementation of a grid class in cython """
     cdef int nrows          # number of rows
     cdef int ncols          # number of columns
@@ -2021,7 +2021,7 @@ cdef class grid:
             for i in range(1,self.nrows):
                 for j in range(1,self.ncols):
                     cfd1[i,j] = 0.25*(V_temp[i+1,j] + cfd1[i-1,j] +
-                                      cfd1[i,j-1] + V_temp[i,j+1]) + rho[i,j]*h2
+                                      cfd1[i,j-1] + V_temp[i,j+1] + rho[i,j]*h2)
                     error += abs(cfd1[i,j]-V_temp[i,j])
             # print iterations,error
             iterations += 1
