@@ -802,7 +802,7 @@ cdef class grid(object):
         plt.grid(True)
         plt.show()
         return True
-    def show_cwt(self,int i0,int j0,int i1,int j1, int flag=0):
+    def show_cwt(self,int i0,int j0,int i1,int j1, int l=0, int flag=0):
         """ shows a cwt transformation "ricker" as an image of the transect
         """
         cdef int i,j,num
@@ -817,7 +817,10 @@ cdef class grid(object):
         zi = scipy.ndimage.map_coordinates(np.transpose(mx), 
                                            np.vstack((x,y)),order=1)
         t=np.arange(len(zi))*self.csize
-        widths = np.arange(1, int(np.sqrt((i1-i0)**2+(j1-j0)**2)/2))
+        if(l==0):
+            widths = np.arange(1, int(num/2))
+        else:
+            widths = np.arange(1, l)
         cwtmatr = signal.cwt(zi, signal.ricker, widths)
         if(flag==1):
             return cwtmatr
