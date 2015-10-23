@@ -802,6 +802,39 @@ cdef class grid(object):
         plt.grid(True)
         plt.show()
         return True
+    def show_cwt(self,int i0,int j0,int i1,int j1, int flag=0):
+        """ shows a cwt transformation "ricker" as an image of the transect
+        """
+        cdef int i,j,num
+        num=int(np.sqrt((i1-i0)*(i1-i0)+(j1-j0)*(j1-j0)))
+        cdef np.ndarray[DOUBLE_t,ndim=1] y=np.linspace(i0, i1, num)
+        cdef np.ndarray[DOUBLE_t,ndim=1] x=np.linspace(j0, j1, num)
+        cdef np.ndarray[DTYPE_t,ndim=2] mx=np.copy(self.mat)
+        cdef np.ndarray[DOUBLE_t,ndim=2] cwtmatr
+        cdef np.ndarray[DOUBLE_t,ndim=1] t
+        if(i0<0 or j0<0 or i1>=self.nrows or j1>=self.ncols):
+            return None,None
+        zi = scipy.ndimage.map_coordinates(np.transpose(mx), 
+                                           np.vstack((x,y)),order=1)
+        t=np.arange(len(zi))*self.csize
+        widths = np.arange(1, int(np.sqrt((i1-i0)**2+(j1-j0)**2)/2))
+        cwtmatr = signal.cwt(zi, signal.ricker, widths)
+        if(flag==1):
+            return cwtmatr
+        plt.ioff()
+        plt.clf()
+        plt.subplot(111)
+        gridmin=np.min(cwtmatr)
+        gridmax=np.max(cwtmatr)
+        cmap = plt.get_cmap('jet', 500)
+        cmap.set_under('white')
+        img=plt.imshow(cwtmatr,cmap=cmap)
+        img.set_clim(gridmin,gridmax)
+        plt.colorbar(cmap=cmap)
+        plt.title("CWT ricker")
+        plt.xlabel("s")
+        plt.ylabel("cwt")
+        plt.show()
     # statistics ==========================================================
     def info(self):
         """

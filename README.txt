@@ -43,6 +43,8 @@ gx.showr(val1,val2,bw=0) # selects, shows all cells between val1 and val2 bw=1
 			 # gets a grey image
 gx.save_color(name)    # save a png
 gx.save_bw(name)       # save a bw png
+gx.show_transect(i0,j0,i1,j1,flag=0) # shows a transect from i0,j0 to i1,j1
+gx.show_cwt(i0,j0,i1,j1,flag=0)      # shows a ricker cwt from i0,j0 to i1,j1
 
 # Statistics ================================================================
 gx.info()              # describes the grid
