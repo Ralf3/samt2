@@ -105,7 +105,7 @@ class svm:
         try:
 	    self.model=mlpy.libsvm.LibSvm.load_model(filename)
         except IOError:
-	    print "Error in reading file: ", filename
+	    print("Error in reading file: ", filename)
 	    return False
         m=re.search("(.*)\.(svm)",filename)   # read the names from npy
         basename=m.group(1)
@@ -176,10 +176,7 @@ class svm:
             b=g2.get_matc()
             c=g3.get_matc()
             x=np.c_[a.flatten(),b.flatten(),c.flatten()]
-        # print x.shape
-        # print x
         y=self.model.pred(x)
-        # print np.float32(y)
         gout.set_mat(np.float32(y.reshape(nrows,ncols)))
         gout.and_grid(g1)
         return gout
@@ -198,7 +195,7 @@ def test():
     X,Y=grid.sample(g1=bd,g2=struktur,g4=nahr,n=2000,filename='s_nahr.csv')
     X=np.array(X)
     Y=np.array(Y)
-    print X.shape, Y.shape
+    print(X.shape, Y.shape)
     # define the model
     t0=time.time()
     model=svm('bd','struktur')
@@ -207,13 +204,13 @@ def test():
     model.train(X,Y)
     # test model
     bias,rsme,r2=model.test(X,Y)
-    print 'Bias=', bias, 'RSME=', rsme, 'R^2=', r2
+    print('Bias=', bias, 'RSME=', rsme, 'R^2=', r2)
     # write the model
     model.write_model('bd_struk.svm')
-    print 'after read:', model.get_names()
+    print('after read:', model.get_names())
     # gen the output
     out=model.calc(bd,struktur)
-    print 'time=',time.time()-t0
+    print('time=',time.time()-t0)
     out.show()
 
 #test()

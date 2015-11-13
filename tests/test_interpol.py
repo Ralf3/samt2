@@ -14,7 +14,7 @@ res    = 300       # dots/inch
 nrows  = int(height/inch*res)
 ncols  = int(width/inch*res)
 
-print 'nrows:', nrows, 'ncols:', ncols
+print('nrows:', nrows, 'ncols:', ncols)
 size=25           # random points
 
 # define the grid
@@ -26,6 +26,6 @@ z=np.random.rand(size)
 # interpolation
 intmeth=['linear','cubic','thin_plate']
 for method in intmeth:
-    print method
+    print(method)
     gx.interpolate(x,y,z,method=method)
     gx.show_contour()

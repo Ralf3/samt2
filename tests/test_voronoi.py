@@ -20,6 +20,6 @@ z=np.random.rand(nsamples)
 # activate the poisson solver
 t0=time.time()
 gx.voronoi(y,x,z)
-print "t=",time.time()-t0
+print("t=",time.time()-t0)
 
 gx.show()

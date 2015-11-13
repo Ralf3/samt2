@@ -24,6 +24,6 @@ z=np.ones(nsamples)
 # activate the poisson solver
 t0=time.time()
 gx.poisson(y,x,z,0.001*nsamples,maxiter)
-print "t=",time.time()-t0
+print("t=",time.time()-t0)
 
 gx.show_contour()
