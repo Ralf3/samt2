@@ -2,7 +2,8 @@
 import sys
 import os
 # sys.path.append(os.environ["SAMTHOME2"]+"/src/grid")
-sys.path.append('/home/ralf/master/samt2')
+sys.path.append('/home/ralf/master/samt3')
+sys.path.append('/usr/local/lib/python3.4/site-packages')
 import grid as samt2
 import numpy as np
 cimport numpy as np
@@ -38,7 +39,7 @@ cdef class member:
     cdef float ro
     cdef float ru
     cdef int   flag
-    cdef bytes name
+    cdef str name
     def __init__(self,name, flag1, para):
         self.name=name
         if(flag1==LEFT):
@@ -57,9 +58,9 @@ cdef class member:
             return
         if(flag1==TRAPEZ):
             if(para[0]>para[1] or para[1]>para[2] or para[2]>para[3]):
-                print "error in member!"
-                print "x1=", para[0], " x2=", para[1], " x3=", para[2],
-                print " x4=", para[3], "not x1>x2>x3>x4"
+                print("error in member!")
+                print("x1=", para[0], " x2=", para[1], " x3=", para[2],)
+                print(" x4=", para[3], "not x1>x2>x3>x4")
                 sys.exit()
             self.lu=para[0]
             self.lo=para[1]
@@ -69,9 +70,9 @@ cdef class member:
             return
         if(flag1==DREIECK):
             if(para[0]>para[1] or para[1]>para[2]):
-                print "error in member!"
-                print "x1=", para[0], " x2=", para[1], " x3=", para[2],
-                print "not x1>x2>x3"
+                print("error in member!")
+                print("x1=", para[0], " x2=", para[1], " x3=", para[2],)
+                print("not x1>x2>x3")
                 sys.exit()
             self.lu=para[0]
             self.lo=para[1]
@@ -136,7 +137,6 @@ class input:
     def get_member_list(self):
         return self.member
     def set_member(self,name,flag,para):
-        # print "set_member:" ,name, flag, para
         if(flag=='left'):
             mb=member(name,LEFT,para)
         if(flag=='trapez' or flag=='trapeze'):
@@ -170,10 +170,10 @@ cdef class output:
         has mu
         has name
     """
-    cdef bytes name
+    cdef str name
     cdef float val
     cdef float mu 
-    def __init__(self, bytes  name, float val):
+    def __init__(self, str name, float val):
         self.name=name
         self.val=val
         self.mu=0.0
@@ -397,7 +397,6 @@ class fuzzy:
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
         for i in range(len(self.outputs)):
             self.res[i]=self.outputs[i].getm()
-            # print i, res[i],self.outputs[i].getm()
             self.outputs[i].setm(0.0)
         return self.res
     # same as calc1 but with debugging
@@ -446,7 +445,6 @@ class fuzzy:
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
             
-            # print i,self.rules[i].getm()
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
@@ -470,8 +468,6 @@ class fuzzy:
         self.inputs[1].calc(x2)   # calc the membership of input 2
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
-            
-            # print i,self.rules[i].getm()
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
@@ -491,8 +487,6 @@ class fuzzy:
         self.inputs[1].calc(x2)   # calc the membership of input 2
         for i in range(len(self.rules)): # calc the membership of all rules
             self.rules[i].calc(self.inputs,self.flag)
-            
-            # print i,self.rules[i].getm()
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
@@ -554,7 +548,6 @@ class fuzzy:
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
-                # print 'calct3:', i, self.rules[i].getm()
         for i in range(len(self.rules)): # debug part
             if(np.around(self.outputs[self.rules[i].geto()].getm(),5)==
                 np.around(self.rules[i].getm(),5)
@@ -584,7 +577,6 @@ class fuzzy:
         for i in range(len(self.rules)): # set the membership to the outputs
             if(self.outputs[self.rules[i].geto()].getm()<self.rules[i].getm()):
                 self.outputs[self.rules[i].geto()].setm(self.rules[i].getm())
-                # print 'calct3:', i, self.rules[i].getm()
         for i in range(len(self.rules)): # debug part
             if(np.around(self.outputs[self.rules[i].geto()].getm(),5)==
                 np.around(self.rules[i].getm(),5)
@@ -667,7 +659,7 @@ class fuzzy:
     def set_trainX(self,X):
         """ X must be a numpy array with a shape: n,n_inputs """
         if(X.shape[1]!=len(self.inputs)):
-            print 'error in set_trainX: use X[n,n_inputs]'
+            print('error in set_trainX: use X[n,n_inputs]')
             return False
         self.X=np.array(X)
         return True
@@ -682,8 +674,8 @@ class fuzzy:
         """
         ts=np.loadtxt(filename, skiprows=header,delimiter=sep)
         if(ts.shape[1]!=len(self.inputs)+1):
-            print "error in read_trainig_data:", ts.shape, "!=",
-            print len(self.inputs)+1
+            print("error in read_trainig_data:", ts.shape, "!=",)
+            print(len(self.inputs)+1)
             return False
         sl=len(self.inputs)
         self.X=ts[:,0:sl]
@@ -696,7 +688,7 @@ class fuzzy:
         cdef int i
         cdef float y, error=0.0, rsme=0.0, reg=0.0
         if(self.X==None or self.Y==None):
-            print 'error in get_rsme: X or Y are not defined'
+            print('error in get_rsme: X or Y are not defined')
             return -9999.0
         # evaluate the fuzzy model using training data
         for i in range(self.X.shape[0]):
@@ -716,7 +708,7 @@ class fuzzy:
         cdef int i
         cdef float y, error=0.0, mae=0.0, reg=0.0
         if(self.X==None or self.Y==None):
-            print 'error in get_rsme: X or Y are not defined'
+            print('error in get_rsme: X or Y are not defined')
             return -9999.0
         # evaluate the fuzzy model using training data
         for i in range(self.X.shape[0]):
@@ -737,7 +729,6 @@ class fuzzy:
         """
         cdef int i
         cdef float y, error=0.0, rmse=0.0, reg=0.0
-        # print 'len(x):',len(x),'x',x
         for i in range(len(x)-1):
             if(x[i]>=x[i+1]):     # check an overlaypping
                 return np.inf     # punish it
@@ -762,7 +753,6 @@ class fuzzy:
         # add the regularization
         for i in range(1,len(x)):
             reg+=1.0/(((x[i]-x[i-1])/(self.d0[i-1]))**2)
-        # print 'rmse:',rmse,'reg:',reg, 'rmse+reg/len(x):',rmse+reg/(100*len(x))
         return rmse+reg/(100*len(x)) # heuristic can be adapted
 
     # write routine to store modified models
@@ -771,7 +761,6 @@ class fuzzy:
             it should have the extension  .fis
         """
         file=open(name, 'w')
-        # print out the inputs and the members for each input
         for inp in self.inputs:
             s="input %s %d\n" % (inp.get_n(), inp.get_len())
             file.write(s)
@@ -798,13 +787,11 @@ class fuzzy:
                     file.write(s)
                     s="%f %f %f\n" % (mem.get_lu(),mem.get_lo(),mem.get_ru())
                     file.write(s)
-        # print out the output and their values
         s="outputs Output %d\n" % len(self.outputs)
         file.write(s)
         for out in self.outputs:
             s="output %s %f\n" % (out.get_name(),out.getv())
             file.write(s)
-        # print the rules as a table
         s="rules %d\n" % len(self.rules)
         file.write(s)
         for rule in self.rules:
@@ -844,14 +831,14 @@ class fuzzy:
         cdef np.ndarray[np.float_t,ndim=1] tar=np.array(targets)
         # check if target and pattern have the same size
         if(pat.shape[0]!=tar.shape[0]):
-            print "error in train_rules: target", tar.shape[0],
-            print " and pattern", pat.shape[1]
-            print "do not match!"
+            print("error in train_rules: target", tar.shape[0],)
+            print(" and pattern", pat.shape[1])
+            print("do not match!")
             return False
         # check if the pattern do match with the fuzzy model
         if(len(self.inputs)!=pat.shape[1]):
-            print "error in train_rules: pattern:",pat.shape[0]
-            print "\tdo not match with the defined inputs:", len(self.inputs)
+            print("error in train_rules: pattern:",pat.shape[0])
+            print("\tdo not match with the defined inputs:", len(self.inputs))
             return False
         ninputs=pat.shape[1]
         # remove the outputs from the rules
@@ -870,7 +857,6 @@ class fuzzy:
                 if(ninputs==3):
                     self.inputs[2].calc(pat[i,2])
                 mu=rule.calc(self.inputs,flag=FUZZYTRAIN)
-                # print i,mu,pat[i,:],tar[i]
                 if(mu>a):  # > alpha
                     tsum+=tar[i]*mu
                     musum+=mu
@@ -918,7 +904,6 @@ class fuzzy:
             b=self.inputs[0].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[0].get_member(-1).get_lo()
-            # print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)
@@ -940,7 +925,6 @@ class fuzzy:
             b=self.inputs[0].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[0].get_member(-1).get_lo()
-            # print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)   
@@ -951,7 +935,6 @@ class fuzzy:
             b=self.inputs[1].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[1].get_member(-1).get_lo()
-            # print "a0:", a, "b0:",b
             if(a>=b):  # check the input range
                 return False
             r2=np.linspace(a,b,res)
@@ -964,8 +947,6 @@ class fuzzy:
             if(np.max(z)==0.0):
                a=0.2*np.min(z)
                b=0.8*np.min(z)
-               
-            #print 'contour:',a,b
             im = plt.imshow(z,cmap=plt.cm.RdBu,
                             extent=(r1[0],r1[-1],r2[-1],r2[0]),
                             aspect='auto') # drawing the function
@@ -1003,7 +984,7 @@ class fuzzy:
             b=self.inputs[sel1].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[sel1].get_member(-1).get_lo()
-            print "a0:", a, "b0:",b
+            print("a0:", a, "b0:",b)
             if(a>=b):  # check the input range
                 return False
             r1=np.linspace(a,b,res)
@@ -1014,7 +995,7 @@ class fuzzy:
             b=self.inputs[sel2].get_member(-1).get_ro()
             if(np.isclose(b,-9999.0)):
                 b=self.inputs[sel2].get_member(-1).get_lo()
-            print "a1:", a, "b1:",b
+            print("a1:", a, "b1:",b)
             if(a>=b):  # check the input range
                 return False    
             r2=np.linspace(a,b,res)
@@ -1029,7 +1010,7 @@ class fuzzy:
                 if(np.isclose(b,-9999.0)):
                     b=self.inputs[seld].get_member(-1).get_lo()
                 c=(b-a)/2.0+a    
-            print "a:", a, "b:",b, "c:", c
+            print("a:", a, "b:",b, "c:", c)
             if(a>=b):  # check the input range
                 return False
             for i in np.arange(res):
@@ -1083,9 +1064,9 @@ def start_training(f):
         startout.append(f.get_output(i))
     minout.insert(0,minout[0]-(minout[1]-minout[0]))
     maxout.append(maxout[-1]+(maxout[-1]-maxout[-2]))
-    print 'minout:',minout
-    print 'maxout:',maxout
-    print 'start:', startout
+    print('minout:',minout)
+    print('maxout:',maxout)
+    print('start:', startout)
     opt.set_lower_bounds(np.array(minout))
     opt.set_upper_bounds(np.array(maxout))
     opt.set_initial_step((f.get_output(1)-f.get_output(0))/500.)
@@ -1095,9 +1076,9 @@ def start_training(f):
     xopt=opt.optimize(np.array(startout))
     opt_val=opt.last_optimum_value()
     result=opt.last_optimize_result()
-    print ' *************Result of Optimization*****************'
-    print 'max:', opt_val
-    print 'parameter:', xopt
+    print(' *************Result of Optimization*****************')
+    print('max:', opt_val)
+    print('parameter:', xopt)
     # set the best values
     for i in range(f.get_len_output()):
         f.set_output(i,xopt[i])
@@ -1108,21 +1089,21 @@ def read_model(modelname, DEBUG=0):
     try:
         f = open(modelname, 'r')
     except IOError:
-        print 'error in read_model: can not open file: ', modelname
+        print('error in read_model: can not open file: ', modelname)
         return None
     f1.set_name(modelname.split('/')[-1])
     s=f.readline().rstrip()
     line=1
     sl=s.rsplit(' ')
     if(sl[0]!='input'):
-        print "error in line:",line, 
-        print "file should start with input"
+        print("error in line:",line,)
+        print("file should start with input")
         sys.exit()
     inputname=sl[1]
     members=int(sl[2])
     state=INPUT
     if(DEBUG==1):
-        print line, inputname,members
+        print(line, inputname,members)
     while(state==INPUT):
         ip=input(inputname)
         for i in range(members):  # collect members
@@ -1132,7 +1113,7 @@ def read_model(modelname, DEBUG=0):
             mname=sl[1]
             mtag=sl[2]
             if(DEBUG==1):
-                print line, 'member',mname,mtag
+                print(line, 'member',mname,mtag)
             s=f.readline().rstrip()
             line+=1
             sl=s.rsplit(' ')
@@ -1140,7 +1121,7 @@ def read_model(modelname, DEBUG=0):
             for i in sl:
                 para.append(float(i))
             if(DEBUG==1):
-                print line, para
+                print(line, para)
             ip.set_member(mname,mtag,para)
         f1.add_input(ip)  # store the input in the fuzzy
         s=f.readline().rstrip()
@@ -1149,7 +1130,7 @@ def read_model(modelname, DEBUG=0):
         inputname=sl[1]
         members=int(sl[2])
         if(DEBUG==1):
-            print line,inputname,members
+            print(line,inputname,members)
         if(sl[0]!='input'):
             state=OUTPUT
             oname=sl[1]
@@ -1162,7 +1143,7 @@ def read_model(modelname, DEBUG=0):
         oname=sl[1]
         oval=float(sl[2])
         if(DEBUG==1):
-            print line, oname,oval
+            print(line, oname,oval)
         out=output(oname,oval)
         f1.add_output(out)
     state=RULE  # state RULE must follow n outputs
@@ -1171,7 +1152,7 @@ def read_model(modelname, DEBUG=0):
     line+=1
     rulenumbers=int(sl[1])
     if(DEBUG==1):
-        print line,'rules:',rulenumbers
+        print(line,'rules:',rulenumbers)
     for i in range(rulenumbers):
         s=f.readline().rstrip()
         sl=s.rsplit(' ')
@@ -1181,7 +1162,7 @@ def read_model(modelname, DEBUG=0):
             para.append(int(sl[i]))
         para.append(float(sl[-1]))
         if(DEBUG==1):
-            print line, para
+            print(line, para)
         rulex=rule(para)
         f1.add_rule(rulex)
     f.close()

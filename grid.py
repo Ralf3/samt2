@@ -58,8 +58,8 @@ cdef class grid(object):
     cdef np.ndarray d8_mat  # store the result of d8 
     cdef int x1,x2          # help for kadane
     cdef np.ndarray sub     # maximum subarray
-    cdef bytes time1        # time and date of a grid
-    cdef bytes date1
+    cdef str time1        # time and date of a grid
+    cdef str date1
     def __init__(self,int nrows=0, int ncols=0,
                  double x=0.0, double y=0.0,
                  double csize=1.0,int nodata=-9999):
@@ -74,8 +74,8 @@ cdef class grid(object):
         self.mat=None
         self.d4_mat=None
         self.d8_mat=None
-        self.time1=bytes('\0')
-        self.date1=bytes('\0')
+        self.time1=str('\0')
+        self.date1=str('\0')
         # create a empty grid if the nrows and ncols are given 
         if(self.nrows!=0 and self.ncols!=0):
             self.mat=np.zeros((self.nrows,self.ncols),dtype=DTYPE)
@@ -85,14 +85,14 @@ cdef class grid(object):
             self.y=0.0
         self.sub=None
     # read and write a grid =============================================
-    def read_csv(self, char* filename):
+    def read_csv(self, str filename):
         """ read a csv and fill the mat with it """
         cdef int i
         cdef int j
         try:
             f=open(filename)
         except IOError:
-            print "count not open:", filename
+            print("count not open:", filename)
             return False
         x=f.readlines()
         self.nrows=len(x)
@@ -109,19 +109,19 @@ cdef class grid(object):
         self.y=0.0
         self.nodata=-9999
         return True
-    def read_ascii(self,char * filename, int DEBUG=0):
+    def read_ascii(self,str filename, int DEBUG=0):
         """ read a grid from the GIS """
         try:
             f=open(filename)
         except IOError:
-            print "count not open:", filename
+            print("count not open:", filename)
             return False
         (mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime) = os.stat(filename)
         s=time.localtime(ctime)
         time1= "%02d:%02d:%02d" % (s.tm_hour, s.tm_min, s.tm_sec)
-        self.time1= <bytes> time1
+        self.time1= <str> time1
         date1= "%04d-%02d-%02d" % (s.tm_year, s.tm_mon, s.tm_mday)
-        self.date1= <bytes> date1
+        self.date1= <str> date1
         # read header using re
         m=re.match('(\w*)\s+(\d*)',f.readline())
         self.ncols=int(m.group(2))
@@ -129,37 +129,32 @@ cdef class grid(object):
         self.nrows=int(m.group(2))
         s=f.readline()
         m=re.match('(\w*)\s+(.\d*\.\d*)',s)
-        if m==None:
+        if m is None:
             m=re.match('(\w*)\s+(.\d*)',s)
-        #print m.group(2)
         self.x=float(m.group(2))
         s=f.readline()
         m=re.match('(\w*)\s+(.\d*\.\d*)',s)
-        if m==None:
+        if m is None:
             m=re.match('(\w*)\s+(.\d*)',s)
-        #print m.group(2)
         self.y=float(m.group(2))
         s=f.readline()
         m=re.match('(\w*)\s+(-*\d*\.\d*)',s)
-        if m==None:
+        if m is None:
             m=re.match('(\w*)\s+(-*\d*)',s)    
-        #print m.group(2)
         self.csize=float(m.group(2))
         m=re.match('(\w*)\s+(.\d*)',f.readline())
         self.nodata=int(m.group(2))
         if(DEBUG==1):
-            print "nrows\t", self.nrows
-            print "ncols\t", self.ncols
-            print "xllcorner\t", self.x
-            print "yllcorner\t", self.y
-            print "cellsize\t", self.csize
-            print "nodata\t", self.nodata
+            print("nrows\t", self.nrows)
+            print("ncols\t", self.ncols)
+            print("xllcorner\t", self.x)
+            print("yllcorner\t", self.y)
+            print("cellsize\t", self.csize)
+            print("nodata\t", self.nodata)
         reader=csv.reader(f,delimiter=' ')
         self.mat=np.zeros((self.nrows,self.ncols),dtype=DTYPE)
         for i in range(self.nrows):
             line =reader.next()
-            # print line
-            # print len(line),self.nrows,self.ncols
             if(line[0]):
                 for j in range(self.ncols):
                     self.mat[i,j]=float(line[j])
@@ -168,7 +163,7 @@ cdef class grid(object):
                     self.mat[i,j-1]=float(line[j])
         f.close()
         return True
-    def write_ascii(self,char *filename):
+    def write_ascii(self, str filename):
         """ stores a ascii file and the header as export to the GIS """
         cdef int i,j
         cdef np.ndarray[DTYPE_t,ndim=2] mx=np.copy(self.mat)
@@ -188,25 +183,24 @@ cdef class grid(object):
                 f.write(s)
         f.close()
         return True
-    def list_hdf(self,char* filename):
+    def list_hdf(self, str filename):
         """ list all datasets from a hdf """
         try:
             hdf=h5py.File(filename,'r')
         except IOError:
-            print "count not open:", filename
+            print("count not open:", filename)
             return None
         names=[]
         for data in hdf.keys():
-            # print data
             names.append(data)
         hdf.close()
         return names
-    def read_hdf(self,char* filename,char* dataset, int DEBUG=0):
+    def read_hdf(self,str filename,str dataset, int DEBUG=0):
         """ read a dataset from a hdf and return a grid """
         try:
             hdf=h5py.File(filename,'r')
         except IOError:
-            print "count not open:", filename
+            print("count not open:", filename)
             return False
             # sys.exit(1)
         data=hdf[dataset]
@@ -220,16 +214,16 @@ cdef class grid(object):
         self.mat=np.reshape(data.value,(self.nrows,self.ncols))
         hdf.close()
         if(DEBUG==1):
-            print "nrows\t", self.nrows
-            print "ncols\t", self.ncols
-            print "xllcorner\t", self.x
-            print "yllcorner\t", self.y
-            print "cellsize\t", self.csize
-            print "nodata\t", self.nodata
+            print("nrows\t", self.nrows)
+            print("ncols\t", self.ncols)
+            print("xllcorner\t", self.x)
+            print("yllcorner\t", self.y)
+            print("cellsize\t", self.csize)
+            print("nodata\t", self.nodata)
         return True
-    def write_hdf(self,char* filename,char* dataset,char* model, char* author):
+    def write_hdf(self,str filename,str dataset,str model, str author):
         """ write an grid to a hdf """
-        cdef bytes s
+        cdef str s
         f = h5py.File(filename, 'a', libver='earliest')
         field=np.reshape(self.mat,self.nrows*self.ncols)
         data=f.create_dataset(dataset,data=field)
@@ -241,16 +235,16 @@ cdef class grid(object):
         attr['csize']=np.float32(self.csize)
         attr['nodata']=self.nodata
         s=self.date1
-        if(s==bytes('\0')):
+        if(s==str('\0')):
             s=datetime.date.today().isoformat()
-        attr['date']= <bytes> s
+        attr['date']= <str> s
         s=self.time1
-        if(s==bytes('\0')):
+        if(s==str('\0')):
             t=t=datetime.datetime.now()
             s=datetime.time(t.hour,
                             t.minute,
                             t.second).isoformat()
-        attr['time']= <bytes> s
+        attr['time']= <str> s
         attr['Author']=author
         attr['Modell']=model
         f.flush()
@@ -295,14 +289,14 @@ cdef class grid(object):
     def print_mat(self, int i0=0, int i1=0, int j0=0, int j1=0):
         """ print a selected part of the matrix """
         if(i0==0 and i1==0 and j0==0 and j1==0):
-            print self.mat
+            print(self.mat)
             return True
         else:
             if(not (i0>=0 and i1<=self.nrows and j0>=0 and j1<=self.ncols)):
                 return False
-            print self.mat[i0:i1,j0:j1]
+            print(self.mat[i0:i1,j0:j1])
             return True
-    def save_color(self, char* name):
+    def save_color(self, str name):
         """ save the matrix as color image """
         cdef int i,j
         cdef double gridmin, gridmax
@@ -317,7 +311,7 @@ cdef class grid(object):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
-        print 'show:', gridmin, gridmax, self.nodata
+        print('show:', gridmin, gridmax, self.nodata)
         fig1 = plt.figure()
         cmap = plt.get_cmap('jet', 500)
         cmap.set_under('white')
@@ -328,7 +322,7 @@ cdef class grid(object):
         fig1.savefig(name,bbox_inches='tight')
         del mx
         return True
-    def save_bw(self, char* name):
+    def save_bw(self, str name):
         """ save the matrix as black and white image """
         cdef int i,j
         cdef double gridmin, gridmax
@@ -343,7 +337,7 @@ cdef class grid(object):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
-        print 'save_bw:', gridmin, gridmax, self.nodata
+        print('save_bw:', gridmin, gridmax, self.nodata)
         fig1 = plt.figure()
         cmap = plt.get_cmap('Greys', 500)
         cmap.set_under('white')
@@ -395,9 +389,9 @@ cdef class grid(object):
     def set_header(self, int nrows, int ncols, double x=0, double y=0,
                    double csize=1, int nodata=-9999):
         """ set the header with new values
-            if self.mat==None define it and fill it with zeros
+            if self.mat is None define it and fill it with zeros
         """
-        if(self.mat==None):
+        if(self.mat is None):
             self.nrows=nrows
             self.ncols=ncols
             self.mat=np.zeros((nrows,ncols))
@@ -415,14 +409,14 @@ cdef class grid(object):
         return [self.nrows, self.ncols, self.x, self.y,
                 self.csize, self.nodata]
     def clear_time(self):
-        self.time1=bytes('\0')
-        self.date1=bytes('\0')
+        self.time1=str('\0')
+        self.date1=str('\0')
         return True
     def set_date(self, datum):
-        self.date1= <bytes> datum    # '04d-02d-02d' : year month day
+        self.date1= <str> datum    # '04d-02d-02d' : year month day
         return True
     def set_time(self, zeit):
-        self.time1= <bytes> zeit     # '02d:02d:02d' : hour min sec
+        self.time1= <str> zeit     # '02d:02d:02d' : hour min sec
         return True
     def get_matc(self, int i0=0, int i1=0, int j0=0, int j1=0):
         """ returns a copy of a part of the mat
@@ -551,7 +545,7 @@ cdef class grid(object):
                     gridmax=mx[i,j]
         if(flag==1):
             return mx
-        print 'show:', gridmin, gridmax, self.nodata
+        print('show:', gridmin, gridmax, self.nodata)
         plt.ioff()
         plt.clf()
         plt.subplot(111)
@@ -588,7 +582,7 @@ cdef class grid(object):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
-        print 'show:', gridmin, gridmax, self.nodata
+        print('show:', gridmin, gridmax, self.nodata)
         plt.ioff()
         plt.clf()
         plt.subplot(111)
@@ -635,7 +629,7 @@ cdef class grid(object):
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
         d=gridmin-(gridmax-gridmin)/100.0
-        print 'show:', gridmin, gridmax, self.nodata
+        print('show:', gridmin, gridmax, self.nodata)
         for i in range(self.nrows):
             for j in range(self.ncols):
                 if(int(mx[i,j])==self.nodata):
@@ -649,7 +643,6 @@ cdef class grid(object):
         Yt = np.arange(0,self.ncols)
         X1, Y1 = np.meshgrid(Xt, Yt)
         ax=plt.subplot(111, projection='3d')
-        # print np.shape(X),np.shape(Y),np.shape(mx)
         ax.plot_surface(X1, Y1, mx, 
                         rstride=stride, 
                         cstride=stride, 
@@ -689,7 +682,7 @@ cdef class grid(object):
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
         d=gridmin-(gridmax-gridmin)/100.0
-        print 'show:', gridmin, gridmax, self.nodata
+        print('show:', gridmin, gridmax, self.nodata)
         for i in range(self.nrows):
             for j in range(self.ncols):
                 if(int(mx[i,j])==self.nodata):
@@ -846,13 +839,13 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         cdef int i,j
         cdef int data=0, nodata=0
-        print 'nrows:',self.nrows
-        print 'ncols:', self.ncols
-        print 'xllcorner:',self.x
-        print 'yllcorner:',self.y
-        print 'csizesize:',self.csize
-        print 'NODATA_value:',self.nodata
-        if(mat==None or self.nrows<=0 or self.ncols<=0):
+        print('nrows:',self.nrows)
+        print('ncols:', self.ncols)
+        print('xllcorner:',self.x)
+        print('yllcorner:',self.y)
+        print('csizesize:',self.csize)
+        print('NODATA_value:',self.nodata)
+        if((mat is None) or self.nrows<=0 or self.ncols<=0):
             return
         for i in range(self.nrows):
             for j in range(self.ncols):
@@ -860,8 +853,8 @@ cdef class grid(object):
                     nodata+=1
                 else:
                     data+=1
-        print 'number of data:', data
-        print 'number of nodata:', nodata
+        print('number of data:', data)
+        print('number of nodata:', nodata)
         return True
     def mean_std(self):
         """ tells the mean and std """
@@ -989,7 +982,6 @@ cdef class grid(object):
             return 0
         xmean/=xcount
         ymean/=ycount
-        # print 'xmean:', xmean, 'ymean:',ymean
         xcount=0
         ycount=0
         for i in range(self.nrows):
@@ -998,7 +990,6 @@ cdef class grid(object):
                     sx+=(mat1[i,j]-xmean)**2
                     sy+=(mat2[i,j]-ymean)**2
                     cov+=(mat1[i,j]+xmean)*(mat2[i,j]-ymean)
-        # print 'sx:',sx, 'sy:',sy, 'cov:',cov
         return(cov/(np.sqrt(sx)*np.sqrt(sy)))
     def point_in(self,np.ndarray[ITYPE_t,ndim=1] x,
                  np.ndarray[ITYPE_t,ndim=1] y,
@@ -1009,7 +1000,6 @@ cdef class grid(object):
             return True
         for i in np.arange(k):
             if(x[i]==j0 and y[i]==i0):
-                # print 'point_in:',x0,y0,k
                 return False
         return True
     def sample(self,int nr=100,filename=None):
@@ -1038,7 +1028,7 @@ cdef class grid(object):
         arr=c[0:count]
         np.random.shuffle(arr)
         # fill the outputs
-        if(filename==None):
+        if(filename is None):
             for k in range(nr):
                 x[k]=arr[k,1]
                 y[k]=arr[k,0]
@@ -1115,7 +1105,7 @@ cdef class grid(object):
         min1=np.min(mat[mat>self.nodata])
         max1=np.max(mat[mat>self.nodata])
         d=max1-min1
-        print 'norm:' , min1, max1, d
+        print('norm:' , min1, max1, d)
         if(d!=0.0):
             mat[mat>self.nodata]=(mat[mat>self.nodata]-min1)/d
             return True
@@ -1127,7 +1117,7 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         cdef double mu=np.mean(mat[mat>self.nodata])
         cdef double std=np.std(mat[mat>self.nodata])
-        print 'znorm mean:', mu,'std:', std
+        print('znorm mean:', mu,'std:', std)
         if(std!=0):
             mat[mat>self.nodata]=(mat[mat>self.nodata]-mu)/std
             return True
@@ -1237,7 +1227,6 @@ cdef class grid(object):
                 if(int(mat[i,j])!=self.nodata):
                     if(gridmin>mat[i,j]):
                         gridmin=mat[i,j]
-        # print 'grid_inv:', gridmax, gridmin
         for i in range(self.nrows):
             for j in range(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
@@ -1380,7 +1369,7 @@ cdef class grid(object):
         max1=np.round(max1)
         min1=np.round(min1)
         d=(max1-min1)
-        print 'classify:',min1,max1,d
+        print('classify:',min1,max1,d)
         for i in range(self.nrows):
             for j in range(self.ncols):
                 if(int(mat[i,j])==self.nodata):
@@ -1463,7 +1452,6 @@ cdef class grid(object):
         cdef double maxx=0.0, cur=0.0
         self.x1=0
         self.x2=0  
-        # print input[0:5]
         for i in range(len(input)):
             cur += input[i]  
             if(cur > maxx):  
@@ -1473,7 +1461,6 @@ cdef class grid(object):
             if (cur < 0):  
                 cur = 0  
                 lx1 = i + 1  
-        # print self.maxx,self.x2,self.x1
         return maxx
     def max_subarray_list(self, double thresh=0, int n=1):
         """ maximum subarray main function """
@@ -1505,11 +1492,11 @@ cdef class grid(object):
                         max_sum=cur
             fx2+=1
             fy2+=1
-            print fx1,fx2,fy1,fy2
+            print(fx1,fx2,fy1,fy2)
             summ=np.sum(mat[fx1:fx2,fy1:fy2])
             mean=np.mean(mat[fx1:fx2,fy1:fy2])
             std=np.std(mat[fx1:fx2,fy1:fy2])
-            print max_sum, summ, (fx2-fx1)*(fy2-fy1), mean, std
+            print(max_sum, summ, (fx2-fx1)*(fy2-fy1), mean, std)
             sub+=thresh
             sub[fx1:fx2,fy1:fy2]=min1
             self.sub=sub
@@ -1547,7 +1534,7 @@ cdef class grid(object):
                 k+=1
         # calc the regression
         a,b,c=np.linalg.lstsq(A,y)[0]
-        print 'a:',a,'b:',b,'c:',c,
+        print('a:',a,'b:',b,'c:',c)
         # remove the trend from the map
         for i in range(self.nrows):
             for j in range(self.ncols):
@@ -1555,7 +1542,7 @@ cdef class grid(object):
                     mat[i,j]-=(a*i+b*j+c)
         # new minval
         (a,b,minval)=self.get_min()
-        print 'minval:',minval
+        print('minval:',minval)
         # add minval
         for i in range(self.nrows):
             for j in range(self.ncols):
@@ -1588,7 +1575,7 @@ cdef class grid(object):
         if(bj%2==0): bj+=1
         size=float(ai*bj)
         if(ai>=self.nrows or ai<1 or bj>=self.ncols or bj<1):
-            print 'error in kernel_sci parameter:',ai,bj
+            print('error in kernel_sci parameter:',ai,bj)
             return False
         # fill the array for convolution
         w=np.zeros((ai,bj),dtype=np.float32)
@@ -1618,7 +1605,7 @@ cdef class grid(object):
         if(bj%2==0): bj+=1
         size=float(ai*bj)
         if(ai>=self.nrows or ai<1 or bj>=self.ncols or bj<1):
-            print 'error in kernel_sci parameter:',ai,bj
+            print('error in kernel_sci parameter:',ai,bj)
             return False
         # fill the array for convolution
         w=np.ones((ai,bj),dtype=np.float32)
@@ -1646,7 +1633,7 @@ cdef class grid(object):
         if(bj%2==0): bj+=1
         size=0
         if(ai>=self.nrows or ai<1 or bj>=self.ncols or bj<1):
-            print 'error in kernel_sci parameter:',ai,bj
+            print('error in kernel_sci parameter:',ai,bj)
             return False
         # fill the array for convolution
         w=np.zeros((ai,bj),dtype=np.float32)
@@ -1783,7 +1770,7 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(i<0 or i>=self.nrows or j<0 or j>=self.ncols):
             return -9999
-        print 'flood:', i,j,self.mat[i,j],level1,self.mat[i,j]+level1
+        print('flood:', i,j,self.mat[i,j],level1,self.mat[i,j]+level1)
         count=0
         toFill = set()
         toFill.add((i,j))
@@ -1791,7 +1778,6 @@ cdef class grid(object):
         level=level1+minval
         while len(toFill)>0:
             (i,j) = toFill.pop()
-            # print 'flood:',x,y,self.mat[x,y],level
             if(int(mat[i,j])==self.nodata):
                 continue
             if(int(mat[i,j])==mark):
@@ -1958,7 +1944,7 @@ cdef class grid(object):
             x[i]=self.x+j1[i]*self.csize+self.csize/2.0
             y[i]=self.y+(self.nrows-i1[i]-1)*self.csize+self.csize/2.0
         return y,x
-    def interpolate(self, y1,x1,z1, char* method='linear'):
+    def interpolate(self, y1,x1,z1, str method='linear'):
         """ 
         x,y,z coordinates and values 
         range from: 0<=x<=1 and 0<=y<=1
@@ -1976,7 +1962,7 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=1] z=np.array(z1).astype(np.float32)
         x/=np.float32(self.ncols)
         y/=np.float32(self.nrows)
-        if(self.mat == None or len(x)<=0 or len(y)<=0 or len(z)<=0):
+        if((self.mat is None) or len(x)<=0 or len(y)<=0 or len(z)<=0):
             return False
         rbfi=Rbf(x, y, z, function=method)
         tx=np.linspace(0, 1, self.ncols)
@@ -1993,7 +1979,7 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=1] y=np.array(y1).astype(np.float32)
         cdef np.ndarray[DTYPE_t,ndim=1] z=np.array(z1).astype(np.float32)
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
-        if(mat == None or len(x)<=0 or len(y)<=0 or len(z)<=0):
+        if((mat is None) or len(x)<=0 or len(y)<=0 or len(z)<=0):
             return False
         if(len(x)!=len(y) or len(y)!=len(z)<=0):
             return False
@@ -2016,7 +2002,7 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=1] x=np.array(x1).astype(np.float32)
         cdef np.ndarray[DTYPE_t,ndim=1] y=np.array(y1).astype(np.float32)
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
-        if(mat == None or len(x)<=0 or len(y)<=0):
+        if((mat is None) or len(x)<=0 or len(y)<=0):
             return False
         if(len(x)!=len(y)):
             return False
@@ -2059,10 +2045,9 @@ cdef class grid(object):
                     cfd1[i,j] = 0.25*(V_temp[i+1,j] + cfd1[i-1,j] +
                                       cfd1[i,j-1] + V_temp[i,j+1] + rho[i,j]*h2)
                     error += abs(cfd1[i,j]-V_temp[i,j])
-            # print iterations,error
             iterations += 1
             # error /= float(self.nrows**2)
-        print 'cfd_poisson error=',error, 'iterartions=', iterations
+        print('cfd_poisson error=',error, 'iterartions=', iterations)
         # transform it back to self.mat
         f=np.max(z)/np.max(cfd1)
         for i in range(self.nrows):
@@ -2073,7 +2058,7 @@ cdef class grid(object):
     # implementation of flow algorithms
     def d4(self):
         """ code u=1 r=3 d=5 l=7 sink=-1 """
-        if(self.mat==None):
+        if(self.mat is None):
             return False
         cdef int i,j, dir
         cdef DTYPE_t minval
@@ -2101,7 +2086,7 @@ cdef class grid(object):
         return True
     def d8(self):
         """ code u=1 ur=2 r=3 dr=4 d=5 dl=6 l=7 ul=8 sink=-1 """
-        if(self.mat==None):
+        if(self.mat is None):
             return False
         cdef int i,j, dir
         cdef DTYPE_t minval, sq2=np.sqrt(2.0)
@@ -2142,9 +2127,9 @@ cdef class grid(object):
         return True     
     def grad_d4(self):
         """ generates a map with gradient values from d4 """
-        if(self.mat==None):
+        if(self.mat is None):
             return False
-        if(self.d4_mat==None):
+        if(self.d4_mat is None):
             self.d4()
         cdef int i,j,dir
         cdef DTYPE_t minval
@@ -2174,9 +2159,9 @@ cdef class grid(object):
         return True
     def grad_d8(self):
         """ generates a map with gradient values from d8 """
-        if(self.mat==None):
+        if(self.mat is None):
             return False
-        if(self.d8_mat==None):
+        if(self.d8_mat is None):
             self.d8()
         cdef int i,j,dir
         cdef DTYPE_t minval
@@ -2266,24 +2251,24 @@ def sample(g1,g4, g2=None,g3=None,n=100,filename=None,
     cdef np.ndarray[DTYPE_t, ndim=2] m3
     cdef np.ndarray[DTYPE_t, ndim=2] m4
     g1_nrows,g1_ncols=g1.size()
-    if(g1==None or g4==None):
+    if((g1 is None) or (g4 is None)):
         return None,None
-    if(g2!=None):
+    if(g2 is not None):
         g2_nrows,g2_ncols=g2.size()
         if(g1_nrows!=g2_nrows or g1_ncols!=g2_ncols):
-            print "error in sample: grids missmatch!"
+            print("error in sample: grids missmatch!")
             return None,None
         m2=g2.get_matp()
-    if(g3!=None):
+    if(g3 is not None):
         g3_nrows,g3_ncols=g3.size()
         if(g1_nrows!=g3_nrows or g1_ncols!=g3_ncols):
-            print "error in sample: grids missmatch!"
+            print("error in sample: grids missmatch!")
             return None,None
         m3=g3.get_matp()
-    if(g4!=None):
+    if(g4 is not None):
         g4_nrows,g4_ncols=g4.size()
         if(g1_nrows!=g4_nrows or g1_ncols!=g4_ncols):
-            print "error in sample: grids missmatch!"
+            print("error in sample: grids missmatch!")
             return None,None
         m4=g4.get_matp()
     k=0
@@ -2299,59 +2284,59 @@ def sample(g1,g4, g2=None,g3=None,n=100,filename=None,
         val1=m1[i,j]
         if(int(val1)==g1.get_nodata()):
             continue
-        if(g2!=None):
+        if(g2 is not None):
             val2=m2[i,j]
             if(int(val2)==g2.get_nodata()):
                 continue
-        if(g3!=None):
+        if(g3 is not None):
             val3=m3[i,j]
             if(int(val3)==g3.get_nodata()):
                 continue
-        if(g4!=None):
+        if(g4 is not None):
             val4=m4[i,j]
             if(int(val4)==g4.get_nodata()):
                 continue    
-        if(g2!=None and g3!=None and g4!=None):
+        if((g2 is not None) and (g3 is not None) and (g4 is not None)):
             res.append([val1,val2,val3])
             resy.append(val4)
             k+=1
             continue
-        if(g2!=None and g3==None and g4!=None):
+        if((g2 is not None) and (g3 is None) and (g4 is not None)):
             res.append([val1,val2])
             resy.append(val4)
             k+=1
             continue
-        if(g2==None and g3!=None and g4!=None):
+        if((g2 is None) and (g3 is not None) and (g4 is not None)):
             res.append([val1,val3])
             resy.append(val4)
             k+=1
             continue
-        if(g2==None and g3==None and g4!=None):
+        if((g2 is None) and (g3 is None) and (g4 is not None)):
             res.append([val1])
             resy.append(val4)
             k+=1
             continue
         res.append([val1])
         k+=1
-    if(filename==None):
+    if(filename is None):
         return res,resy
     f=open(filename,'w')
-    if(g2!=None and g3!=None and g4!=None):
+    if((g2 is not None) and (g3 is not None) and (g4 is not None)):
         f.write("%s %s %s %s\n" % (x1,x2,x3,x4))
-    if(g2!=None and g3==None and g4!=None):
+    if((g2 is not None) and (g3 is None) and (g4 is not None)):
         f.write("%s %s %s\n" % (x1,x2,x4))
-    if(g2==None and g3!=None and g4!=None):
+    if((g2 is None) and (g3 is not None) and (g4 is not None)):
         f.write("%s %s %s\n" % (x1,x3,x4))
-    if(g2==None and g3==None and g4!=None):
+    if((g2 is None) and (g3 is None) and (g4 is not None)):
         f.write("%s %s\n" % (x1,x4))
     for k in np.arange(n):
-        if(g2!=None and g3!=None and g4!=None):
+        if((g2 is not None) and (g3 is not None) and (g4 is not None)):
             s="%f %f %f %f\n" % (res[k][0],res[k][1],res[k][2],resy[k])
-        if(g2!=None and g3==None and g4!=None):
+        if((g2 is not None) and (g3 is None) and (g4 is not None)):
             s="%f %f %f\n" % (res[k][0],res[k][1],resy[k])
-        if(g2==None and g3!=None and g4!=None):
+        if((g2 is None) and (g3 is not None) and (g4 is not None)):
             s="%f %f %f\n" % (res[k][0],res[k][1],resy[k])
-        if(g2==None and g3==None and g4!=None):
+        if((g2 is None) and (g3 is None) and (g4 is not None)):
             s="%f %f\n" % (res[k][0],resy[k])
         f.write(s)
     f.close()

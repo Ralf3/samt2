@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # simple test for voronoi maps
 
 import numpy as np
 import time
 import sys
-sys.path.append('/home/ralf/master/samt2')
+sys.path.append('/home/ralf/samt2')
 import grid as samt2
 
 xsize=500          # size of the grid, can be slow if xsize>100
@@ -19,6 +19,6 @@ y=np.random.randint(0,ysize,nsamples)
 # activate the poisson solver
 t0=time.time()
 gx.distance(y,x)
-print "t=",time.time()-t0
+print("t=",time.time()-t0)
 
 gx.show_contour()
