@@ -1,5 +1,5 @@
 # samt2
-A Python/Cython module for "Spatial Analysis and Modeling"
+A Python3/Cython module for "Spatial Analysis and Modeling"
 
 
 samt2.py relies on Cython and gcc which should be installed
