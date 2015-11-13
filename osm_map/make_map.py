@@ -15,7 +15,6 @@ def transf(x_ul,y_ul, pix_ver, pix_hor, p_size, projection=31469):
        the function calculates the bounding box for the map
     """
     control="epsg:%d" % projection
-    #print control
     inProj = Proj(init=control)
     outProj = Proj(init='epsg:4326')
     x_ul2,y_ul2 = transform(inProj,outProj,x_ul,y_ul)
@@ -63,7 +62,6 @@ def pos_map(x_ul, y_ul, zoom_lvl, projection=31469):
     lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
     lat_deg = math.degrees(lat_rad)
     control="epsg:%d" % projection
-    #print control
     inProj = Proj(init='epsg:4326')
     outProj = Proj(init=control)
     mapx_ul,mapy_ul = transform(inProj,outProj,lon_deg,lat_deg)
@@ -75,11 +73,11 @@ def cut_map(map_arr, x1, y1, y_ul,
     """
         cuts a part of the map
     """
-    print 'x1, y1, y_ul, mapy_ul:', x1, y1, y_ul, mapy_ul
+    print('x1, y1, y_ul, mapy_ul:', x1, y1, y_ul, mapy_ul)
     p_size_map=40075017.*np.cos(np.deg2rad(y_ul))/2**(zoom_lvl+8)
     dx=(x1-mapx_ul)/p_size_map
     dy=(mapy_ul-y1)/p_size_map
-    print 'cut_map:',dx,dy, p_size_map
+    print('cut_map:',dx,dy, p_size_map)
     map_new=map_arr[dy:dy+
                     (pix_ver*csize/p_size_map),
                     dx:dx+(pix_hor*csize/p_size_map),:]
@@ -107,23 +105,23 @@ def create_map(header,projection=31469):
     # automated scale procedure
     scale=np.round(np.log2(min(nrows,ncols)))
     scalef=np.power(2.0,9-scale)
-    print scale, scalef
+    print(scale, scalef)
     if(scalef!=0.0):
         nrows=int(nrows*scalef)
         ncols=int(ncols*scalef)
         csize=csize/scalef
-    print nrows,ncols,csize
+    print(nrows,ncols,csize)
     x1=header[2]               # ll
     y1=header[3]+(nrows*csize) # ul
     x_ul, y_ul, x_lr, y_lr = transf(x1,y1, nrows, ncols, csize, projection)
     map_arr, zoom_lvl = get_map( x_ul, y_ul, x_lr,  y_lr, csize)
     mapx_ul, mapy_ul = pos_map(x_ul, y_ul, zoom_lvl, projection)
-    print mapx_ul, mapy_ul, x1,y1
+    print(mapx_ul, mapy_ul, x1,y1)
     #map_new = cut_map(map_arr,x1,y1+2400/scalef,y_ul,
     #                  mapx_ul,mapy_ul,nrows,ncols,csize,zoom_lvl)
     map_new = cut_map(map_arr,x1,y1,y_ul,
                       mapx_ul,mapy_ul,nrows,ncols,csize,zoom_lvl)
     map_final=resize_map(map_new, nrows, ncols)
-    print 'shape:', map_final.shape
+    print('shape:', map_final.shape)
     return map_final
 
