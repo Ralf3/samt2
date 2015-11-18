@@ -6,6 +6,10 @@ import random
 import numpy as np
 import pylab as plt
 
+# ------------------------------------------------------------
+# Some elementary functions
+# ------------------------------------------------------------
+
 def filter_nan(s,o):
     data = np.array([s,o])
     data = np.transpose(data)
@@ -154,7 +158,7 @@ def partial_sum(o):
     return part
 
 # ------------------------------------------------------------
-# some new functions added by Ralf Wieland
+# some functions added by Ralf Wieland
 # ------------------------------------------------------------
 
 def gini(o):
