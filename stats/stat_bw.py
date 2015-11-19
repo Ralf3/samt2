@@ -161,6 +161,23 @@ def partial_sum(o):
 # some functions added by Ralf Wieland
 # ------------------------------------------------------------
 
+def fivenum(v):
+    """Returns Tukey's five number summary (minimum, lower-hinge,
+       median, upper-hinge, maximum) for the input vector,
+       a list or array of numbers based on 1.5 times the
+       interquartile distance
+    """
+    try:
+        np.sum(v)
+    except TypeError:
+        print('Error: you must provide a list or array of only numbers')
+    q1 = scoreatpercentile(v,25)
+    q3 = scoreatpercentile(v,75)
+    iqd = q3-q1
+    md = np.median(v)
+    whisker = 1.5*iqd
+    return np.min(v), md-whisker, md, md+whisker, np.max(v)
+
 def gini(o):
     sorted_list = sorted(o)
     height, area = 0, 0
