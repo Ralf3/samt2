@@ -4,5 +4,8 @@ grid.so:	grid.py
 		cp build/lib.linux-x86_64-3.4/grid.cpython-34m.so ./grid.so
 
 clean:		
+		rm grid.so
+		rm grid.pyx
+		rm grid.c
 		rm *~
 
