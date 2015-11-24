@@ -65,7 +65,8 @@ def bootstrap(x,coinfidence=0.95, nsample=100):
     return means[left_tail],np.mean(x),means[right_tail]
 
 # ------------------------------------------------------------
-# Functions written by Rainer Bruggemann
+# Functions written by Rainer Bruggemann and supplemented using
+# http://www.pisces-conservation.com/sdrhelp/index.html
 # ------------------------------------------------------------
 
 def pt_pr(o):
@@ -157,6 +158,128 @@ def partial_sum(o):
         part[i]=np.sum(o[0:i+1])
     return part
 
+def berger_parker(o):
+    """
+    This surprisingly simple index was considered by May (1975)
+    to be one of the best. It is simple measure of the numerical
+    importance of the most abundant species.
+    """
+    return float(np.max(o))/np.sum(o)
+
+def McIntosh(o):
+    """
+    Proposed by McIntosh (1967) as:
+    D=(N-U)/(N-sqrt(N))
+    with U=sum(ni**2)
+    """
+    N=float(np.sum(o))
+    U=np.sqrt(float(np.sum(o**2)))
+    return (N-U)/(N-np.sqrt(N))
+
+
+def menhinick(o):
+    """
+    Menhinick's index, Dmn (Whittaker, 1977) is calculated using:
+    D=S/sqrt(N)
+    where N is the total number of individuals in the sample and S
+    the species number. 
+    """
+    return float(len(o))/np.sqrt(np.sum(o))
+
+def strong(o):
+    """
+    Strong's dominance index, Dw (Strong, 2002), is calculated using:
+    D=max_i((bi/Q)-i/R)
+    where:
+    bi is the sequential cumulative totaling of the ith species abundance
+    values ranked from largest to smallest;
+    Q is the total number of individuals in the sample;
+    R is the number of species in the sample
+    maxi is the largest calculated ith values 
+    """
+    o.sort()      # sort it 
+    o[:]=o[::-1]  # reverse it
+    b=np.cumsum(o)
+    Q=float(np.sum(o))
+    R=float(len(o))
+    maxi=0.0
+    for i in range(len(o)):
+        d=(b[i]/Q-i/R)
+        if(maxi<d):
+            maxi=d
+    return maxi
+
+# Evenness
+
+def simpson_e(o):
+    """
+    This index is based on Simpson's diversity index, D and is defined as:
+    E=1/D/S
+    where D is Simpson's diversity index and
+    S is the number of species.
+    """
+    return (1.0/simpson(o))/float(len(o))
+
+def McIntosh_e(o):
+    """
+    This is an equitability measure based on the McIntosh dominance index.
+    McIntosh E is defined as (Pielou, 1975):
+    D=(N-U)/(N-N/sqrt(s))
+    where N is the total number of individuals in the sample and
+    S is the total number of species in the sample.
+    """
+    N=float(np.sum(o))
+    U=np.sqrt(float(np.sum(o**2)))
+    S=float(len(o))
+    return (N-U)/(N-N/np.sqrt(S))
+    
+def camargo_e(o):
+    """
+    The Camargo evenness index (Camargo, 1993) is defined as:
+    E=1-(sum_i(sum_j=i+1((pi-pj)/S)))
+    where
+    pi is the proportion of species i in the sample;
+    pj is the proportion of species j in the sample and
+    S is the total number of species.
+    """
+    S=float(len(o))
+    s=0.0
+    for i in range(len(o)):
+        for j in range(i,len(o)):
+            s+=(o[i]-o[j])/S
+    return 1-s
+
+def smith_wilson1_e(o):
+    """
+    Smith and Wilson's evenness index 1-D (Smith & Wilson, 1996) is defined as:
+    E=(1-D)/(1-1/S)   ??? 1-D
+    where
+    D is Simpson's diversity index and
+    S is the total number of species.
+    """
+    D=simpson(o)
+    return (D-1.0)/(1.0-1.0/len(o))
+    
+def smith_wilson2_e(o):
+    """
+    Smith and Wilson's evenness index 1/D (Smith & Wilson, 1996) is defined as:
+    E=-ln(D)/ln(S)    ??? -
+    where
+    D is Simpson's diversity index and
+    S is the total number of species.
+    """
+    D=simpson(o)
+    return np.log(D)/np.log(float(len(o)))
+
+def gini(o):
+    sorted_list = sorted(o)
+    height, area = 0, 0
+    for value in sorted_list:
+        height += value
+        area += height - value / 2.
+    fair_area = height * len(o) / 2
+    return (fair_area - area) / fair_area
+
 # ------------------------------------------------------------
 # some functions added by Ralf Wieland
 # ------------------------------------------------------------
@@ -177,15 +300,6 @@ def fivenum(v):
     md = np.median(v)
     whisker = 1.5*iqd
     return np.min(v), md-whisker, md, md+whisker, np.max(v)
-
-def gini(o):
-    sorted_list = sorted(o)
-    height, area = 0, 0
-    for value in sorted_list:
-        height += value
-        area += height - value / 2.
-    fair_area = height * len(o) / 2
-    return (fair_area - area) / fair_area
 
 def sensitivity(TP,FN):
     """ also called TPR = TruePositives/(TruePositives+FalseNegatives)
