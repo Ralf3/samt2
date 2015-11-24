@@ -933,7 +933,7 @@ cdef class grid(object):
                     else:
                         vals[int(self.mat[i,j])]+=1
         return vals
-    def statr(self, float a, float b):
+    def statr(self, float a=-9999.0, float b=-9999.0):
         """ returns the total, mean, std of all cells:
             a<=cell<=b
         """
@@ -944,6 +944,10 @@ cdef class grid(object):
         mean2=0
         count=0
         sumx=0
+        if(a==-9999.9):
+            a=np.finfo(np.float32).min
+        if(b==-9999.0):
+            b=np.finfo(np.float32).max
         for i in range(self.nrows):
             for j in range(self.ncols):
                 if(int(mat[i,j])!=self.nodata and a<=mat[i,j] and mat[i,j]<=b):
@@ -1321,7 +1325,7 @@ cdef class grid(object):
                     if(mat[i,j]<min):
                         mat[i,j]=min1
                         continue
-                    if(mat[i,j]>=max):
+                    if(mat[i,j]>max):
                         mat[i,j]=max1
         return True
     def cut(self, float max1, float val=-9999):
@@ -1368,7 +1372,7 @@ cdef class grid(object):
                     max1=mat[i,j]
         max1=np.round(max1)
         min1=np.round(min1)
-        d=(max1-min1)
+        d=(max1-min1)*1.001 # small delta
         print('classify:',min1,max1,d)
         for i in range(self.nrows):
             for j in range(self.ncols):
