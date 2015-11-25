@@ -243,10 +243,11 @@ def camargo_e(o):
     S is the total number of species.
     """
     S=float(len(o))
+    U=float(np.sum(o))
     s=0.0
     for i in range(len(o)):
         for j in range(i,len(o)):
-            s+=(o[i]-o[j])/S
+            s+=(o[i]/U-o[j]/U)/S
     return 1-s
 
 def smith_wilson1_e(o):
