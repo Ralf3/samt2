@@ -44,6 +44,28 @@ def correlation(s,o):
     s,o = filter_nan(s,o)
     return np.corrcoef(o, s)[0,1]
 
+def monoton_i(o,f=0.0):
+    """ monotonically increasing, f is a noise redusing factor
+    returns a list witn len(o)-1 members
+    0 : non monoton ; 1 : monoton
+    """
+    res=np.ones(len(o)-1)
+    for i in range(len(o)-1):
+        if((o[i]-o[i+1])>f):
+            res[i]=0
+    return res
+
+def monoton_d(o,f=0.0):
+    """ monotonically decresing
+    returns a list witn len(o)-1 members, f is a noise redusing factor
+    0 : non monoton ; 1 : monoton
+    """
+    res=np.ones(len(o)-1)
+    for i in range(len(o)-1):
+        if((o[i+1]-o[i])>f):
+            res[i]=0
+    return res
+
 # ------------------------------------------------------------
 # Bootstrap as a method to estimate the mean and its 
 # coinfidence; without Gaussian distribution 
