@@ -82,7 +82,7 @@ class linsvm(object):
     def write_model(self,filename):
         """ store a model and the names """
         if(self.model!=None):
-            self.model.save_model(filename)
+            ul.svm_save_model(filename,self.model)
             m=re.search("(.*)\.(lin)",filename)   # write the names to npy
             basename=m.group(1)
             np.save(basename,self.name)
