@@ -1216,6 +1216,13 @@ cdef class grid(object):
         mat[mat!=self.nodata]=np.fabs(mat[mat!=self.nodata])
         self.mat=mat
         return True
+    def sign(self):
+        """ if g<0 0 else 1
+        """
+        cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
+        mat[mat!=self.nodata]=np.sign(mat[mat!=self.nodata])
+        self.mat=mat
+        return True
    # complex destructive operations =====================================
     def inv(self):
         """ invert a grid between min and max """

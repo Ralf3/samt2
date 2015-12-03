@@ -64,6 +64,7 @@ gx.statr(a,b)          # returns the total,mean,std of cells>=a and cells<=b
 gx.norm()              # normalizes the mat in [0.0,1.0]
 gx.znorm()	       # normalizes the mat: mat=(mat-mean(mat))/std(mat)
 gx.fabs()	       # mat=np.fabs(mat)
+gx.sign()	       # if mat<0 : 0 else: mat=1
 gx.classify(nr=10)     # classifies the continious grid into nr classes
 gx.reclass(m,k)        # -inf,m1 ==> k1, (m1,m2] ==> k2, ... m=[], k=[]
 gx.replace(v1,v2)      # replaces v1 with v2
