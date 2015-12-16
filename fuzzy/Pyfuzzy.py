@@ -310,6 +310,7 @@ class fuzzy:
         self.rmse0=0         # rsme before training
         self.res=None
         self.name=None       # name of the model
+        self.oname='Output'  # name of the output
         return
     def get_inputs(self):
         return self.inputs
@@ -319,6 +320,8 @@ class fuzzy:
         return self.rules
     def set_name(self,name):
         self.name=name
+    def set_oname(self,oname):
+        self.oname=oname
     def add_input(self,inp):
         self.inputs.append(inp)
         return
@@ -344,7 +347,7 @@ class fuzzy:
             return ro
         return self.inputs[i].member[sel-1].get_lo()
     def get_output_name(self):
-        return 'Output'
+        return self.oname
     def add_output(self,out):
         self.outputs.append(out)
         return
@@ -787,7 +790,7 @@ class fuzzy:
                     file.write(s)
                     s="%f %f %f\n" % (mem.get_lu(),mem.get_lo(),mem.get_ru())
                     file.write(s)
-        s="outputs Output %d\n" % len(self.outputs)
+        s="outputs %s %d\n" % (self.oname, len(self.outputs))
         file.write(s)
         for out in self.outputs:
             s="output %s %f\n" % (out.get_name(),out.getv())
@@ -1135,6 +1138,7 @@ def read_model(modelname, DEBUG=0):
             state=OUTPUT
             oname=sl[1]
             omembers=int(sl[2])
+            f1.set_oname(oname)
     # new state OUTPUT must follow state INPUT
     for i in range(omembers):
         s=f.readline().rstrip()
