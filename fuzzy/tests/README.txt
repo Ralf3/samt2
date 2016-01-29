@@ -21,8 +21,6 @@ This scripts produce the training data:
 
 The test procedures take the models and the data to produce new trained models:
 	data1.fis
-	nahr.fis
-	hab.fis
 
 The test scripts can be easily modified to test your own models/data
 
@@ -36,5 +34,16 @@ Some files for testing have been added:
 
 They are use in a dynamic fuzzy approach, published in:
 http://www.rroij.com/open-access/the-use-of-the-dynamic-fuzzy-method-in-ecosystemmodeling.pdf
+
+# call the tests:
+./test_Pyfuzzy.py
+
+includes: 
+	calc2 test
+	calc3 test
+	output training test
+	rule training test
+	
+calculation time 14.21s on my computer
 
 
