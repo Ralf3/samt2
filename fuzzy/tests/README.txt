@@ -26,7 +26,7 @@ The test scripts can be easily modified to test your own models/data
 
 -------------------------------------------------------------------------
 
-Some files for testing have been added: 
+Some files for testing have been moved to ../dyn_fuzzy: 
      	  alge_daphnie.fis 
 	  alge_phosphor.fis
 	  daphnie_alge.fis
