@@ -22,3 +22,8 @@ used the following fuzzy models:
 	zr_simple344.fis
 	zr_simple_t.fis  (trained model as result of the "Fuzzy Model")
 All files are included.
+
+
+Start the model: ipython notebook  
+
+remark: ipython and the notebook should be installed
