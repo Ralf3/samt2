@@ -12,6 +12,8 @@ The model needs the following python modules:
 	pylab (matplotlib)
 	pandas
 	statsmodels
+	nlopt (could be installed under Ubuntu 14.04 (Debian) or from the source
+	http://ab-initio.mit.edu/wiki/index.php/NLopt
 
 please install this if you haven't
 

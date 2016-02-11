@@ -14,7 +14,7 @@ class TestClass:
         size=5000      # training size
         x1=np.random.rand(size)
         y=np.where(x1>0.5,1,0) 
-        m=lm.svm('x1') 
+        m=lm.svm() 
         x1.shape=(size,1)
         inp=x1.tolist()
         m.train(inp,y)
@@ -26,7 +26,7 @@ class TestClass:
         x2=np.random.rand(size)
         x3=np.random.rand(size)
         y=np.where(x1+x2+x3>1.0,1,0)
-        m=lm.svm('x1','x2','x3')
+        m=lm.svm()
         inp=[]
         for i in range(len(x1)):
             inp.append([x1[i],x2[i],x3[i]])
@@ -70,9 +70,11 @@ class TestClass:
             y[k]=np.sign(relyield.get(i,j)-1.0)
             k+=1
         # start training
-        m=lm.svm('gwd','rise','ufc')
+        m=lm.svm()
+        m.set_names('gwd','rise','ufc')
         m.train(inp,y)
         res=m.calc(gwd,rise,ufc)
+        m.write_model("test3.svm")
         assert np.fabs(res.corr(relyield))>0.6
         
 

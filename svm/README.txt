@@ -10,8 +10,9 @@ Ralf Wieland
 
 ====================================svm===================================
 
-svm('x1','x2',...)  # init svm with inputs
-m=svm('gwd','rise','ufc')
+svm()  # init svm with inputs
+m=svm()       # define a svm
+m.set_names('gwd','rise','ufc') # names are important for training
 m.type=0              # 0:C-SVC,nu-SVC,one-class,epsilon-SVR,nu-SVR
 m.kernel=0            # 0:linear,polynomial,radial basis,sigmoid,precomputed
 m.degree=3	      # degree	    
@@ -28,8 +29,8 @@ m.v=0         # -v n: n-fold cross validation mode
 
 methods ==================================================================
 
-read_model(filename)          # read a model
-write_model(filename)	      # write a trained model
+read_model(filename)          # read a model 'name.svm'
+write_model(filename)	      # write a trained model 'name.svm'
 train(x,y)		      # x must be a list of lists, y can be a numpy 
 evaluation(ty,tv)	      # ty: list of true; tp list of predicted
 			      # return: ACC, MSE, SCC

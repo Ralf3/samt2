@@ -45,16 +45,12 @@ class svm(object):
     -v n: n-fold cross validation mode
     -q : quiet mode (no outputs)
     """
-    def __init__(self,name1,*args):
-        """ set the names for the inputs 1,2,3 """
-        self.names=[name1]  # collect the names of the inputs
-        for ar in args:
-            self.names.append(ar)
+    def __init__(self):
         self.model=None  # start with empty model
         self.type=0      # 0:C-SVC,nu-SVC,one-class,epsilon-SVR,nu-SVR
         self.kernel=0    # 0:linear,polynomial,radial basis,sigmoid,precomputed
         self.degree=3    # degree
-        self.gamma=1/len(self.names) #
+        self.gamma=0.5   # 1/len(self.names) #
         self.coef0=0     # coef0 in kerne function
         self.c=1         # cost factor
         self.nu=0.5      # nu of nu-SVC, one-class SVM, and nu-SVR
@@ -64,7 +60,15 @@ class svm(object):
         self.weight=1    # weight*C, for C-SVC
         self.q=0         # quiet mode (no outputs) default no
         self.v=0         # -v n: n-fold cross validation mode
+        self.names=None  # define the name list
         return None
+    def set_names(self,name1,*args):
+        """ set the names for the inputs 1,2,3 """
+        self.names=[name1]  # collect the names of the inputs
+        for ar in args:
+            self.names.append(ar)
+        self.gamma= 1.0/len(self.names) #
+        return True
     # svm specific parameter with checking
     @property
     def type(self):
@@ -88,16 +92,16 @@ class svm(object):
     def read_model(self,filename):
         """ read a model an overwrites the old one """
         try:
-            self.model=su.load_model(filename)
+            self.model=su.svm_load_model(filename)
         except IOError:
             print("Error in reading file: ", filename)
             return False
         m=re.search("(.*)\.(svm)",filename)   # read the names from npy
         basename=m.group(1)
         try:
-            self.name=np.load(basename+".npy")
+            self.names=np.load(basename+".npy")
         except IOError:
-            self.name=['x1','x2','x3']
+            self.names=['x1','x2','x3']
         return True
     def write_model(self,filename):
         """ store a model and the names """
@@ -105,7 +109,7 @@ class svm(object):
             su.svm_save_model(filename,self.model)
             m=re.search("(.*)\.(svm)",filename)   # write the names to npy
             basename=m.group(1)
-            np.save(basename,self.name)
+            np.save(basename,self.names)
             return True
         return False
     # definition and training are combined; the result of a training
