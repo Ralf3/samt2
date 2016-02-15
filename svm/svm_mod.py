@@ -212,7 +212,6 @@ class svm(object):
                     inp[k]=g[k].get(i,j)
                 inp1=[inp]
                 l,acc,val=su.svm_predict([0]*len(inp1),inp1,self.model)
-                # print inp1,val[0][0]
                 gout.set(i,j,val[0][0])
         return gout
 
