@@ -365,6 +365,16 @@ class fuzzy:
             return
     def get_output(self,int i):
         return self.outputs[i].getv()
+    def set_zero_cf(self, float val=1.0):
+        """ set all zero cf to a val
+            returns the number of replacements
+        """
+        cdef int count=0
+        for rule in self.rules:
+            if(rule.get_cf()==0.0):
+                rule.set_cf(val)
+                count+=1
+        return count
     def calc1(self,float x):
         cdef float su1=0.0
         cdef float tmu=0.0
@@ -809,13 +819,13 @@ class fuzzy:
         return True
 
     # rule training as replacement of C++ code in the fuzzy generator
-    def train_rules(self, patterns, targets, alpha=0.75):
+    def train_rules(self, alpha=0.75):
         """ fuzzy rule training:
             starts with a fuzzy model and set all cf=0
             and remove all outputs from the rules
             
             iterates over all rule inputs:
-               iterates over all patterns (targets):
+               iterates over all patterns self.X, targets self.Y:
                   select all rules > alpha 
 
                determines the mean of all matching patterns/targets
@@ -830,8 +840,8 @@ class fuzzy:
         """   
         cdef int i,j, rulecount, selector, ninputs
         cdef float musum, tsum, delta, mu, outputval, a=alpha
-        cdef np.ndarray[np.float_t,ndim=2] pat=np.array(patterns)
-        cdef np.ndarray[np.float_t,ndim=1] tar=np.array(targets)
+        cdef np.ndarray[np.float_t,ndim=2] pat=self.X
+        cdef np.ndarray[np.float_t,ndim=1] tar=self.Y
         # check if target and pattern have the same size
         if(pat.shape[0]!=tar.shape[0]):
             print("error in train_rules: target", tar.shape[0],)

@@ -48,9 +48,11 @@ fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
 				                  # and returns pat, tar 
 fx.set_trainX(X)  # set the numpy array X[0:n,0:n_inputs] as training data 
 fx.set_trainY(Y)  # set the numpy array Y[n] training as data directly
-fx.train_rules(pat, tar, alpha): # uses pat and tar for trainig,
-                                 # alpha=0.75 cuts the rules 
+fx.train_rules(alpha): # uses X and Y for trainig,
+                       # alpha=0.75 cuts the rules 
 
+fx.set_zero_cf(val)    # sets all zero cf values to val=1.0, returns the
+		       # number of replacements
 # Fuzzy training: apdat the outputs========================================
 fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
 fx.get_rmse()           # returns the rmse based on the training data  
