@@ -1,0 +1,61 @@
+<p>&nbsp;</p>
+<h3><a name="anker0"><font color="darkblue">6.2. Example <em>SVM</em></font></a></h3>
+<ol>
+<li>
+<em>IO: HDF Open:</em>&nbsp; load <strong>training.h5</strong> 
+and show all maps (grids) with <img src="../pixmaps/forward.png" width=16>
+<img src="img/exam/svm_grid_gwd700.png">
+<img src="img/exam/svm_grid_relyield700.png">
+<img src="img/exam/svm_grid_rise700.png">
+<img src="img/exam/svm_grid_ufc700.png"><br>
+</li>
+
+<li> <em>IO: SVM_Open:</em>&nbsp; load the model <strong>gwd_rise_ufc.svm</strong><br>
+</li>
+
+<li>
+If you highlight the model <strong>gwd_rise_ufc</strong>, then the statusbar
+will have the involved gridnames.<br>
+Set these grids with doubleclick into <strong>P1=gwd, P2=rise, P3=ufc</strong>.
+<br>The model has to be highlighted necessarily!<br>
+Apply the model with <img src="../pixmaps/run.png" width=16>, &nbsp;
+the result will be the new grid <strong>gwd_rise_utc</strong><br><br>
+<em>View: Colorbar</em>&nbsp; shows it in a separate window with colorbar <br><br>
+<img src="img/exam/svm_run_model700.png"><br><br>
+</li>
+
+<li>Set <strong>P1=0.5, P2=1.7</strong><br>
+<em>View: Colorbar</em> 
+shows the same grid within new limits P1=min, P2=max<br><br>
+<img src="img/exam/svm_run_model_colorb700.png"><br><br>
+</li>
+
+<li>
+Clear P1, P2, P3 with <img src="../pixmaps/editdelete.png" width=16>, 
+then copy the grid <strong>gwd_rise_utc</strong> with 
+<img src="../pixmaps/editcopy.png" width=16><br>
+</li>
+
+<li>Clear P1 and highlighte grid <strong>gwd_rise_utc</strong><br>
+<em>Simple_Grid: Class</em> &nbsp;(default number of classes: <strong>P1=10</strong>)<br>
+</li>
+
+<li>
+Set <strong>P1=relyield</strong> (output of training.h5) 
+and <strong>highlighted=gwd_rise_utc</strong><br>
+<em>Analysis: Corr </em> &nbsp; result is P2=Correlation coeffizient.<br>
+<img src="img/exam/svm_run_model_class10_corr.png"><br><br>
+</li>
+
+<li>
+Set classes: <strong>P1=12, highlighted=gwd_rise_utc1</strong><br>
+<em>Simple_Grid: Class</em><br>
+</li>
+
+<li>
+Set <strong>P1=relyield, highlighted=gwd_rise_utc</strong><br>
+<em>Analysis: Corr</em>&nbsp; P2 will get the Result. <br>
+<img src="img/exam/svm_run_model_class12_corr.png"><br><br>
+</li>
+</ol>
+<a href="#anker0">Back to top</a> 

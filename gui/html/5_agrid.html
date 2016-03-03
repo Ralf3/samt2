@@ -1,0 +1,59 @@
+<div>&nbsp;</div>
+<h3><a name="anker0"><font color="darkblue">&nbsp;&nbsp;3.5 Advanced Grid</font></a></h3>
+<table border=0 cellpadding=5 cellspacing=6 >
+    <tr>
+	<td>Combine_Add</td>
+	<td>P1=g1: mat=mat+g1, (overwrite)</td>
+    </tr>
+    <tr>
+        <td>Combine_Diff</td>
+        <td>P1=g1: mat=mat-g1, (overwrite)</td>
+    </tr>
+    <tr>
+        <td>Combine_Mul</td>
+        <td>P1=g1: mat=mat*g1, (overwrite)</td>
+    </tr>
+    <tr>
+        <td>Combine_Min</td>
+        <td>P1=g1: mat=min(mat,g1) (overwrite)</td>
+    </tr>
+    <tr>
+        <td>Combine_Max</td>
+        <td>P1=g1: mat=max(mat,g1) (overwrite)</td>
+    </tr>
+    <tr>
+        <td>Combine_Or</td>
+        <td>P1=g1: if(mat==nodata) mat=g1 (overwrite)</td>
+    </tr>
+    <tr>
+        <td>Combine_And</td>
+        <td>P1=g1: if(g1.mat==nodata) mat=nodata (overwrite)</td>
+    </tr>
+    <tr>
+        <td>Flood_Fill</td>
+        <td>floods a region: mouse=(i,j), P1=level, P2=mark (overwrite) return counts</td>
+    </tr>
+    <tr>
+        <td>Flood_Fill_std</td>
+        <td>floods a region: mouse=(i,j), P1=level, P2=mark (overwrite) return std</td>
+    </tr>
+    <tr>
+        <td>Varpart</td>
+        <td>creates a new grid with minimum variance clustering P1=5000 cluster</td>
+    </tr>
+    <tr>
+        <td>Remove_Trend</td>
+        <td>removes the trend to find local minmax: using P1=2000 sample points (overwrite)</td>
+    </tr>
+    <tr>
+        <td>Grad_d4</td>
+        <td>calculates the gradient of a d4 environment</td>
+    </tr>
+    <tr>
+        <td>Grad_d8</td>
+        <td>calculates the gradient of a d8 environment</td>
+    </tr>
+</table>
+
+
+

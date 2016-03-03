@@ -1,0 +1,285 @@
+<html>
+<head>
+<title>SAMT2 - Fuzzy - A short Showing over SAMT2 - Fuzzy</title>
+</head>
+<body bgcolor="white">
+<p>
+<br><h1><a name="h_new_fuzzy">A short  Showing over <i>SAMT2 - Fuzzy</i></a></h1>
+</p>
+<p>
+<i>SAMT2 - Fuzzy</i> has been designed as a simple and fast tool for editing fuzzy models. 
+To get information about the restrictions in this tool please read the <a href="h_intro.html#intro">introduction</a>. 
+In order to make the editing of a fuzzy models very simple and fast, <i>SAMT2 - Fuzzy</i> has been devided in six parts.
+<ol>
+	<li><a href="h_new_fuzzy.html#input_page">Input page</a></li>
+	<li><a href="h_new_fuzzy.html#output_page">Output page</a></li>
+	<li><a href="h_new_fuzzy.html#rules_page">Rules page</a></li>
+	<li><a href="h_new_fuzzy.html#analysis_page">Analysis page</a></li>
+	<li><a href="h_new_fuzzy.html#calc_page">Calculation page</a> </li>
+    <li><a href="h_new_fuzzy.html#train_page">Training page</a> </li>
+    <li><a href="h_new_fuzzy.html#rules_train_page">Rules Training page</a> </li>
+</ol>
+<p>
+<table>
+<tr>
+	<td><img src="Pictures/f1.png"></td>
+</tr>
+<tr>
+	<td align="center">Input page<br></td>
+</tr>
+</table>
+<br>You can switch between these pages if you click at the corresponding tab in the mainwidget. In the following chapter there is a short 
+introduction of the most important functions. At first we will start with the input page.
+</p>
+<p>&nbsp;</p>
+<p>
+<h3><a name="input_page">1. Input Page</a></h3>
+At this page you can edit the membership functions of each input. By increasing the number in the spinbox the number of 
+inputs can be changed. For navigating among different inputs use the combobox in the left area. 
+Input names can be edited directly in the combobox. To type a new, to edit or to delete an existing membership function 
+use the buttons next to the table. By editing a function a dialog window will pop up in which you can edit name, 
+type and range of the membership function (see below). Every edited membership function is shown in 
+the table and plotted in the graph below. To make small corrective actions you can change the graph by hitting a vertex and dragging the mouse.
+</p>
+<p>
+<table border="0" with="100%">
+<tr>
+<td width="30%"valign="top">Change the number of inputs </td>
+<td><img src="Pictures/f17.png"><br><br><br></td>
+</tr>
+<tr>
+<td valign="top">Navigation between different inputs</td>
+<td><img src="Pictures/f14.png"><br><br><br></td>
+</tr>
+<tr>
+<td valign="top">Editing the membership functions</td>
+<td><img src="Pictures/f16.png"><br><br><br></td>
+</tr>
+<tr>
+<td valign="top">Dialogue of membership functions</td>
+<td><img src="Pictures/f2.png"><br><br><br></td>
+</tr>
+<tr>
+	<td colspan=2><img src="Pictures/f3.png"></td>
+</tr>
+<tr>
+	<td colspan=2 align="center">Input page:&nbsp; 
+	values left and right are members of the classes sk and sg</td>
+</tr>
+</table>
+</p>
+<p>&nbsp;</p>
+<p>
+<h3><a name="output_page">2. Output Page</a></h3>
+At this page the output will be edited. The name can be changed in the line edit. Editing a "output - membership function" 
+is similar to the input membership functions. You can type a new, edit or delete an existing membership function by clicking 
+on the buttons next to the table or by double clicking on a row in the table. Every function is shown in the table and plotted on the graph below. 
+To make small corrective actions you can change a singleton by hitting a vertex and dragging 
+the mouse. You can edit a function in the <i>Edit output</i> - dialogue that will appear by pressing the buttons  <i>New</i> or <i>Edit</i>. 
+In that dialogue you only have to specify the name of the membership function and the singleton value.
+</p>
+<p>
+<table border="0">
+<tr>
+	<td><img src="Pictures/f6.png"></td>
+</tr>
+<tr>
+	<td align="center"> Output page</td>
+</tr>
+<tr>
+<td height="30"></td>
+</tr>
+<tr>
+	<td align="center"><img src="Pictures/f5.png"></td>
+</tr>
+<tr>
+	<td align="center">Edit Output - Dialog</td>
+</tr>
+</table>
+</p>
+<p>&nbsp;</p>
+<p>
+<h3><a name="rules_page">3. Rules Page</a></h3>
+There are two ways to create rules.
+<ul>
+<li>First, you can press the button <i>Generate new rules</i> (recommended possibility) so all rules are generated. 
+The inference method (<i>PROD</i> or <i>MIN</i>)can be chosen in the right hand combobox.   
+The rules are a total combination of all membership functions of the inputs. You only need to choose the correct 
+output from the Combobox in the table and declare the <i>cf</i>-value. The <i>cf</i>-value must be in the range of 0 and 1. 
+The cf value defines the influence of this rules to the calculation of the whole output.<br><br></li>
+<li>Second, you can righ-click on the table so a a context menu popups with the two items <i>New Rule</i> or <i>Delete Rule</i>.
+ If you press <i>New Rule</i> there will be appended a new row at the end of the table. If you choose <i>Delete Row</i> 
+ the current row in the table will deleted. But this way to create new rules you should only use for implementing an <i>OR</i> 
+ concatenation of some rules. The other way of generating rules would be better because you will not forget creating a rule.  
+ </li>
+</ul>
+</p>
+The second button is "Set all cf to 1.0":  use it carefully, there is no way back to the 
+originally cf values.
+<p>
+<table border="0">
+<tr>
+	<td><img src="Pictures/f7.png"></td>
+</tr>
+<tr>
+	<td align="center"> Rules page</td>
+</tr>
+</table>
+</p>
+<p>&nbsp;</p>
+<p>
+<h3><a name="analysis_page">4. Analysis Page</a></h3>
+In this part of <i>SAMT2 - Fuzzy</i> you have the possibility to analyse your edited fuzzy model. 
+On the left hand side there is shown the analyse plot of the fuzzy model. If you click into this plot there popups a 
+window that includes a table. In this table you can see the values of the inputs, the active rules with the appropriate 
+output and  the coefficient <i>mu</i> of the rules that shows, how much does this rule affect the entire output. 
+This table will help you to detect errors in your base of rules.<br><br>On the right hand side you can see the 
+range of the input and output according to the model you have edited. To change the order of the displayed inputs 
+you can choose other inputs bye using the Comboboxes. You can change the grid to reach a higher perfomance of the plot. 
+If the grid is greater than 49 it will disappear. At a three-dimensional fuzzy model you can change the value of the third 
+variable that can not be shown because of the two-dimensional representation.
+</p>
+<p>
+<table border="0">
+<tr>
+	<td><img src="Pictures/f8.png"></td>
+</tr>
+<tr>
+	<td align="center"> Analysis page<br><br><br><br><br></td>
+</tr>
+<tr>
+	<td align="center"><img src="Pictures/f9.png"></td>
+</tr>
+<tr>
+	<td align="center">Analysis table<br><br><br></td>
+</tr>
+
+<tr>
+	<td align="center"><img src="Pictures/f10.png"></td>
+</tr>
+<tr>
+	<td align="center">Analysis page with line</td>
+</tr>
+</table>
+</p>
+<p>&nbsp;</p>
+<p>
+<h3><a name="calc_page">5. Calculation Page</a></h3>
+At this page you can apply your fuzzy model to data series. You have to specify the path where the data file is stored. 
+The specified data file is shown in the text edit in the right part of the calculation page. 
+In this text edit no changes in your data file can be made. The layout of the data file you like to include must 
+follow some directives <a href="h_new_fuzzy.html#table">(examples)</a>. At the head of the file, there can be some header lines, 
+that will be skipped when reading the datas. The number of header lines must be set in the destinated spinbox. 
+At next there must follow the data, which are expected in a tabular form. The number of columns are dependent to the number of inputs in the model. 
+If there is only one input in the model, one data column is expected. If there are two inputs, two data columns were expected, etc. 
+The columns can be parted by different separators, that has to be specify in the special separator groupbox. 
+There, you can choose some default separators or define a special one. <br><br>There are two possibilities to save the calculated results. 
+First, you can save the results in the same data file, that means there will be added a column which includes the calculated values for the 
+special input datas. Second, you can specify a separat file, where the results will be saved. If you chosse that way, you have to 
+specify the path of that file. The button <i>Start Fuzzy Calculation</i> will start the whole calculation.
+</p>
+<p>
+<table border="0">
+<tr>
+	<td><img src="Pictures/f12.png"></td>
+</tr>
+<tr>
+	<td align="center"> Calculation page</td>
+</tr>
+</table><br><br><br>
+</p>
+<p>
+<h3><a name="table">Examples for the layout of an data file</a></h3>
+<table border="0" width="560">
+<tr>
+<td>1. Example</td>
+<td>2. Example</td>
+<td>3. Example</td>
+</tr>
+<tr>
+	<td><b>number of inputs: 1<br>separator=none<br>header lines: 4</b><br><br></td>
+	<td><b>number of inputs: 2<br>separator="; "<br>header lines: 0</b><br><br></td>
+	<td><b>number of inputs: 3<br>separator="xx"<br>header lines: 2</b><br><br></td>
+</tr>
+<tr>
+<td>**************<br>**************<br>**************<br>**************<br>0<br>2<br>4<br>6<br>8<br>10<br>12<br>14<br>16<br>18<br></td>
+	<td>0; 20<br>2; 18<br>4; 17<br>46; 2<br>14; 55<br>2; 5<br>116; 70<br>10; 27<br>49; 10<br>44; 20<br>44; 20<br>17; 89<br>34; 23<br>24; 3</td>
+	<td>**************<br>**************<br>12xx16xx57<br>17xx46xx17<br>3xx75xx31<br>12xx36xx86<br>23xx65xx51<br>62xx11xx24<br>72xx36xx67<br>76xx35xx25<br>0xx5xx9<br>1xx16xx4<br>12xx0xx36<br>12xx97xx0<br></td>
+</tr>
+</table>
+</p>
+<p>&nbsp;</p>
+
+<h3><a name="train_page">6. Training Page</a></h3>
+<p>
+At this page you can train the output of your fuzzy model in dependency to 
+a specific data file.
+</p>
+<p>
+The fuzzy training uses now a different training procedure based on 
+<a href='http://ab-initio.mit.edu/wiki/index.php/NLopt' target='_blank'>NLOPT</a>.
+<br><br>
+<!--span style="font-size: smaller; color: blue;">siehe auch:<br>
+http://ab-initio.mit.edu/wiki/index.php/NLopt</span><br-->
+
+Additionally a regularization was introduced to avoid over training.
+This makes the training much easier for the modeler. For example the
+choose of a increment values is not necessary any more. The modeler has 
+to load the training data and to start the training itself. After finishing
+the training (it takes a bit, please be patient) the changed outputs are 
+used as new valid outputs. 
+</p>
+<p>
+To use the training please follow the step below:
+</p>
+<p>
+You have to specify the path where the data file is stored. The layout of the data file 
+you like to include must follow some directives. 
+At the head of the file, there can be some header lines, that will be skipped when reading the data. 
+The number of header lines must be set in the spin box. 
+At next the data columns must follow, which are expected in a tabular form. 
+The data columns consist of one to three input columns and one output column. 
+The output column includes the expected output value according to the input values.
+</p>
+<p>
+The training results are shown in the lower part of the training page. 
+First the mean square error of the model before it has been trained is shown 
+in the "RMS before Training" control element. 
+The value "RMS after Training" indicates the mean square error after training the model. 
+The output values both before training and after training are shown in the table 
+and in the right graphic. The trained output values are plotted with a red pen. 
+If you want to remove the trained outputs and restore the old one, please use the button 
+"Restore Last Output" before you go back to any other "rider" other wise the trained output is used.
+</p>
+<table border="0">
+<tr><td><img src="Pictures/f13.png"></td></tr>
+<tr><td align="center"> Training Page</td></tr>
+</table>
+<p>&nbsp;</p>
+
+
+<h3><a name="rules_train_page">7. Rules Training Page</a></h3>
+<p>
+At this page you can train the rules of your fuzzy model in dependency to 
+a specific data file.<br>
+</p>
+<table border="0">
+<tr><td><img src="Pictures/f18.png"></td></tr>
+<tr><td align="center"> Rules Training Page</td></tr>
+<tr><td>&nbsp;</td></tr>
+</table>
+<table border="0">
+<tr><td><img src="Pictures/f19_rules1.png"></td></tr>
+<tr><td align="center"> Rules Page after Rules Training<br></td></tr>
+<tr><td align="center">With the button set all cf values to 1.0.&nbsp; <b>Use it carefully,</b> there is no way back to the 
+originally cf values.</td></tr>
+</table>
+<!--table border="0">
+<tr><td><img src="Pictures/f20_rules2.png"></td></tr>
+<tr><td align="center"> Rules Page after Rules Training and "Set all cf to 1.0"</td></tr>
+</table-->
+</p>
+<br><br>
+<a href="manual.html#h_manual">Back to Manual</a>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<p>&nbsp;</p>
+<h3><a name="anker0"><font color="darkblue">6.4. Example <em>Sample Technique</em></font></a></h3>
+<ol>
+<li>
+<em>IO / HDF Open:</em> load <strong>training.h5</strong><br> 
+<img src="img/exam/sample_11.png">
+</li>
+
+<li>Set <strong>P1=200 , highlighted grid= relyield </strong><br>
+<em>Analysis: Samples</em> Points relyield was produced.<br><br>
+<img src="img/exam/sample_22.png">
+<p>&nbsp;</p>
+</li>
+
+<li>Set <strong>P1=relyield </strong>(grid), 
+<strong>highlighted points=relyield </strong><br>
+<em>Points: thin_plate</em> 
+creates a new grid <strong>relyield1</strong><br>
+<img src="img/exam/sample_33.png">
+<p>&nbsp;</p>
+</li>
+
+<li>Set <strong>P1=relyield, highlighted=relyield1</strong><br>
+<em>Advanced_Grid: Combine_AND</em>
+combines two grids <br>
+<img src="img/exam/sample_44.png">
+<p>&nbsp;</p>
+</li>
+
+<li>Set <strong>P1=relyield1, highlighted=relyield</strong><br> 
+<em>Analysis: Corr</em>
+correlates two grids, &nbsp;Result P2=correlation coefficient <br>
+<img src="img/exam/sample_55.png">
+<p>&nbsp;</p>
+</li>
+
+<li>Set <strong>highlighted grid=relyield1, P1=10 (default)</strong> <br>
+<em>Simple_Grid: Class</em>
+classifies the grid into P1 classes <br> 
+<img src="img/exam/sample_66.png">
+<p>&nbsp;</p>
+</li>
+
+<li>Set <strong>P1=relyield1, highlighted=relyield</strong><br> 
+<em>Analysis: Corr</em>, &nbsp; Result P2=correlation coefficient <br>
+<img src="img/exam/sample_77.png">
+<p>&nbsp;</p>
+</li>
+
+</ol>
+<p></p>
+<a href="#anker0">Back to top</a> 

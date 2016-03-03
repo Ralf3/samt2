@@ -1,0 +1,188 @@
+<html>
+<head>
+<title>Fuzzy Tool - What is Fuzzy?</title>
+</head>
+<body  bgcolor="white">
+<p>
+	<br>
+	<h1><a name="what_fuzzy">What is Fuzzy?</a></h1>
+	<br>
+</p>
+<p>
+Fuzzy logic is an approach to computing based on "degrees of truth" rather than the usual "true or false" (1 or 0) Boolean logic on which the modern 	computer is based. The idea of fuzzy logic was first advanced by Dr. Lotfi Zadeh of the University of California at Berkeley in the 1960s. Dr. Zadeh was working on the problem of computer understanding of natural language. Natural language is not easily translated into the absolute terms of 0 and 1. 	Whether everything is ultimately describable in binary terms is a philosophical question worth pursuing, but in practice much data we might want to feed a computer is in some state in between and so, frequently, are the results of computing.<br><br>
+Fuzzy logic includes 0 and 1 as extreme cases of truth (or "the state of matters" or "fact") but also includes the various states of truth in between so that, for example, the result of a comparison between two things could be not "tall" or "short" but "0.38 of tallness." Fuzzy logic seems closer to the way our brains work.<br>
+</p>
+<p>
+<i>Fuzzy Control</i> is one field of application of fuzzy. Intention of fuzzy control is to model the behaviour of processes (or characteristics of sth.) with the help of expertise. There exists a simple algorithm for fuzzy control that will cope to most problems. For complex problems the algorithm can be extended. The algorithm is divided in following steps:
+<ul>
+	<li>Fuzzyfication</li>
+	<li>Inference</li>
+	<li>Defuzzyfication</li>
+</ul>
+</p>
+<p>
+<h3>Fuzzyfication</h3>
+Fuzzyfication means that facts must be transformed to the fuzzy model. In other words, membership functions will assigned to facts that can be measured data, spatial data, etc. First you have to decide how many variables do you need to describe your model. Secondly how many attributes (membership functions) you will need to describe your variable(s)? Thirdly you must set up the membership functions and define the range and graph of its. In SAMT- Fuzzy there are only two possibilties to graph membership functions, namely triangles and trapezes. But this will be sufficient to nearly most problems. At next you have to define the outputs of the fuzzy model. In this tool there is used a simple form to describe outputs, so called singletons. A fuzzy system with singletons ist easy and fast to calculate, so you can use this tool on spatial models. Of course there are a lot of methods to describe outputs, but singletons will be easy to calculate and means no limitation to the model <a href="h_what_is_fuzzy.html#example">(Little worked sample)</a></p>
+<p>
+<h3>Inference</h3>
+The inference process is based on an amount of rules. These rules are a significant characteristica for fuzzy control systems and easy to understand. The number of rules depends on the number of membership functions of the inputs. You have to combine every membershipfunction of one input with the membership functions of the other inputs. The rules have the form like this: IF mf<sub><small>i,in1</small></sub> AND mf<sub><small>j,in2</small></sub> AND mf<sub><small>k,in3</small> </sub> THEN output<sub><small>n</small></sub>. Instead of <i>AND</i> there are many other methods,  but on the strength of past experiences, the <i>AND</i>-  relation will be sufficient to nearly all problems. To implement an <i>OR</i> you must define alternative rules. The inference will proceed the following algorithm:
+<ul>
+	<li>At first you should calculate the membership functions (mu) for every input.</li>
+	<li>Next you have to calculate the affiliation of the rules. The affiliation of one rules is calculated by the minimum (or product) of the memberships 	(mu) of the inputs and the validation value (cf). The cf-value can be set in the range of 0 to 1 and it validates the rule. If it is set to 1 it has no influence to the calculation.</li>
+	<li>At least calculate the maximum of all rules that have the same output. </li>
+</ul>
+In the last partial stage, every output will get a value. Although many outputs will be null there are some outputs with a value greater than null. These values were needed to the defuzzyfication process where you will calculate an exact value. <a href="h_what_is_fuzzy.html#example">(Little worked sample)</a>
+</p>
+<p>
+<h3>Defuzzyfication</h3>
+Because of the use of singletons the defuzzyfication will be very simple and fast. Complex methods like <i>mean of maximum</i> or <i>center of gravity</i>  have a long calculating time so those methods are adversarial to spatial simulations with large amounts of data. The exact value is calculated as follows:
+<br><br>
+<table border="0">
+<tr>
+	<td rowspan="3" width="25"></td>
+	<td align="center" width="180">mu<sub><small>1</small></sub>*x <sub><small>1</small></sub> + ... + 	mu<sub><small>i</small></sub>*x<sub><small>i</small></sub></td>
+</tr>
+<tr>
+	<td align="center">o = ----------------------------------</td></tr>
+<tr>
+	<td align="center">mu<sub><small>1</small></sub> + ... + mu<sub><small>i</small></sub></td>
+</tr>
+</table>
+<br>These defuzzyficated values can be plotted as a map or used as inputs for other fuzzy models.<a href="h_what_is_fuzzy.html#example">(Little worked sample)</a>
+</p>
+<p>
+<br><h2><a name="example">Little worked sample for fuzzy</a></h2>
+<h3>Develop a control system for a bathtub</h3>
+Problem description: There is an empty bathtub (max. volume: 100 l) that has to be filled up with water. We only concentrate to the water level, water temperature is not relevant to this example. The degree of opening of the water tap (in per cent) depends on water level. If the bathtub is empty, the water tap has to be full opened. The higher the water level, the less water has to be add.
+</p>
+<p><br>
+<h2>Fuzzyfication</h2>
+<h4>1.Step: Characterisation of input variable "<i>water level </i>" and set up of membership functions<h4>
+<table border="0">
+<tr height="100">
+	<td></td>
+	<td></td>
+	<td rowspan="6" width="40"></td>
+	<td rowspan="6"><img src="Pictures/waterlevel-mf.png"></td>
+</tr>
+<tr>
+	<td colspan="2" align="center"><b> Water level</b></td>
+	<td></td>
+</tr>
+<tr>
+	<td>low</td>
+	<td align="right">   0 l - 40 l</td>
+</tr>
+<tr>
+	<td>middle_high</td>
+	<td align="right">40 l - 80 l</td>
+</tr>
+<tr>
+	<td>high</td>
+	<td align="right">80 l - 100 l</td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+</tr>
+</table>
+</p>
+<p><b>2.Step:  </b>Characterisation output variable "<i>Opening of water tap </i>" and plot of singletons<br><br>
+<table border="0">
+<tr height="100">
+	<td></td>
+	<td></td>
+	<td rowspan="6" width="30"></td>
+	<td rowspan="6"><img src="Pictures/watertap.png"></td>
+</tr>
+<tr>
+	<td colspan="2" align="center"><b>Opening of water tap</b></td>
+	<td></td>
+</tr>
+<tr>
+	<td>closed</td>
+	<td align="right"> 0 %</td>
+</tr>
+<tr>
+	<td> half- open</td>
+	<td align="right"> 50 %</td>
+</tr>
+<tr>
+	<td> open </td>
+	<td align="right"> 100 %</td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+</tr>
+</table>
+</p>
+<p>
+<h2>Inference</h2>
+<b>Set up the rules</b><br><br>
+For each membership function has to be set up a rule. If you have more than one input, you must combine the membership functions of different inputs. But in this example there are only 3 rules to be set up. For example, if you have 2 inputs each with 3 membership functions, you will get 9 Rules to be set up.
+</p>
+<p>
+<br>
+<table border="1">
+<tr align="center">
+<td><b>Regel</b></td>
+<td><b>Water level</b></td>
+<td><b>Opening of water tap</b></td>
+</tr>
+<tr align="center">
+<td>1</td>
+<td>IF low</td>
+<td>THEN open</td>
+</tr>
+<tr align="center">
+<td>2</td>
+<td>IF middle_high</td>
+<td>THEN half-open</td>
+</tr>
+<tr align="center">
+<td>3</td>
+<td>IF high</td>
+<td>THEN closed</td>
+</tr>
+</table>
+</p>
+<p>
+<br>
+We will calculate the fuzzy modell for 3 values:<br><br> v1=20l<br> v2=38l<br> v3=90l
+</p>
+<p>
+<table border ="1" width="550">
+<tr align="center">
+<td><b>Value</b></td>
+<td><b>mu of <br>Rule1</b><br><i>(open)</i></td>
+<td><b>mu of <br>Rule2</b><br><i>(half-open)</i></td>
+<td><b>mu of <br>Rule3</b><br><i>(closed)</i></td>
+<td><b>Opening of <br>water tap</b></td>
+</tr>
+<tr align="center">
+<td>v1=20l</td>
+<td>1.0</td>
+<td>0</td>
+<td>0</td>
+<td>100%</td>
+</tr>
+<tr align="center">
+<td>v2=38l</td>
+<td>0.4</td>
+<td>0.6</td>
+<td>0</td>
+<td>70%</td>
+</tr>
+<tr align="center">
+<td>v3=90l</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0%</td>
+</tr>
+</table>
+</p>
+<a href="manual.html#h_manual">Back to Manual</a>
+</body>
+</html>

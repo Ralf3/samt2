@@ -1,0 +1,238 @@
+<html>
+<title>Fuzzy-Tool</title>
+<body bgcolor="white">
+<h1>Fuzzy-Interpreter</h1>
+<p>
+<h2>Method</h2>
+<p>
+The program fuzzy was designed as a simple but fast algorithm. 
+It can be used as part of other programs like fuzzy-controller, 
+in simulation systems, etc. Only a few methods are implemented. 
+It can deal with one to three inputs, the membership functions
+for the inputs can be of type triangular ore trapeze. The output 
+must be from type "singleton", that means crisp value. To use 
+singletons as outputs is not so bad, because it is often sufficient 
+and it is very fast. (you only need to calculate a weighted sum not a
+integral for the defuzzification) In every rule the inputs are 
+combined by the AND operation (if you need a OR you have to write
+alternative rules). You can choose the minimum or 
+product method as AND operation. The weight of a rule is calculated 
+by multiplication of the result of the AND operation and a weight 
+factor cf. So you will be able to control the rules in a different way.
+The aggregation of all outputs of a rule uses the maximum operator. 
+That means that aggregation only occurs ones for each output. 
+The defuzzification process is simple and fast.
+<p>
+<h2>Input files and Example</h2>
+<p>
+The interpreter will be controlled by a fis file with the following 
+structure:
+<p>
+<ul>
+<li> Inputs
+<li> Outputs
+<li> Rules
+</ul>
+<p>
+<h3> Inputs</h3>
+<p>
+<table>
+<tr>
+<td> input
+<td> input1
+<td> 5
+</tr>
+<tr>
+<td> member 
+<td> small 
+<td> triangular
+</tr>
+<tr>
+<td> -1
+<td> 10
+<td> 20
+</tr>
+<tr>
+<td> member
+<td> small_medium
+<td> triangular
+</tr>
+<tr> 
+<td> 10
+<td> 20 
+<td> 30
+</tr>
+<tr>
+<td> member
+<td> medium
+<td> triangular
+</tr>
+<tr> 
+<td> 20
+<td> 30 
+<td> 40
+</tr>
+<tr>
+<td> member
+<td> medium_hot
+<td> triangular
+</tr>
+<tr> 
+<td> 30
+<td> 40 
+<td> 50
+</tr>
+<tr>
+<td> member
+<td> hot
+<td> triangular
+</tr>
+<tr> 
+<td> 40
+<td> 50 
+<td> 65
+</tr>
+</table>
+<p>
+The inputs must begin with the keyword "input", the name of the
+input and the number of membership functions. There are up to three inputs
+possible. The membership function can be of type trapeze or
+triangular. For the trapeze type there are 4 numbers (the lower left
+point, the upper left point, the upper right point and the lower right
+point), for the triangular we only need 3 numbers.
+<p>  
+<h3>Outputs</h3>
+<p>
+<table>
+<tr>
+<td> outputs
+<td> temperature
+<td> 5
+</tr>
+<tr>
+<td> output 
+<td> cold
+<td> 10
+</tr>
+<tr>
+<td> output
+<td> cold_medium
+<td> 25
+</tr>
+<tr>
+<td> output
+<td> medium
+<td> 35
+</tr>
+<tr>
+<td> output
+<td> medium_hot
+<td> 45
+</tr>
+<tr>
+<td> output
+<td> hot
+<td> 60
+</tr>
+</table>
+<p>
+In that example are 5 outputs for temperature from cold to hot. 
+<p>
+<h3>Rules</h3>
+<p>
+The rules combine the inputs with the outputs by numbering. In our
+example we have only one input. That means that the rule consists only
+of three columns: <b>input, output, cf</b>
+<table>
+<tr>
+<td> rules
+<td> 5
+</tr>
+<tr>
+<td> 0
+<td> 4
+<td> 1.0
+</tr>
+<tr>
+<td> 1
+<td> 3
+<td> 1.0
+</tr>
+<tr>
+<td> 2
+<td> 2 
+<td> 1.0
+</tr>
+<tr>
+<td> 3
+<td> 1
+<td> 1.0
+</tr>
+<tr>
+<td> 4
+<td> 0
+<td> 1.0
+</tr>
+</table>
+<p>
+This rule base is very simple. You can change the system by putting
+rules in the rule base with different cf-factors. An other way to
+change the system is to change the shape of the membership
+function. Please check it.
+<p>
+<h2>Remarks</h2>
+<p>
+The example demonstrates a simple temperature controller with one input
+and one output. It produces the following result:
+<p>
+<img src="fuzzy.gif">
+<p>
+You can see the saturation at the end of the input range (50..60) and
+the piecewise linear parts. It is important to note that the input
+range of the fuzzy-model must be greater then the inputs. That means
+that the inputs in the example must be in the range (-0.99..64.99). 
+<p>
+<h2>Install</h2>
+<p>
+The system consists of following files:
+<ul>
+<li> input.h input.cpp
+<li> output.h output.cpp
+<li> member.h member.cpp
+<li> rule.h rule.cpp
+<li> fuzzy.h fuzzy.cpp
+<li> main.cpp
+<li> Makefile
+<li> example files: 3.fis 2.fis wanne.fis wanne1.fis, wanne.txt as inputs
+<li> README.html
+<li> fuzzy.gif
+</ul>
+<p>
+Get the program: 
+<a href="http://www.zalf.de/ftp/pub/out/modell/fuzzy.tar.gz">Fuzzy_Interpreter</a>
+<p>
+Please unpack the fuzzy.tgz with:
+<p>
+<b>tar -zxvf fuzzy.tgz</b>
+<p>
+and type <b> make </b>
+<p>
+The main is only one example for the fuzzy. You can put in our system
+and use it under terms of the GPL. It works fine under Linux but I
+think it should be used under any kind of Unix. 
+<p>
+<h2>Future</h2>
+<p>
+Maybe that the program is useful for you, so I plan to develop a
+graphical user interface to build the rule base. Please let me
+know it. I use that program because it is simple and fast, so I'm able
+to do many thousand fuzzy inferences per second. The program is easy
+to extend for different membership function like bell shape functions,
+but this would be lead to a slower program. If you need more then three inputs you
+should split your problem in parts and combine it by a new fuzzy system.
+<p>
+Happy hacking
+<p>
+<a href=mailto:"rwieland@zalf.de"> Ralf Wieland </a>
+</body>
+</html>

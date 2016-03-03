@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Documentation(short)</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="Documentation(short)"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2015-05-06T15:02+0200"/>
+<meta name="author" content="Ralf Wieland"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">Documentation(short)</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Overview of the functions in SAMT2</a>
+<ul>
+<li><a href="#sec-1-1">1.1 IO</a></li>
+<li><a href="#sec-1-2">1.2 Tools</a></li>
+<li><a href="#sec-1-3">1.3 Analysis</a></li>
+<li><a href="#sec-1-4">1.4 Simple Grid</a></li>
+<li><a href="#sec-1-5">1.5 Advanced Grid</a></li>
+<li><a href="#sec-1-6">1.6 Kernel</a></li>
+<li><a href="#sec-1-7">1.7 Points</a></li>
+<li><a href="#sec-1-8">1.8 View</a></li>
+<li><a href="#sec-1-9">1.9 Table</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Overview of the functions in SAMT2</h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> IO</h3>
+<div class="outline-text-3" id="text-1-1">
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">HDF_Open</td><td class="left">reads all maps from an HDF5-file</td></tr>
+<tr><td class="left">HDF_Save_Grid</td><td class="left">saves a highlighted grid with: P1=gridname, P2=model, P3=modeler</td></tr>
+<tr><td class="left">ASCII_Open</td><td class="left">opens a highlighted ASCII grid</td></tr>
+<tr><td class="left">ASCII_Save</td><td class="left">saves a highlighted ASCII grid</td></tr>
+<tr><td class="left">POINT_Open<sub>geo</sub></td><td class="left">reads in a point theme with x,y,z in geographic coordinates</td></tr>
+<tr><td class="left">POINT_Open<sub>ij</sub></td><td class="left">reads in a point theme with i,j,z in matrix coordinates</td></tr>
+<tr><td class="left">Fuzzy_Open</td><td class="left">reads in a fuzzy model</td></tr>
+<tr><td class="left">SVM_Open</td><td class="left">reads in a trained SVM model</td></tr>
+<tr><td class="left">Exit</td><td class="left">ends SAMT2</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Tools</h3>
+<div class="outline-text-3" id="text-1-2">
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Fuzzy</td><td class="left">Opens the fuzzy development tool</td></tr>
+<tr><td class="left">Fuzzy_Generator</td><td class="left">Opens the fuzzy generator to train a fuzzy model with data</td></tr>
+<tr><td class="left">Sadato</td><td class="left">Opens the sadato development tool</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> Analysis</h3>
+<div class="outline-text-3" id="text-1-3">
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Histogram</td><td class="left">shows a histogram of the highlighted grid with P1=bins=20</td></tr>
+<tr><td class="left">Statistics</td><td class="left">shows statistics in a separate window: P1=min, P2=max, P3=std</td></tr>
+<tr><td class="left">Info</td><td class="left">shows in: P1=nrows, P2=ncols, P3=nodata</td></tr>
+<tr><td class="left">Make<sub>Map</sub></td><td class="left">shows an Open Street-map map of the highlighted grid</td></tr>
+<tr><td class="left">Resize</td><td class="left">resizes a grid using splines, P1=nrows, P2=ncols</td></tr>
+<tr><td class="left">Corr</td><td class="left">correlates the highlighted with the grid in P1: P2=corr</td></tr>
+<tr><td class="left">Sample</td><td class="left">samples P1=100 random points from the highlighted grid</td></tr>
+<tr><td class="left">Sample_det</td><td class="left">samples P1=val all points for mat[i,j]==val</td></tr>
+<tr><td class="left">Export_R</td><td class="left">samples 2000 data from P1=g1, P2=g2, P3=g3 and the highlighted as train</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> Simple Grid</h3>
+<div class="outline-text-3" id="text-1-4">
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Set</td><td class="left">set mat=P1, (overwrite)</td></tr>
+<tr><td class="left">Replace</td><td class="left">replaces the value P1 with the value P2, (overwrite)</td></tr>
+<tr><td class="left">Add</td><td class="left">mat+=P1, (overwrite)</td></tr>
+<tr><td class="left">Mul</td><td class="left">mat*=P1, (Overwrite)</td></tr>
+<tr><td class="left">Log</td><td class="left">calculates the lg(P1+x) for all x&gt;=0, (overwrite)</td></tr>
+<tr><td class="left">Ln</td><td class="left">calculates the ln(P1+x) for all x&gt;=0, (overwrite)</td></tr>
+<tr><td class="left">Fabs</td><td class="left">calculates the fabs(mat), (overwrite)</td></tr>
+<tr><td class="left">Norm</td><td class="left">mat=(mat-gridmin)/(gridmax-gridmin), (overwrite)</td></tr>
+<tr><td class="left">ZNorm</td><td class="left">mat=(mat-mean)/std, (overwrite)</td></tr>
+<tr><td class="left">Inv</td><td class="left">calculates: gridmax-mat+gridmin, (overwrite)</td></tr>
+<tr><td class="left">Inv_a</td><td class="left">calculates: a-mat, P1=a        , (overwrite)</td></tr>
+<tr><td class="left">Cond</td><td class="left">if(mat&lt;P1) mat=P1, if(mat&gt;P2) mat=P3, (overwrite)</td></tr>
+<tr><td class="left">Cut</td><td class="left">clamps the mat: if(mat&gt;P1) mat=P2=nodata (overwrite)</td></tr>
+<tr><td class="left">Cut<sub>off</sub></td><td class="left">sets all values in the range [P1,P2) to P3=nodata, (overwrite)</td></tr>
+<tr><td class="left">Class</td><td class="left">classifies the continuous grid into n P1=10 discrete classes</td></tr>
+<tr><td class="left">Rand_Int</td><td class="left">mat=randint(P1=0,P2=10), (overwrite)</td></tr>
+<tr><td class="left">Rand_Float</td><td class="left">mat=randfloat(), (overwrite)</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-5" class="outline-3">
+<h3 id="sec-1-5"><span class="section-number-3">1.5</span> Advanced Grid</h3>
+<div class="outline-text-3" id="text-1-5">
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Combine_Add</td><td class="left">P1=g1: mat=mat+g1, (overwrite)</td></tr>
+<tr><td class="left">Combine_Diff</td><td class="left">P1=g1: mat=mat-g1, (overwrite)</td></tr>
+<tr><td class="left">Combine_Mul</td><td class="left">P1=g1: mat=mat*g1, (overwrite)</td></tr>
+<tr><td class="left">Combine_Min</td><td class="left">P1=g1: mat=min(mat,g1) (overwrite)</td></tr>
+<tr><td class="left">Combine_Max</td><td class="left">P1=g1: mat=max(mat,g1) (overwrite)</td></tr>
+<tr><td class="left">Combine_Or</td><td class="left">P1=g1: if(mat==nodata) mat=g1 (overwrite)</td></tr>
+<tr><td class="left">Combine_And</td><td class="left">P1=g1: if(g1.mat==nodata) mat=nodata (overwrite)</td></tr>
+<tr><td class="left">Flood_Fill</td><td class="left">floods a region: mouse=(i,j), P1=level, P2=mark (overwrite) return counts</td></tr>
+<tr><td class="left">Flood_Fill<sub>std</sub></td><td class="left">floods a region: mouse=(i,j), P1=level, P2=mark (overwrite) return std</td></tr>
+<tr><td class="left">Varpart</td><td class="left">creates a new grid with minimum variance clustering P1=5000 cluster</td></tr>
+<tr><td class="left">Remove_Trend</td><td class="left">removes the trend to find local minmax: using P1=2000 sample points (overwrite)</td></tr>
+<tr><td class="left">Grad_d4</td><td class="left">calculates the gradient of a d4 environment</td></tr>
+<tr><td class="left">Grad_d8</td><td class="left">calculates the gradient of a d8 environment</td></tr>
+<tr><td class="left">Gen_Mask</td><td class="left">generates a mask from a grid using the mouse</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-6" class="outline-3">
+<h3 id="sec-1-6"><span class="section-number-3">1.6</span> Kernel</h3>
+<div class="outline-text-3" id="text-1-6">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Kernel_sci</td><td class="left">Gaussian kernel with P1=height, P2=width, P3=sigma=1, (overwrite)</td></tr>
+<tr><td class="left">Kernel_squ</td><td class="left">rectangular kernel with P1=height, P2=width, (overwrite)</td></tr>
+<tr><td class="left">Kernel_cir</td><td class="left">circular kernel with P1=radius, (overwrite)</td></tr>
+<tr><td class="left">Knn</td><td class="left">k nearest neighbor: P1=k, P2=min, P3=max, (overwrite)</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-7" class="outline-3">
+<h3 id="sec-1-7"><span class="section-number-3">1.7</span> Points</h3>
+<div class="outline-text-3" id="text-1-7">
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Interpolate</td><td class="left">P1=grid, highlighted=points</td></tr>
+<tr><td class="left">Poisson</td><td class="left">solves the Poisson equation: highlight=points, P1=grid, P2=eps, P3=iter</td></tr>
+<tr><td class="left">Voronoi</td><td class="left">calculates a voroni map from a highlighted=points, P1=grid</td></tr>
+<tr><td class="left">Distance</td><td class="left">calculates the euclidean distance between the highlighted=points, P1=grid</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-8" class="outline-3">
+<h3 id="sec-1-8"><span class="section-number-3">1.8</span> View</h3>
+<div class="outline-text-3" id="text-1-8">
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Colorbar</td><td class="left">opens a separate window with a colorbar P1=min, P2=max optional</td></tr>
+<tr><td class="left">Show_Diff</td><td class="left">shows the difference between the highlighted and the P1</td></tr>
+<tr><td class="left">Show_3d</td><td class="left">shows a 3d view with a stride P1=10 (larger strides: lower resolution)</td></tr>
+<tr><td class="left">Show_Range</td><td class="left">show only values between P1=min and P2=max</td></tr>
+<tr><td class="left">Show_List</td><td class="left">show a list used to select only discrete values of a grid</td></tr>
+<tr><td class="left">Show_Black<sub>White</sub></td><td class="left">switches between bw and color</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-9" class="outline-3">
+<h3 id="sec-1-9"><span class="section-number-3">1.9</span> Table</h3>
+<div class="outline-text-3" id="text-1-9">
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">Lut</td><td class="left">replaces discrete values mat with new values     (overwrite)</td></tr>
+<tr><td class="left">Select</td><td class="left">allows to select discrete values using a tabular (overwrite)</td></tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2015-05-06T15:02+0200</p>
+<p class="author">Author: Ralf Wieland</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.3f with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

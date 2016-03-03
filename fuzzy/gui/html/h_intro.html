@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>SAMT2 - Fuzzy ----- Introduction</title>
+</head>
+<body bgcolor="white">
+<p>
+	<h1><a name="intro">Introduction</a></h1>
+	<br>
+</p>
+<p>
+The <b><i>SAMT2- Fuzzy</i></b> was designed as a development environment for the spatial 
+simulation tool <i>SAMT2</i>. <br>
+With <b><i>SAMT2- Fuzzy</i></b>  you can:
+<ul>
+	<li>generate new fuzzy models</li>
+	<li>assimilate fuzzy models</li>
+	<li>analyse the conduct of models</li>
+	<li>and apply fuzzy models to series</li>
+</ul>
+The latter item provides the opportunity to use <b><i>SAMT2 - Fuzzy</i></b> separate. Main emphasis of utilization will be the interaction with <i>SAMT2</i>, 
+that is indicated by the comprehensive use of the "<i><b>SAMT2 - Fuzzy</b></i> Analyse" in <i>SAMT2</i>.
+</p>
+<p>
+As opposed to other fuzzy tools there are some restrictions made. But these restrictions will make the algortihm 
+very fast so you can use it on spatial models with a large amount of data. 
+At first, the number of inputs is limited to three. But with a appropriate combination of several fuzzy models 
+you can calculate a model of more than 3 inputs.
+<br> 
+The membership functions for the inputs can be of type <i>triangular</i> or <i>trapeze</i>. 
+The output must be from type <i>singleton</i>, that means crisp values. 
+<br>
+To use singletons as outputs is not so bad, because it is often sufficient and it is very fast. 
+You only need to calculate a weighted sum and not an integral for the defuzzification. 
+<br>
+In every rule the inputs are combined by the <i>AND</i> operation. 
+You can choose the <i>minimum</i> or <i>product</i> method as <i>AND</i> operation. 
+If you need an <i>OR</i> you have to write alternative rules. 
+The weight of a rule is calculated by multiplication of the result of the AND operation and a weight factor <i>cf</i>. 
+So you will be able to control the rules in a different way. The aggregation of all outputs of a rule uses the maximum operator. 
+That means that aggregation only occurs ones for each output.The defuzzification process is simple and fast.
+<br>
+<br>
+The <strong>Version 1.2</strong> comes with two extensions. 
+Firstly it was introduced the "left 
+side open" and the "right side open" membership functions. Left - right side
+open means that all values smaller - larger than the P3 - P2 belongs to the
+class. This simplifies the use of fuzzy and makes the chart nicer. There is
+no need any more to restrict the inputs.
+<br>
+Secondly there is include a new visualization tool to analyze the fuzzy
+model. The user can put a line over the  analysis chart and will got all
+values under this lines as a 1D chart. 
+<br>
+The Version 1.0 was developed by Xenia Specka and Ralf Wieland.<br> 
+The Version 1.2 was developed by Karin Groth and Ralf Wieland.
+</p>
+<a href="manual.html#h_manual">Back to Manual</a>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>SAMT2 - Fuzzy ---- Open a fuzzy model</title>
+</head>
+<body bgcolor="white">
+<p>
+	<br>
+	<h1><a name="h_open_fuzzy">Open a fuzzy model - Layout of an input file</a></h1>
+</p>
+<p>
+<i>SAMT2 - Fuzzy</i> is able to open files with ending *.fis or *.fis1. But this files must have a special structure so the tool will be able to create the fuzzy model in a correct way. If you do not adhere to this structure, 
+<i>SAMT2 - Fuzzy</i> will not correctly open the fuzzy model. In the following part, the layout of a fis-file will be explained.
+</p>
+<p>
+<table>
+<tr>
+	<td><b> input</b></td>
+	<td> input1</td>
+	<td> 5</td>
+</tr>
+<tr>
+	<td> member</td>
+	<td> small</td>
+	<td> triangular</td>
+</tr>
+<tr>
+	<td> -1</td>
+	<td> 10</td>
+	<td> 20</td>
+</tr>
+<tr>
+	<td> member</td>
+	<td> small_medium</td>
+	<td> triangular</td>
+</tr>
+<tr>
+	<td> 10</td>
+	<td> 20</td>
+	<td> 30</td>
+</tr>
+<tr>
+	<td> member </td>
+	<td> medium</td>
+	<td> triangular</td>
+</tr>
+<tr>
+	<td> 20</td>
+	<td> 30</td>
+	<td> 40</td>
+</tr>
+<tr>
+	<td> member</td>
+	<td> medium_hot</td>
+	<td> triangular</td>
+</tr>
+<tr>
+	<td> 30</td>
+	<td> 40</td>
+	<td> 50</td>
+</tr>
+<tr>
+	<td> member</td>
+	<td> hot</td>
+	<td> triangular</td>
+</tr>
+<tr>
+	<td> 40</td>
+	<td> 50</td>
+	<td> 65</td>
+</tr>
+</table>
+<table border="0">
+<tr>
+	<td><b> outputs</b></td>
+	<td> temperature</td>
+	<td> 5</td>
+</tr>
+<tr>
+	<td> output</td>
+	<td> cold</td>
+	<td> 10</td>
+</tr>
+<tr>
+	<td> output</td>
+	<td> cold_medium</td>
+	<td> 25</td>
+</tr>
+<tr>
+	<td> output</td>
+	<td> medium</td>
+	<td> 35</td>
+</tr>
+<tr>
+	<td> output</td>
+	<td> medium_hot</td>
+	<td> 45</td>
+</tr>
+<tr>
+	<td> output</td>
+	<td> hot</td>
+	<td> 60</td>
+</tr>
+</table>
+<table border="0">
+<tr>
+	<td><b>rules</b></td>
+	<td>5</td>
+	<td></td>
+</tr>
+</table>
+<table>
+<tr>
+	<td> 0</td>
+	<td> 4</td>
+	<td> 1.0</td>
+</tr>
+<tr>
+	<td> 1</td>
+	<td> 3</td>
+	<td> 1.0</td>
+</tr>
+<tr>
+	<td> 2</td>
+	<td> 2</td>
+	<td> 1.0</td>
+</tr>
+<tr>
+	<td> 3</td>
+	<td> 1</td>
+	<td> 1.0</td>
+</tr>
+<tr>
+	<td> 4</td>
+	<td> 0</td>
+	<td> 1.0</td>
+</tr>
+</table>
+</p>
+<p>
+The file interpreter of <i>SAMT2 - Fuzzy</i> will be controlled by a fis file with the following structure:
+</p>
+<p>
+<ul>
+	<li> Inputs
+	<li> Outputs
+	<li> Rules
+</ul>
+</p>
+<p>
+The <b>inputs</b> must begin with the keyword <i>input</i>, the name of the input and the number of membership functions. There are up to three inputs possible. The membership function can be of type <i>trapeze</i> or<i> triangular</i>. 
+For specifying the <i>trapeze</i> type there were expected 4 numbers (the lower left point, the upper left point, the upper right point and the lower right point), for specifying the <i>triangular</i> type  we only need 3 numbers.
+</p>
+<p>
+In that example there are specified five membership functions (from <i>cold</i> to <i>hot</i>) for the output <i>temperature</i>.
+</p>
+<p>
+The rules combine the inputs with the outputs by numbering. In our example we have only one input. That means that the rule consists only of three columns: <b>input, output, cf</b>
+<br><br><br><br><br>
+</p>
+<a href="manual.html#h_manual">Back to Manual</a>
+</body>
+</html>

@@ -1,0 +1,6 @@
+sin(x);cos(x);tan(x);arcsin(x);arccos(x);arctan(x);deg2rad(x);rad2deg(x)
+sinh(x);cosh(x);tanh(x);arcsinh(x);arccosh(x);arctanh(x); ; 
+round(x,dec);rint(x);fix(x);floor(x);ceil(x);trunc(x); ; 
+exp(x);exp2(x);log(x);log10(x);log2(x); ; ; 
+add(x1,x2);subtract(x1,x2);multiply(x1,x2);divide(x1,x2);power(x1,x2); ; ; 
+sqrt(x);square(x);fabs(x);maximum(x1,x2);minimum(x1,x2); ; ; 
