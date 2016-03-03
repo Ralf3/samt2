@@ -1,0 +1,28 @@
+SAMT2 and SAMT2FUZZY
+====================
+
+uses the following Python libraries:
+
+sys, os, csv, datetime, time, operator
+numpy, h5py, pywt, nlopt, scipy
+matplotlib, mpl_toolkits
+
+for the gui-version the following libraries has to be installed:
+
+subprocess, PyQt4, pandas.
+
+Bevor you can compile SAMT2 and SAMT2FUZZY please insert the following lines
+in your .bashrc
+
+export SAMT2MASTER=path_to_samt2
+export SAMT2DATEN=path_to_data_of_samt2
+export PATH=$PATH:/$SAMT2MASTER/gui/:/$SAMT2MASTER/fuzzy/gui/:.:
+
+The path_to_samt2 points to the directorie where samt2 is locates on
+my computer for example: /home/ralf/master/samt2
+The path_to_data_of_samt2 points to the directory with the data for SAMT2,
+on my computer it is the samt like samt2.
+
+The compilation of Pyfuzzy (SAMT2FUZZY) and grid.py (SAMT2) need Cython.
+Please go in samt2/src and samt2/fuzzy/src and type "make" to compile it.
+
