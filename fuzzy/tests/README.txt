@@ -7,10 +7,9 @@ The models:
 	nahr_schreiadler.fis  	# two dimensional example
 	hab_schreiadler.fis	# three dimensional example
 
-The Python scripts to produce the training data are:
-	gen_from_fuzzy1.py
-	gen_from_fuzzy2.py
-	gen_from_fuzzy3.py 
+The Python scripts to produce the training data is:
+	gen_data_from_fuzzy.py
+(please adapt the input file in gen_data_from_fuzzy.py)
 
 They are hard coded but can be used as template for own models too.
 
@@ -27,7 +26,7 @@ The test scripts can be easily modified to test your own models/data
 -------------------------------------------------------------------------
 
 Some files for testing have been moved to ../dyn_fuzzy: 
-     	  alge_daphnie.fis 
+      alge_daphnie.fis 
 	  alge_phosphor.fis
 	  daphnie_alge.fis
 	  cyano_phosphor.fis
@@ -45,5 +44,4 @@ includes:
 	rule training test
 	
 calculation time 14.21s on my computer
-
 

@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import sys
 import os
-sys.path.append(os.environ["SAMT2MASTER"]+"/src/grid")
-#sys.path.append('/home/ralf/master/samt3')
-#sys.path.append('/usr/local/lib/python3.4/site-packages')
+sys.path.append(os.environ["SAMT2MASTER"]+"/src")
 import grid as samt2
 import numpy as np
 cimport numpy as np

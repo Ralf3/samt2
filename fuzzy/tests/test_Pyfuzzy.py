@@ -4,9 +4,9 @@
 
 import numpy as np
 import sys
-sys.path.append('../')
+sys.path.append('../src')
 import Pyfuzzy as fuzz
-sys.path.append('../../')
+sys.path.append('../../src')
 import grid as samt2
 import pytest
 
@@ -42,8 +42,8 @@ class TestClass:
     def test_train_rules(self):
         """ check a simple rule training """
         f1=fuzz.read_model('gen_data1.fis',DEBUG=0)
-        x,y=f1.read_training_data('data1.csv', header=1)
-        f1.train_rules(x,y,0.75)  # check the influence of different alpha
+        f1.read_training_data('data1.csv', header=1)
+        f1.train_rules(0.75)  # check the influence of different alpha
         f1.store_model('data1')
         rules=f1.get_rules()
         s=0.0
