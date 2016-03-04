@@ -5,11 +5,14 @@ uses the following Python libraries:
 
 sys, os, csv, datetime, time, operator
 numpy, h5py, pywt, nlopt, scipy
-matplotlib, mpl_toolkits
+matplotlib, mpl_toolkits, osmviz
 
 for the gui-version the following libraries has to be installed:
 
 subprocess, PyQt4, pandas.
+
+the osmviz can be installed from: https://pypi.python.org/pypi/osmviz/1.0
+using: pip install osmviz (as root)
 
 Bevor you can compile SAMT2 and SAMT2FUZZY please insert the following lines
 in your .bashrc
