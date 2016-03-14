@@ -3,7 +3,9 @@
 
 import numpy as np
 import sys
-sys.path.append('/home/ralf/master/samt2')
+import os
+# sys.path.append('/home/ralf/master/samt2')
+sys.path.append(os.environ['SAMT2MASTER']+"/src")
 import grid as samt2
 
 inch   = 2.54      # cm

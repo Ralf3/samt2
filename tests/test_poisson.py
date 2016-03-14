@@ -4,7 +4,8 @@
 import numpy as np
 import time
 import sys
-sys.path.append('/home/ralf/master/samt2')
+import os
+sys.path.append(os.environ['SAMT2MASTER']+"/src")
 import grid as samt2
 
 # test the poisson solver using random distributed values

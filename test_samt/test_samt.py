@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
-sys.path.append('/home/ralf/master/samt2')
 import os
+sys.path.append(os.environ['SAMT2MASTER']+"/src")
 import grid as samt2
 import pytest
 import numpy as np
