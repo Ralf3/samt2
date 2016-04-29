@@ -19,7 +19,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.backends.backend_qt4agg  \
 		    import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg \
-		    import NavigationToolbar2QTAgg as NavigationToolbar
+		    import NavigationToolbar2QT as NavigationToolbar
 # forms
 from form1_ui import *   
 from editinputmember_ui import Ui_InputDialog
