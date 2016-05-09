@@ -9,7 +9,9 @@ import nlopt
 import pylab as plt
 
 DTYPE = np.float32
+D1TYPE = np.float64
 ctypedef np.float32_t DTYPE_t
+ctypedef np.float64_t D1TYPE_t
 ctypedef np.int_t ITYPE_t
 
 # some constants for membership
@@ -604,6 +606,31 @@ class fuzzy:
         if(tmu==0):
             return -9999
         return su1/tmu
+    # array operation without samt2
+    def array_calc1(self,g1):
+        cdef int i,j,ii,jj
+        (ii,jj)=g1.shape
+        cdef np.ndarray[D1TYPE_t,ndim=2] matx=np.copy(g1)
+        for i in xrange(ii):
+            for j in xrange(jj):
+                matx[i,j]=self.calc1(g1[i,j])
+        return matx
+    def array_calc2(self, g1, g2):
+        cdef int i,j,ii,jj
+        (ii,jj)=g1.shape
+        cdef np.ndarray[D1TYPE_t,ndim=2] matx=np.copy(g1)
+        for i in xrange(ii):
+            for j in xrange(jj):
+                matx[i,j]=self.calc2(g1[i,j],g2[i,j])
+        return matx
+    def array_calc3(self, g1, g2, g3):
+        cdef int i,j,ii,jj
+        (ii,jj)=g1.shape
+        cdef np.ndarray[D1TYPE_t,ndim=2] matx=np.copy(g1)
+        for i in xrange(ii):
+            for j in xrange(jj):
+                matx[i,j]=self.calc3(g1[i,j],g2[i,j],g3[i,j])
+        return matx 
     # grip operations based on samt2
     def grid_calc1(self, g1):
         cdef int i,j

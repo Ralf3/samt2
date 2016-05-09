@@ -31,11 +31,14 @@ fx.get_outputList() # returns the List of outputs
 fx.calc1_r(x)       # returns a list with [mu(output1), mu(output2),...]
 fx.calc2_r(x,y)     # returns a list with [mu(output1), mu(output2),...]
 fx.calc3_r(x,y,z)   # returns a list with [mu(output1), mu(output2),...]
-
+# Fuzzy calculation over a numpy array: return a numpy array
+fx.array_calc1(g1)      # g1 is a numpy array
+fx.array_calc2(g1,g2)   # g1,g2 are numpy arrays
+fx.array_calc2(g1,g2,g3)# g1,g2,g3 are numpy arrays
 # Fuzzy grid calculation ==================================================
-fx.grid_calc1(g1)       # returns a grid 
-fx.grid_calc2(g1,g2)    # returns a grid 
-fx.grid_calc3(g1,g2,g3) # returns a grid
+fx.grid_calc1(g1)       # g1 is a SAMT2 grid,       returns a grid 
+fx.grid_calc2(g1,g2)    # g1,g2 are SAMT2 grids,    returns a grid 
+fx.grid_calc3(g1,g2,g3) # g1,g2,g3 are SAMT2 grids, returns a grid
 
 # Fuzzy show model ========================================================
 fx.show_model(tag1=2,default1=-9999)  # shows a fuzzy model for one, two or 
