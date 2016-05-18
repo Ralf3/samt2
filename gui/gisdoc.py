@@ -611,9 +611,7 @@ class gisdoc:
     
     #------ 12.5.2016 --------------------------------------------------
     def grid_create(self, gname, nrows, ncols):
-	#print "in gdoc.grid_create()::  gname=%s, nrows=%d, ncols=%d" % (gname, nrows,ncols)
-	
-	gx = grid.grid(nrows=100,ncols=100)
+	gx = grid.grid(nrows,ncols)
 	# add grid
 	gname_new = self.add_grid(gname, gx)
 	# fill with random 
