@@ -64,7 +64,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.ui.actionDelete.setIcon(QIcon(env+'/stop.png'))
 	self.ui.actionClear_p.setIcon(QIcon(env+'/editdelete.png'))
 	
-	
 	# mpl_widget  
 	vbox = QVBoxLayout()
         vbox.addWidget(self.ui.mpl_widget.canvas)      
@@ -77,7 +76,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.ui.mpl_widget.canvas.fig.subplots_adjust\
 				(left=0,right=1,top=1,bottom=0)
 	
-
 	self.w_wid_orig = 646   # mpl_widget.width()
 	self.h_wid_orig = 557   # mpl_widget.height()
 	self.w_img_scaled = 0
@@ -213,6 +211,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			self.slotExport_R)
 						
 	# menuSGrid
+	self.connect(self.ui.actionCreate, SIGNAL('triggered()'), 
+			self.slotGRID_Create)
 	self.connect(self.ui.actionSet, SIGNAL('triggered()'), 
 			self.slotGRID_Set)
 	self.connect(self.ui.actionReplace, SIGNAL('triggered()'), 
@@ -1191,14 +1191,49 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	
     #=========== menu Simple_Grid ======================================
     
+    def slotGRID_Create(self):
+	v1 = str(self.ui.ledit_p1.text())	# gname
+	v2 = str(self.ui.ledit_p2.text())	# nrows
+	v3 = str(self.ui.ledit_p3.text())	# ncols
+
+	if v1.strip() == "":  
+	    print "v1 fehlt return"
+	    self.ui.ledit_p1.clear()
+	    return
+	
+	if self.is_number(v2) == False or v2.strip() == "":  
+	    print "v2 leer oder keine Zahl - return"
+	    self.ui.ledit_p2.clear()
+	    return
+	
+	if self.is_number(v3) == False or v3.strip() == "":  
+	    print "v3 leer oder keine Zahl - return"
+	    self.ui.ledit_p3.clear()
+	    return
+	
+	# make an empty new grid[rows,cols]
+	# and fill it with random int values
+	
+	gname_new = self.gdoc.grid_create(v1, int(v2),int(v3))
+	
+	if gname_new == False:
+	    print "create error"
+	    sys.exit(0)
+	else:
+	    # append in TREE/grids
+	    self.append_new_grid(gname_new) 
+	    self.highlight_new_child(0)
+	    self.slotVIS_Start(1)
+	
+    #-------------------------------------------------------------------
     def slotGRID_Set(self):
 	v1 = str(self.ui.ledit_p1.text())
-	if self.is_number(v1) == False:  
+	if self.is_number(v1) == False:
 	    return
 	if self.gdoc.grid_set(self.gname, v1) == False:
 	    print "set error"
 	else:
-	    self.slotVIS_Start(1)	
+	    self.slotVIS_Start(1)
 
     #-------------------------------------------------------------------
     def slotGRID_Replace(self):

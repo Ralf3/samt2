@@ -27,7 +27,7 @@ class gisdoc:
 	self.d_points = {}  # write in: add_points, set_d_points, 
 	self.d_models_fuz = {}
 	self.d_models_svm = {}
-    
+
     #-------------------------------------------------------------------
     def get_list_grids(self, hdf_name):
 	"""
@@ -609,6 +609,21 @@ class gisdoc:
     #####   Simple_Grid
     ####################################################################
     
+    #------ 12.5.2016 --------------------------------------------------
+    def grid_create(self, gname, nrows, ncols):
+	#print "in gdoc.grid_create()::  gname=%s, nrows=%d, ncols=%d" % (gname, nrows,ncols)
+	
+	gx = grid.grid(nrows=100,ncols=100)
+	# add grid
+	gname_new = self.add_grid(gname, gx)
+	# fill with random 
+	retu = self.get_grid_rand_float(gname_new)
+	if retu == None:
+	    return False
+	return gname_new    
+	
+    #-------------------------------------------------------------------
+ 
     def grid_set(self, gridname, val1):
 	"""
 	    in:	val1	value to set	
@@ -1417,6 +1432,12 @@ class gisdoc:
 	fx = self.d_models_fuz[modelname]
 	ro = fx.get_max_input(i)  
 	return ro 
+    
+    #-------------------------------------------------------------------
+
+    
+    
+    
     
 
     ####### end ########################################################

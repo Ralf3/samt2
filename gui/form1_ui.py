@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'form1.ui'
 #
-# Created: Wed Mar  2 16:40:58 2016
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,7 +25,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(870, 646)
+        MainWindow.resize(866, 664)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -43,17 +42,17 @@ class Ui_MainWindow(object):
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setMinimumSize(QtCore.QSize(870, 575))
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
-        self.hboxlayout = QtGui.QHBoxLayout(self.centralwidget)
-        self.hboxlayout.setSpacing(6)
-        self.hboxlayout.setMargin(9)
-        self.hboxlayout.setObjectName(_fromUtf8("hboxlayout"))
+        self.horizontalLayout = QtGui.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setMargin(1)
+        self.horizontalLayout.setSpacing(1)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.treeWidget = QtGui.QTreeWidget(self.centralwidget)
         self.treeWidget.setMinimumSize(QtCore.QSize(200, 551))
         self.treeWidget.setMaximumSize(QtCore.QSize(200, 16777215))
         self.treeWidget.setMouseTracking(False)
         self.treeWidget.setStatusTip(_fromUtf8(""))
         self.treeWidget.setObjectName(_fromUtf8("treeWidget"))
-        self.hboxlayout.addWidget(self.treeWidget)
+        self.horizontalLayout.addWidget(self.treeWidget)
         self.mpl_widget = matplotlibWidget(self.centralwidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -65,10 +64,10 @@ class Ui_MainWindow(object):
         self.mpl_widget.setAutoFillBackground(False)
         self.mpl_widget.setStyleSheet(_fromUtf8("background-color: rgb(255, 255, 255);"))
         self.mpl_widget.setObjectName(_fromUtf8("mpl_widget"))
-        self.hboxlayout.addWidget(self.mpl_widget)
+        self.horizontalLayout.addWidget(self.mpl_widget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 870, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 866, 25))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName(_fromUtf8("menuHelp"))
@@ -304,6 +303,8 @@ class Ui_MainWindow(object):
         self.actionFuzzy_Analysis = QtGui.QAction(MainWindow)
         self.actionFuzzy_Analysis.setCheckable(True)
         self.actionFuzzy_Analysis.setObjectName(_fromUtf8("actionFuzzy_Analysis"))
+        self.actionCreate = QtGui.QAction(MainWindow)
+        self.actionCreate.setObjectName(_fromUtf8("actionCreate"))
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionManual)
         self.menuTable.addAction(self.actionTABLE_Lut)
@@ -324,6 +325,7 @@ class Ui_MainWindow(object):
         self.menuAGrid.addAction(self.menuCombine.menuAction())
         self.menuAGrid.addAction(self.menuFlood.menuAction())
         self.menuAGrid.addAction(self.menuSpecial.menuAction())
+        self.menuSGrid.addAction(self.actionCreate)
         self.menuSGrid.addAction(self.actionSet)
         self.menuSGrid.addAction(self.actionReplace)
         self.menuSGrid.addAction(self.actionAdd)
@@ -642,5 +644,7 @@ class Ui_MainWindow(object):
         self.actionCombine_AND.setStatusTip(_translate("MainWindow", "Combine_AND: includes nodata from P1: g1  in gx", None))
         self.actionFuzzy_Analysis.setText(_translate("MainWindow", "Fuzzy_Analysis", None))
         self.actionFuzzy_Analysis.setStatusTip(_translate("MainWindow", "Fuzzy_Analysis:  P1=grid,  P2=[grid],  P3=[grid],  highlighted fuzzy model", None))
+        self.actionCreate.setText(_translate("MainWindow", "Create", None))
+        self.actionCreate.setStatusTip(_translate("MainWindow", "creates a random grid with P1=name, P2=rows, P3=cols", None))
 
 from matplotlibwidgetFile import matplotlibWidget
