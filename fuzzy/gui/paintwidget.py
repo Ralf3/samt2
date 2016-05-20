@@ -17,7 +17,6 @@ class Diagr(QtGui.QWidget):
 	#print "in super (Diagr __init__, parent=", self.parent
 	# called by class PaintWidget, nur nach Neustart der GUI 
 	
-	# --- variables ---------
 	self.dix = u  		# Diagrammgröße int
 	self.diy = v
 	self.setMinimumSize(u,v)
@@ -49,7 +48,7 @@ class Diagr(QtGui.QWidget):
 	self.ypoints = []	
         self.titleList = []    	# list of strings
 	self.typeList = []	#   "
-        self.numCurves = 0       # len(self.typeList)
+        self.numCurves = 0      # len(self.typeList)
 	self.numPoints = 0	# len(self.xpoints)
 	
 	#~ QMainWindow *mainwindow;
@@ -61,7 +60,7 @@ class Diagr(QtGui.QWidget):
 	self.time_start = 0
 	self.leftdown = False
 	self.dragging = False
-	self.hit_index = -1		# nr. der Curve wo HandCursor 
+	self.hit_index = -1	# nr. der Curve wo HandCursor ist
 	self.hit = False
 	self.grid = True
 	self.parent_mainwin = None
@@ -81,10 +80,10 @@ class Diagr(QtGui.QWidget):
 	
 	self.setMouseTracking(True)	
 	self.setAttribute(QtCore.Qt.WA_StaticContents)
-	#self.mainwindow = window 	# mainwin
+	#self.mainwindow = window 		# mainwin
 	
 	self.color_back = QtCore.Qt.white	# backgroundcolor weiß 
-	self.color_rot = QtCore.Qt.red	# hilfsline
+	self.color_rot = QtCore.Qt.red		# hilfsline
 	self.color_schwarz = QtCore.Qt.black
 	self.color_grau = QtCore.Qt.gray	# Gitternetzlinien
 	#self.grau.setNamedColor('grey')     	#(150,150,150)   
@@ -102,10 +101,9 @@ class Diagr(QtGui.QWidget):
 	self.normFont.setItalic(False)
 	
 	self.penDefault = QtGui.QPen()
-	self.penDefault.setColor(self.color_schwarz) # alt: standard
+	self.penDefault.setColor(self.color_schwarz) 
 	self.penDefault.setStyle(Qt.SolidLine)
 	self.penDefault.setWidth(2)
-	#self.penDefaultWidth = 2
 	
 	self.penGrid = QtGui.QPen()
 	self.penGrid.setColor(self.color_grau)
@@ -171,6 +169,7 @@ class Diagr(QtGui.QWidget):
     #-------------------------------------------------------------------
     def paintEvent(self, event):
 	# called by: plot() and  PaintWidget.__init__
+	#print "paintEv"
 	xmin = 0
 	xmax = 0
 	ymin = 0
@@ -548,9 +547,11 @@ class Diagr(QtGui.QWidget):
 		    else:
 			self.xpoints[index]=self.xpoints[index+1] - self.MIN_X
 	
-	
+	#--------- 5. Fall -----------------------------------------
 	if index>1 and index<self.numPoints-2 and self.numPoints>4:
-	    #--------- 5. Fall ---------------------------------------------
+
+	    #print "5. Fall set self.xpoints"
+
 	    #eine der Spitzen gegriffen
 	    if self.ypoints[index]==1:
 		if maus1x < self.startPoint.x():
@@ -617,114 +618,115 @@ class Diagr(QtGui.QWidget):
 	
 	    #----------- 6. letzter Fall -----------------------------------
 	    # auf dem Boden gegriffen
-	    if self.ypoints[index]==0:
+	    #~ if self.ypoints[index]==0:
 	    
-		if maus1x < self.startPoint.x():
-		    # nach links
-		    #print "666666_nach links ,  startPoint.x() = ", self.startPoint.x()
-		    #Stelle, wo zwei Geraden sich auf der x-Achse treffen ???
+		#~ if maus1x < self.startPoint.x():
+		    #~ # nach links
+		    #~ #print "666666_nach links ,  startPoint.x() = ", self.startPoint.x()
+		    #~ #Stelle, wo zwei Geraden sich auf der x-Achse treffen ???
 		    
-		    if index+4 > len(self.xpoints):
-			print "idx ist ausserhalb"
-		    if ((self.xpoints[index]==self.xpoints[index+4-1] or self.xpoints[index]==self.xpoints[index-4+1]) and (index!=2 or index!=self.numPoints-3)):
-			if self.xpoints[index]==self.xpoints[index+4-1]:
-			    #linker Punkt erfasst
-			    if maus1x > (self.xpoints[index-1]*self.dx+self.MIN_X*self.dx-self.ax):
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index+2]=(maus1x+self.ax) / self.dx
-				self.xpoints[index+4]=(maus1x+self.ax) / self.dx
-			    else:	
-				self.xpoints[index]=self.xpoints[index-1] + self.MIN_X
-				self.xpoints[index+2]=self.xpoints[index-1] + self.MIN_X
-				self.xpoints[index+4]=self.xpoints[index-1] + self.MIN_X
+		    #~ if index+4 > len(self.xpoints):
+			#~ print "idx ist ausserhalb"
+		    #~ if ((self.xpoints[index]==self.xpoints[index+4-1] or self.xpoints[index]==self.xpoints[index-4+1]) and (index!=2 or index!=self.numPoints-3)):
+			#~ if self.xpoints[index]==self.xpoints[index+4-1]:
+			    #~ #linker Punkt erfasst
+			    #~ if maus1x > (self.xpoints[index-1]*self.dx+self.MIN_X*self.dx-self.ax):
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index+2]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index+4]=(maus1x+self.ax) / self.dx
+			    #~ else:	
+				#~ self.xpoints[index]=self.xpoints[index-1] + self.MIN_X
+				#~ self.xpoints[index+2]=self.xpoints[index-1] + self.MIN_X
+				#~ self.xpoints[index+4]=self.xpoints[index-1] + self.MIN_X
 
-			if self.xpoints[index]==self.xpoints[index-4+1]:
-			    #rechter Punkt erfasst
-			    if maus1x > (self.xpoints[index-5]*self.dx+self.MIN_X*self.dx-self.ax):
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index-2]=(maus1x+self.ax) / self.dx
-				self.xpoints[index-4]=(maus1x+self.ax) / self.dx
-			    else:
-				self.xpoints[index]=self.xpoints[index-5] + self.MIN_X
-				self.xpoints[index+2]=self.xpoints[index-5] + self.MIN_X
-				self.xpoints[index+4]=self.xpoints[index-5] + self.MIN_X
-		    else:
-			#Normalfall
-			if self.ypoints[index-3]==1:
-			    #Links unten --- Mf-1 ist ein Trapez
-			    if (self.xpoints[index]-self.xpoints[index-3])*self.dx > 10:
-				v = (maus1x+self.ax) / self.dx
-				self.xpoints[index] = round(v,2)
-				self.xpoints[index-2] = round(v,2)  
-			    else:
-				self.xpoints[index]=self.xpoints[index-3] + 10/self.dx
-				self.xpoints[index-2]=self.xpoints[index-3] + 10/self.dx
+			#~ if self.xpoints[index]==self.xpoints[index-4+1]:
+			    #~ #rechter Punkt erfasst
+			    #~ if maus1x > (self.xpoints[index-5]*self.dx+self.MIN_X*self.dx-self.ax):
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index-2]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index-4]=(maus1x+self.ax) / self.dx
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[index-5] + self.MIN_X
+				#~ self.xpoints[index+2]=self.xpoints[index-5] + self.MIN_X
+				#~ self.xpoints[index+4]=self.xpoints[index-5] + self.MIN_X
+		    #~ else:
+			#~ #Normalfall
+			#~ if self.ypoints[index-3]==1:
+			    #~ #Links unten --- Mf-1 ist ein Trapez
+			    #~ if (self.xpoints[index]-self.xpoints[index-3])*self.dx > 10:
+				#~ v = (maus1x+self.ax) / self.dx
+				#~ self.xpoints[index] = round(v,2)
+				#~ self.xpoints[index-2] = round(v,2)  
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[index-3] + 10/self.dx
+				#~ self.xpoints[index-2]=self.xpoints[index-3] + 10/self.dx
 				
-			if self.ypoints[index-1]==1:
-			    #rechts unten vom Trapez oder links vom Dreieck
-			    if maus1x > (self.xpoints[index-1]*self.dx+self.MIN_X*self.dx-self.ax):
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index+2]=(maus1x+self.ax) / self.dx
-			    else:
-				self.xpoints[index]=self.xpoints[index-1] + self.MIN_X
-				self.xpoints[index+2]=self.xpoints[index-1] + self.MIN_X
-			if self.ypoints[index-1]==0 and self.ypoints[index-3]==0:
-			    if maus1x > (self.xpoints[index-3]*self.dx+self.MIN_X*self.dx-self.ax):
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index-2]=(maus1x+self.ax) / self.dx
-			    else:
-				self.xpoints[index]=self.xpoints[index-3] + self.MIN_X
-				self.xpoints[index-2]=self.xpoints[index-3] + self.MIN_X
+			#~ if self.ypoints[index-1]==1:
+			    #~ #rechts unten vom Trapez oder links vom Dreieck
+			    #~ if maus1x > (self.xpoints[index-1]*self.dx+self.MIN_X*self.dx-self.ax):
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index+2]=(maus1x+self.ax) / self.dx
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[index-1] + self.MIN_X
+				#~ self.xpoints[index+2]=self.xpoints[index-1] + self.MIN_X
+			#~ if self.ypoints[index-1]==0 and self.ypoints[index-3]==0:
+			    #~ if maus1x > (self.xpoints[index-3]*self.dx+self.MIN_X*self.dx-self.ax):
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index-2]=(maus1x+self.ax) / self.dx
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[index-3] + self.MIN_X
+				#~ self.xpoints[index-2]=self.xpoints[index-3] + self.MIN_X
 
-		if maus1x > self.startPoint.x():
-		    # nach rechts
-		    if (self.xpoints[index]==self.xpoints[index-4+1]) and (index!=2 or index!=self.numPoints-3):
-			if self.xpoints[index]==self.xpoints[index+4]:
-			    #linker Punkt erfasst
-			    if maus1x < (self.xpoints[index+5]*self.dx-self.MIN_X*self.dx-self.ax):
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index+2]=(maus1x+self.ax) / self.dx
-				self.xpoints[index+4]=(maus1x+self.ax) / self.dx
-			    else:
-				self.xpoints[index]=self.xpoints[index+5] - self.MIN_X
-				self.xpoints[index+2]=self.xpoints[index+5] - self.MIN_X
-				self.xpoints[index+4]=self.xpoints[index+5] - self.MIN_X
+		#~ if maus1x > self.startPoint.x():
+		    #~ # nach rechts
+		    #~ if (self.xpoints[index]==self.xpoints[index-4+1]) and (index!=2 or index!=self.numPoints-3):
+			#~ if self.xpoints[index]==self.xpoints[index+4]:
+			    #~ #linker Punkt erfasst
+			    #~ if maus1x < (self.xpoints[index+5]*self.dx-self.MIN_X*self.dx-self.ax):
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index+2]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index+4]=(maus1x+self.ax) / self.dx
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[index+5] - self.MIN_X
+				#~ self.xpoints[index+2]=self.xpoints[index+5] - self.MIN_X
+				#~ self.xpoints[index+4]=self.xpoints[index+5] - self.MIN_X
 
-			if self.xpoints[index]==self.xpoints[index-4]:
-			    #rechter Punkt erfasst
-			    if maus1x < (self.xpoints[index+1]*self.dx-self.MIN_X*self.dx-self.ax):
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index-2]=(maus1x+self.ax) / self.dx
-				self.xpoints[index-4]=(maus1x+self.ax) / self.dx
-			    else:
-				self.xpoints[index]=self.xpoints[index+1] - self.MIN_X
-				self.xpoints[index-2]=self.xpoints[index+1] - self.MIN_X
-				self.xpoints[index-4]=self.xpoints[index+1] - self.MIN_X
-		    else:
-			#Normalfall
-			if self.ypoints[index+3]==1:
-			    #rechts unten nächste Mf ist ein Trapez
-			    if (self.xpoints[index+3]-self.xpoints[index+2])*self.dx > 10:
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index+2]=(maus1x+self.ax) / self.dx
-			    else:
-				self.xpoints[index]=self.xpoints[index+3] - 10/self.dx
-				self.xpoints[index+2]=self.xpoints[index+3] - 10/self.dx
-			if self.ypoints[index+1]:
-			    #links unten vom Dreieck oder Trapez
-			    if maus1x < (self.xpoints[index+1]*self.dx-self.MIN_X*self.dx-self.ax):
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index-2]=(maus1x+self.ax) / self.dx
-			    else:
-				self.xpoints[index]=self.xpoints[index+1] - self.MIN_X
-				self.xpoints[index-2]=self.xpoints[index+1] - self.MIN_X
-			if self.xpoints[index]==self.xpoints[self.numPoints-1]:
-			    if maus1x < (self.xpoints[self.numPoints-1]*self.dx-self.MIN_X*self.dx-self.ax):
-				self.xpoints[index]=(maus1x+self.ax) / self.dx
-				self.xpoints[index+2]=(maus1x+self.ax) / self.dx
-			    else:
-				self.xpoints[index]=self.xpoints[self.numPoints-1] - self.MIN_X
-				self.xpoints[index+2]=self.xpoints[self.numPoints-1] - self.MIN_X
+			#~ if self.xpoints[index]==self.xpoints[index-4]:
+			    #~ #rechter Punkt erfasst
+			    #~ if maus1x < (self.xpoints[index+1]*self.dx-self.MIN_X*self.dx-self.ax):
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index-2]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index-4]=(maus1x+self.ax) / self.dx
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[index+1] - self.MIN_X
+				#~ self.xpoints[index-2]=self.xpoints[index+1] - self.MIN_X
+				#~ self.xpoints[index-4]=self.xpoints[index+1] - self.MIN_X
+		    #~ else:
+			#~ #Normalfall
+			#~ if self.ypoints[index+3]==1:
+			    #~ #rechts unten nächste Mf ist ein Trapez
+			    #~ if (self.xpoints[index+3]-self.xpoints[index+2])*self.dx > 10:
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index+2]=(maus1x+self.ax) / self.dx
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[index+3] - 10/self.dx
+				#~ self.xpoints[index+2]=self.xpoints[index+3] - 10/self.dx
+			#~ if self.ypoints[index+1]:
+			    #~ #links unten vom Dreieck oder Trapez
+			    #~ if maus1x < (self.xpoints[index+1]*self.dx-self.MIN_X*self.dx-self.ax):
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index-2]=(maus1x+self.ax) / self.dx
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[index+1] - self.MIN_X
+				#~ self.xpoints[index-2]=self.xpoints[index+1] - self.MIN_X
+			#~ if self.xpoints[index]==self.xpoints[self.numPoints-1]:
+			    #~ if maus1x < (self.xpoints[self.numPoints-1]*self.dx-self.MIN_X*self.dx-self.ax):
+				#~ self.xpoints[index]=(maus1x+self.ax) / self.dx
+				#~ self.xpoints[index+2]=(maus1x+self.ax) / self.dx
+			    #~ else:
+				#~ self.xpoints[index]=self.xpoints[self.numPoints-1] - self.MIN_X
+				#~ self.xpoints[index+2]=self.xpoints[self.numPoints-1] - self.MIN_X
+		
 	if self.parent_mainwin != None:
 	    msg = "%1.3f" % (float(self.xpoints[index]))
 	    self.parent_mainwin.ui.statusbar.showMessage(msg)
@@ -872,19 +874,19 @@ class Diagr(QtGui.QWidget):
 	    # dragging=false, Zeitpunkt und Position merken
 	    self.leftdown = True
 	    self.dragging = False
+	    
 	    # start stoppuhr, end in MouseMove
-	    self.time_start = timeit.default_timer()  
+	    #self.time_start = timeit.default_timer()  
 	    #print "self.time_start=", self.time_start
 	    
 	    self.startPoint = ev.pos()     
 	    self.mausx = self.startPoint.x() #aktuelle Maus-Position
 	    self.mausy = self.startPoint.y()
 	    #print "mausX=%d, mausY = %d" % (self.mausx, self.mausy) 
+	    
 	    for i in range(self.numPoints):     
 		a = math.fabs(self.mausx-(self.xpoints[i]*self.dx-self.ax))
 		b = math.fabs(self.mausy-(self.ypoints[i]*(-1)*self.dy-self.ay))
-		#print "a = ", a
-		#print "b = ", b
 		if (a<5) and (b<5):
 		    self.hit = True	# set True only here!
 		    self.hit_index = i	# idx of xpoints, write only here!
@@ -899,15 +901,20 @@ class Diagr(QtGui.QWidget):
     def mouseMoveEvent(self, ev):
 	self.mausx = ev.pos().x()
 	self.mausy = ev.pos().y()
-	#print "mouseMoveEv:", self.mausx, self.mausy, self.dx, self.ax, self.leftdown
+	#print "mouseMoveEv: mausx=%d, mausy=%d, dx=%s, ax=%s" % 
+	#		(self.mausx, self.mausy, self.dx, self.ax)
 	if self.leftdown == False: 
 	    #nur bei gedrückter li. Taste, releaseEv set leftdown=False
 	    for i in range(self.numPoints): 
-		v1 = self.mausx-(self.xpoints[i]*self.dx-self.ax)
-		v2 = self.mausy-(self.ypoints[i]*(-1)*self.dy-self.ay)
-		#print "x[%d]=%s  y=%s v1=%s, v2=%s" % (i, self.xpoints[i], self.ypoints[i], v1, v2)
-		if (math.fabs(self.mausx-(self.xpoints[i]*self.dx-self.ax))<5) and (math.fabs(v2)<5):
-		    self.cursor.setShape(Qt.PointingHandCursor)	# Hand Cursor
+		
+		a = math.fabs(self.mausx-(self.xpoints[i]*self.dx-self.ax))
+		b = math.fabs(self.mausy-(self.ypoints[i]*(-1)*self.dy-self.ay)) # Hand am Boden
+		
+		#print "x[%d]=%s  y=%s a=%s, b=%s" % (i, self.xpoints[i], self.ypoints[i], a, b)
+		
+		if (a<5) and self.mausy>23 and self.mausy<30 :        #(b<5):        		
+		    # handcursor nur am oberen Rand, nicht am Boden
+		    self.cursor.setShape(Qt.PointingHandCursor)	
 		    self.setCursor(self.cursor)
 		    return
 		else:
@@ -915,7 +922,7 @@ class Diagr(QtGui.QWidget):
 		    self.setCursor(self.cursor)
 	if self.dragging == False:
 	    # MousePress started the timer 
-	    time_stop = timeit.default_timer()-self.time_start
+	    #time_stop = timeit.default_timer()-self.time_start
 	    #print "time_stop=", time_stop	# welche einheit?
 	    #if time_stop >= 300:   #or    msec?           
 		#~ if ((self.startPoint.x() - self.mausx > 10) or 
@@ -926,8 +933,8 @@ class Diagr(QtGui.QWidget):
 	    self.dragging = True
 		
 	if self.dragging == True and self.hit == True:
-	    # hier wird xpoints verfälscht !?
-	    # hit_index = Curve Nr, where HandCursor, set in MousePress
+	    #print "mouseMove...dragging=True and hit = True"
+	    # hit_index set in MousePress = CurvePointNr, wo HandCursor 
 	    self.setCorrectValues(self.mausx, self.hit_index)
 	    self.plot() 
 	

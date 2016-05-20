@@ -77,20 +77,21 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	
 	# variables
 	self.mfTitleList = []    # Title of mfs
+	self.mfTypeList = []     # Type of mfs
+	self.mfRangeList = []	 # Range of mfs
 	self.d_in1_mfname_idx = {}
 	self.d_in2_mfname_idx = {}
 	self.d_in3_mfname_idx = {}
-	self.mfTypeList = []     # Type of mfs
-	self.rangeListInp = []	 # ['', ...]  items from mfTable
-	self.rangeListOut = []	 # ['', ...]  items from outputTable
+	#self.rangeListInp = []	 # ['', ...]  items from mfTable
+	#self.rangeListOut = []	 # ['', ...]  items from outputTable
 	self.outTitleList = []   # Title of outputs
 	self.li_popups = []
 	self.li_input_names = []
-	
+
 	self.numInput = 1     # number of Inputs			
 	self.numMf = 0        # number of Memberships
-	self.numPoints = 0    # number of Xpoints of all Mfs
-	self.xMf = []         # x-vertices of the mfs
+	self.numPoints = 0    # number of Xpoints of all mfs
+	self.xMf = []         # x-vertices of the mfs	
 	self.yMf = []         # y-vertices of the mfs  
 	
 	self.changed = False  # is True, if there are made changes
@@ -1107,15 +1108,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 	if self.numPoints > 4:
 	    for i in range(self.numPoints):
-		#print "222  i=", i	
 		if (i==1) and (self.yMf[i+1]==0):
 		    # first mf=triangular
 		    self.xMf[i+2] = self.xMf[i]     	
-		#if (i == self.numMf-2) and (self.yMf[i-1] == 0):
 		if (i == self.numPoints-2) and (self.yMf[i-1] == 0):
 		    # last Mf=triangular
 		    self.xMf[i-2] = self.xMf[i]
-		#if (i>1 and i< self.numMf-2): 
 		if (i>1 and i< self.numPoints-2): 
 		    # other Mfs
 		    if (self.yMf[i]==1) and (self.yMf[i+1]==0) and (self.yMf[i-1]==0): 
@@ -1138,11 +1136,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# of the actual input in GUI-Table Page Input
 	# delete old vertice-vector, type-list or title-list 
 	# print "getMfVector():: makes lists  self.xMf, self.yMf, ..."
-	xMf = []
-	yMf = []
-	mfTitleList = []   
-	mfTypeList = []		
-	mfRangeList = []
+
+	del self.mfTitleList[:]
+	del self.mfTypeList[:]
+	del self.mfRangeList[:]
+	
 	self.d_in1_mfname_idx.clear()
 	self.d_in2_mfname_idx.clear()	
 	self.d_in3_mfname_idx.clear()
@@ -1161,27 +1159,24 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		    range_ = self.ui.memb1Table.item(i,2).text()# QString
 		    qli = range_.split(" ")			# QStringList
 		    pyli = str(qli.join("\n")).split("\n")	# pylist
-		    mfRangeList.append(pyli)
+		    self.mfRangeList.append(pyli)
 		    type_ = self.ui.memb1Table.item(i,1).text()
-		    mfTypeList.append(str(type_))
+		    self.mfTypeList.append(str(type_))
 		    name = str(self.ui.memb1Table.item(i,0).text())
-		    mfTitleList.append(name)
-		    
+		    self.mfTitleList.append(name)
 		    self.d_in1_mfname_idx[name] = i
+		    
 		# die 2 andern dicts füllen aus memb2Table und memb3Tbl
 		row2 = self.ui.memb2Table.rowCount()
-		#print "getMfVector:: row2=", row2
 		if row2 > 0:
 		    for j in range(row2):
 			name = str(self.ui.memb2Table.item(j,0).text())
 			self.d_in2_mfname_idx[name] = j
 		row3 = self.ui.memb3Table.rowCount()
-		#print "getMfVector:: row3=", row3
 		if row3 > 0:
 		    for j in range(row3):
 			name = str(self.ui.memb3Table.item(j,0).text())
 			self.d_in3_mfname_idx[name] = j
-		    
 
 	elif curr == 1:
 	    row= self.ui.memb2Table.rowCount()
@@ -1191,13 +1186,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		    range_= self.ui.memb2Table.item(i,2).text()
 		    qli = range_.split(" ")			
 		    pyli = str(qli.join("\n")).split("\n")	
-		    mfRangeList.append(pyli)
+		    self.mfRangeList.append(pyli)
 		    type_ = self.ui.memb2Table.item(i,1).text()
-		    mfTypeList.append(str(type_))
+		    self.mfTypeList.append(str(type_))
 		    name = str(self.ui.memb2Table.item(i,0).text())
-		    mfTitleList.append(name)
-		    
+		    self.mfTitleList.append(name)
 		    self.d_in2_mfname_idx[name] = i
+		    
 		# die 2 anderen dicts füllen aus memb1Table und memb3Tbl
 		row1 = self.ui.memb1Table.rowCount()
 		if row1 > 0:
@@ -1219,13 +1214,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		    range_ = self.ui.memb3Table.item(i,2).text()
 		    qli = range_.split(" ")			
 		    pyli = str(qli.join("\n")).split("\n")	
-		    mfRangeList.append(pyli)
+		    self.mfRangeList.append(pyli)
 		    type_ = self.ui.memb3Table.item(i,1).text()
-		    mfTypeList.append(str(type_))
+		    self.mfTypeList.append(str(type_))
 		    name = str(self.ui.memb3Table.item(i,0).text())
-		    mfTitleList.append(name)
-		    
+		    self.mfTitleList.append(name)
 		    self.d_in3_mfname_idx[name] = i
+		
 		# die 2 andern dicts füllen aus memb1Tbl und memb2Tbl
 		row1 = self.ui.memb1Table.rowCount()
 		if row1 > 0:
@@ -1239,38 +1234,31 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			self.d_in2_mfname_idx[name] = j
 		    
 	# put values of the list in the arrays
-	for li in mfRangeList:
+	del self.xMf[:]
+	for li in self.mfRangeList:
 	    for v in li:
-		xMf.append(float(v))
-	for typ in mfTypeList:
+		self.xMf.append(float(v))
+		
+	del self.yMf[:]
+	for typ in self.mfTypeList:
 	    if (typ == "triangular"):
-		yMf.append(0)
-		yMf.append(1)
-		yMf.append(0)
+		self.yMf.append(0)
+		self.yMf.append(1)
+		self.yMf.append(0)
 	    else:
-		yMf.append(0)
-		yMf.append(1)
-		yMf.append(1)
-		yMf.append(0)
-	# umspeichern
-	self.numMf = len(mfTypeList)   
-	self.xMf = xMf
-	self.yMf = yMf
-	self.mfTitleList = mfTitleList
-	self.mfTypeList  = mfTypeList
-	self.numPoints = len(xMf)
-	self.mfRangeList = mfRangeList
-	#print "getMfVector: mfTypeList: ", mfTypeList
-	#print "getMfVector: mfTitleList: ", mfTitleList
-	
-	#print "getMfVector: d_in1_mfname_idx", self.d_in1_mfname_idx.items()
-	#print "getMfVector: d_in2_mfname_idx", self.d_in2_mfname_idx.items()
-	#print "getMfVector: d_in3_mfname_idx", self.d_in3_mfname_idx.items()		
-	
+		self.yMf.append(0)
+		self.yMf.append(1)
+		self.yMf.append(1)
+		self.yMf.append(0)
+
+	self.numMf = len(self.mfTypeList)
+	self.numPoints = len(self.xMf)
+
+	#print "getMfVector: mfTypeList: ", self.mfTypeList
+	#print "getMfVector: mfTitleList: ", self.mfTitleList
 	#print "getMfVector: mfRangeList:  ", self.mfRangeList
-	##print "getMfVector: xMf[]: ", self.xMf
-	##print "getMfVector: yMf[]: ", self.yMf
-	#print "getMfVector: nr_inp=%d, numMf= %d, numPoints =%d" % (act+1, self.numMf, self.numPoints)
+	#print "getMfVector: xMf[]: ", self.xMf
+	#print "getMfVector: yMf[]: ", self.yMf
     
     #-------------------------------------------------------------------
     def actualizeMfTable(self):
@@ -1279,7 +1267,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# takes values from the xMf-array and put them into a string 
 	# that is put into the MfTable
 	
-	#print "actualizeMfTable:: mit xMf : ", self.xMf
 	index = 0
 	act = self.ui.inputCombo.currentIndex()
 	if act == 0:
@@ -1301,12 +1288,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		    index += 4
 
 		rangeItem = QtGui.QTableWidgetItem(self.ui.memb1Table.item(i,2))
-		#print i,". TableVal alt:", rangeItem.text()
+		#print "actualizeMfTable:", i ,". TableVal alt:", rangeItem.text()
 		rangeItem.setText(range_)
 		rangeItem.setTextAlignment(Qt.AlignCenter)
 		rangeItem.setFlags(rangeItem.flags() & ~Qt.ItemIsEditable)
 		self.ui.memb1Table.item(i,2).setText(range_)
-		#print i,". neuer range_:", range_
+		#print "actualizeMfTable:", i,". neuer range_:", range_
 	elif act == 1:
 	    # 2.Input
 	    anz = self.ui.memb2Table.rowCount()
@@ -1324,12 +1311,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 						float(self.xMf[index+3]))
 		    index += 4
 		rangeItem = QtGui.QTableWidgetItem(self.ui.memb2Table.item(i,2))
-		#print i,". TableVal alt:", rangeItem.text()
 		rangeItem.setText(range_)
 		rangeItem.setTextAlignment(Qt.AlignCenter)
 		rangeItem.setFlags(rangeItem.flags() & ~Qt.ItemIsEditable)
 		self.ui.memb2Table.item(i,2).setText(range_)
-		#print i,". neuer range_:", range_
 	elif act == 2:
 	    # 3. Input
 	    anz = self.ui.memb3Table.rowCount()
@@ -1347,16 +1332,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 						float(self.xMf[index+3]))
 		    index+=4
 		rangeItem = QtGui.QTableWidgetItem(self.ui.memb3Table.item(i,2))
-		#print i,". TableVal alt:", rangeItem.text()
 		rangeItem.setText(range_)
 		rangeItem.setTextAlignment(Qt.AlignCenter)
 		rangeItem.setFlags(rangeItem.flags() & ~Qt.ItemIsEditable)
 		self.ui.memb3Table.item(i,2).setText(range_)
-		#print i,". neuer range_:", range_
 
-	self.getMfVector()   # edited vals save in mfRangeList, usw.
-	
-	#print "actualizeMfTable:: self.mfRangeList=", self.mfRangeList
+	self.getMfVector()   # edited vals save in mfRangeList
     	changed = True
 
     #-------------------------------------------------------------------
@@ -1506,7 +1487,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def setOutGrid(self):
 	self.outGrid = self.ui.outGridCheck.isChecked()
 	self.showOutput()
-	#self.changed = True
     
     #-------------------------------------------------------------------
     def getOutputVector(self):
@@ -2368,7 +2348,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			    "Fuzzy Model Files (*.fis);;All Files (*)")
 	except IOError:
 	    self.ui.statusbar.showMessage("Error: File Open abandoned",2000)
-	
+	    
+	#fname = QString(os.environ['SAMT2DATEN']+'/hab_schreiadler.fis')
+	    
 	if fname.isEmpty(): 
 	    self.openedModelPath = QString("")	 # write only here ! 
 	else:
@@ -2382,7 +2364,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.inputCombo.clear()
 	    li2 = self.open_modelname.split('.')   
 	    modelname = self.work.add_model_fuz(str(fname), str(li2[0]))
-	    print "modelname=", modelname
+	    #print "modelname=", modelname
 	    
 	    # list of input-obj
 	    li_inp,li_outp,li_rule = self.work.get_lists_in_out_rule(modelname)  
