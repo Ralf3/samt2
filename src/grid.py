@@ -155,12 +155,18 @@ cdef class grid(object):
         self.mat=np.zeros((self.nrows,self.ncols),dtype=DTYPE)
         for i in range(self.nrows):
             line =reader.next()
-            if(line[0]):
+            if(line[0]!=''):
                 for j in range(self.ncols):
-                    self.mat[i,j]=float(line[j])
+                    if(line[j]!=''):
+                        self.mat[i,j]=float(line[j])
+                    else:
+                        self.mat[i,j]=self.nodata
             else:
                 for j in range(1,self.ncols+1):
-                    self.mat[i,j-1]=float(line[j])
+                    if(line[j]!=''):
+                        self.mat[i,j-1]=float(line[j])
+                    else:
+                        self.mat[i,j-1]=self.nodata
         f.close()
         return True
     def write_ascii(self, str filename):
