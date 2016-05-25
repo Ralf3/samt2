@@ -256,6 +256,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 				self.showContour)
 	self.connect(self.ui.cb_line, SIGNAL('toggled(bool)'),
 				self.draw_line)
+	self.connect(self.ui.btn_replot, SIGNAL('clicked()'),
+				self.btn_replot_clicked)
 	
 	#------- Calculation
 	self.connect(self.ui.btn_value, SIGNAL('clicked()'),
@@ -371,8 +373,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.contour = True
 	    self.ui.cb_line.setChecked(False)
 	    self.isLine = False
-	    
-	self.ui.cb_absolut.setEnabled(False)
+	
+	self.ui.cb_absolut.setChecked(False)	
+	self.li_X = [0,0]	
+	self.li_Y = [0,0]
 	self.ui.in1minLE.clear() 
 	self.ui.in1maxLE.clear()
 	self.ui.in2minLE.clear() 
@@ -2349,7 +2353,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	except IOError:
 	    self.ui.statusbar.showMessage("Error: File Open abandoned",2000)
 	    
-	#fname = QString(os.environ['SAMT2DATEN']+'/hab_schreiadler.fis')
+	#fname = QString(os.environ['SAMT2DATEN']+'/nahr_schreiadler.fis')
 	    
 	if fname.isEmpty(): 
 	    self.openedModelPath = QString("")	 # write only here ! 
@@ -2538,6 +2542,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.showOutput()
 	elif idx == 2:	# Rules page
 	    self.setRulesTableLabel()
+	
 	elif idx == 3:  # Analysis page 
 	    QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	    # returns, if no full fuzzy modell is edited
@@ -2549,16 +2554,18 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		print "AnalysisPage: return because Inp3 has only 1 member "
 		return
 	    if self.numInput==1:
+		# no Line possible
 		self.ui.cb_line.setEnabled(False)
-		self.ui.cb_absolut.setEnabled(False)
-		self.ui.cb_absolut.setChecked(False)
+		self.ui.cb_absolut.setEnabled(False)	
+		self.ui.cb_absolut.setChecked(False)	
 		self.ui.cb_contour.setEnabled(False) 
-		self.ui.cb_contour.setChecked(False) 
+		self.ui.cb_contour.setChecked(False)
+		self.ui.btn_replot.setEnabled(False) 
 	    else:
+		self.ui.btn_replot.setEnabled(True)  
 		self.ui.cb_line.setEnabled(True)
-		if self.ui.cb_line.isChecked() == True:
-		    self.ui.cb_absolut.setEnabled(True)
-		self.ui.cb_absolut.setChecked(False)
+		self.ui.cb_absolut.setEnabled(True)
+		self.ui.cb_absolut.setChecked(False)	
 		self.ui.cb_contour.setEnabled(True) 
 		self.ui.cb_contour.setChecked(True) 
 	    self.fuzzy_refresh()
@@ -2722,7 +2729,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	in3 = str(self.ui.input3LE.text())
 	
 	if self.ui.in3LE.text().isEmpty():
-	    in3const = 0.0  # ?????
+	    in3const = 0.0  # ?
 	else:
 	    in3const = float(str(self.ui.in3LE.text()))
 	if self.ui.xgridLE.text().isEmpty():
@@ -2884,13 +2891,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     
     #-------------------------------------------------------------------
     def clear_mplwid_complet(self):
-	# clear old mplwid_ana incl. colorbar if exists
 	# called by: initialize, showAnalyse
+	# clear old mplwid_ana incl. colorbar if colorbar exists
+
 	self.ui.mplwid_ana.close()   # delete all
 	self.ui.mplwid_ana = matplotlibWidget(self.ui.tab_4)
 	self.ui.mplwid_ana.setMinimumSize(QtCore.QSize(481, 501))
 	self.ui.mplwid_ana.setObjectName("mplwid_ana")
-	self.ui.horizontalLayout_8.addWidget(self.ui.mplwid_ana)
+	self.ui.horizontalLayout_2.addWidget(self.ui.mplwid_ana)
 	
 	# mplwid_ana.close() makes that layout is None
 	hbox = QHBoxLayout()
@@ -2907,35 +2915,42 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     
     #-------------------------------------------------------------------
     def draw_line(self, yesno):
-	# called by: cb_line toggled
+	# called by: cb_line toggled True or False
 	if yesno == True:
+	    self.li_X = [0,0]	
+	    self.li_Y = [0,0]
 	    if int(self.ui.xgridLE.text())<250 or int(self.ui.ygridLE.text())<250:
 		self.checked = False
 		self.isLine = False
-		self.ui.cb_absolut.setEnabled(False)
+		self.ui.cb_absolut.setEnabled(False)  
 		self.isNodata = False
 		msg = QString("Error: xgrid or ygrid < 250,  Not Line possible to draw")
-		self.ui.statusbar.showMessage(msg, 5000)
+		self.ui.statusbar.showMessage(msg, 3000)
 		self.ui.cb_line.setChecked(False)
 	    else:
 		self.checked = True
-		self.isLine = True    # only here set True
-		self.ui.cb_absolut.setEnabled(True)
+		self.isLine = True    # only here 
+		self.ui.btn_replot.setEnabled(False)
 		self.clear_old_line()
 		self.ui.mplwid_ana.canvas.draw()
-		self.set_default_new_line()
+		self.startPoint = (0,0)
+		self.endPoint = (0,0)
+		self.li_X = [0,0]
+		self.li_Y = [0,0]
+		self.line1 = line.Line2D([], [], color='black', linewidth=0.5)
 	else:
 	    # delete the line
 	    self.checked = True
 	    self.isLine = False
-	    self.ui.cb_absolut.setEnabled(False)
 	    self.clear_old_line()
+	    self.ui.btn_replot.setEnabled(True)	
 	    self.ui.mplwid_ana.canvas.draw()
 
     #-------------------------------------------------------------------
     def draw_line_end(self):
-	# called from: on_release  
+	# called from: on_release 
 	# prepare plot transect
+	# self.li_X and self.li_Y were filled in on_release
 	i0 = self.startPointC[1]	# wrote in on_releaseEv
 	j0 = self.startPointC[0]
 	i1 = self.endPointC[1]
@@ -2945,25 +2960,49 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	mx, t = self.work.get_mx_transect(i0,j0,i1,j1)
 	oname = self.ui.outnameLE.text()
 	if mx==None or t==None:
-	    msg = self.tr("Error: while Line End")
-	    self.ui.statusbar.showMessage(msg,2000)
+	    print "Error: while draw_line_end"
 	    return
 	if self.ui.cb_absolut.isChecked() == True:
 	    absolut = True
 	    max_out = float(self.ui.outmaxLE.text())
 	    min_out = float(self.ui.outminLE.text())
-	    popup = Popup_transect( t, mx,
-				    self.li_X, self.li_Y,
+	    popup = Popup_transect( t, mx, self.li_X, self.li_Y,
 				    oname, absolut,
 				    max_out, min_out)
 	else:
 	    absolut = False
-	    popup = Popup_transect( t, mx, 
-				    self.li_X, self.li_Y,
+	    popup = Popup_transect( t, mx, self.li_X, self.li_Y,
 				    oname, absolut)
 	popup.show()
 	self.li_popups.append(popup)
 	self.ui.cb_absolut.setChecked(False) 
+ 
+    #-------------------------------------------------------------------
+    def btn_replot_clicked(self):
+	if int(self.ui.xgridLE.text())<250 or int(self.ui.ygridLE.text())<250:
+		self.checked = False
+		self.isLine = False
+		self.ui.cb_absolut.setEnabled(False)  
+		self.isNodata = False
+		msg = QString("Error: xgrid or ygrid < 250,  Not Line possible to draw")
+		self.ui.statusbar.showMessage(msg, 3000)
+		self.ui.cb_line.setChecked(False)
+		self.li_X = [0,0]	
+		self.li_Y = [0,0]
+		return
+	
+	if (self.li_X[0] == 0) and (self.li_Y[0] == 0):
+	    if (self.li_X[1] == 0) and (self.li_Y[1] == 0):
+		msg = QString("Error: not old Line --> not Replot")
+		self.ui.statusbar.showMessage(msg, 1000)
+		self.ui.cb_line.setChecked(True)
+		return
+	
+	self.line1 = line.Line2D([],[],color='black',linewidth=0.5)
+	self.line1.set_data(self.li_X, self.li_Y)
+	self.ui.mplwid_ana.canvas.ax.add_line(self.line1)
+	self.ui.mplwid_ana.canvas.draw()
+	self.draw_line_end()
 	
     #-------------------------------------------------------------------
     def clear_old_line(self):
@@ -2972,15 +3011,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	for i in range(lae):
 	    self.ui.mplwid_ana.canvas.ax.lines.pop(0)
 
-    #-------------------------------------------------------------------
-    def set_default_new_line(self):
-        # called by: draw_line
-	self.startPoint = (0,0)
-	self.endPoint = (0,0)
-	self.li_X = [0,0]
-	self.li_Y = [0,0]
-	self.line1 = line.Line2D([], [], color='black', linewidth=0.5)
-	
     #-------------------------------------------------------------------
     def combinate_inputCombos(self):
 	# called by: switchTab 3=Analysis, actCombo1, actCombo2
@@ -3349,7 +3379,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def scale_picked_point(self, X, Y): 
 	# oberer linker Eckpunkt of matrix:[col=0,row=0] 
-	diffx = self.xma -self.xmi
+	diffx = self.xma - self.xmi
 	diffy = self.yma - self.ymi
 	# yAchse
 	v1 = Y-self.ymi
@@ -3389,8 +3419,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    msg = self.tr(s)
 	    self.ui.statusbar.showMessage(msg)
 	    if self.isLine:
-		#~ if self.check_nodata(Y,X):
-		    #~ return
 		self.endPoint = [col,row]   #[X,Y]
 		self.clear_old_line()
 		self.ui.mplwid_ana.canvas.draw()
@@ -3480,10 +3508,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    li_col_header.append('Entire Output')
 	    
 	    # opens window with active_rules
-	    popup = Popup_active_rules(X,Y, su1,
-				    ruleList, muList,outputList, 
-				    ifthenList, li_col_header,
-				    anz_inp, in3const)
+	    popup = Popup_active_rules(X,Y, su1,ruleList, 
+				    muList,outputList, ifthenList,
+				    li_col_header, anz_inp, in3const)
 	    popup.show()
 	    self.li_popups.append(popup)
 	
@@ -3500,10 +3527,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.mplwid_ana.canvas.draw()  
 	
 	if self.ui.cb_line.isChecked():
-	    # remove next 4 lines to show the line for a longer time 
 	    self.dragging = False   
 	    self.ui.cb_line.setChecked(False)
-	    self.ui.cb_absolut.setEnabled(False)
 	    self.isLine = False 
 	    self.draw_line_end()  # --> opens window with transect
 	    
