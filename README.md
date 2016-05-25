@@ -36,3 +36,7 @@ In an Python program samt2.py can be used with:
 import grid as samt2
 
 this is even possible for an ipython notebook, please test the examples.
+
+A "ready to use" virtualbox image can be downloaded from: "http://www.zalf.de/de/forschung_lehre/software_downloads/Seiten/default.aspx"
+
+This image based on Kubuntu 16.04 and can start SAMT2: samt2.py and SAMTFUZZY: samt2fuzzy.py. 
