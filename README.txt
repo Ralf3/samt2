@@ -4,7 +4,7 @@ gx=samt2.grid(500,500) # defines a new grid object with a zero mat
 
 # In-Out =====================================================================
 gx.read_ascii(name,f)  # reads an ASCII-file   f=1 ===> DEBUG
-gx.write_ascci(name)   # writes an ASCII-file
+gx.write_ascii(name)   # writes an ASCII-file
 gx.read_csv(name)      # reads from a csv file and converts it to a grid
 gx.list_hdf(name)      # lists all data sets in the h5 file
 gx.read_hdf(name,set,f # loads the dataset (set) from h5 f=1 ===> DEBUG

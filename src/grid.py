@@ -152,22 +152,8 @@ cdef class grid(object):
             print("cellsize\t", self.csize)
             print("nodata\t", self.nodata)
         reader=csv.reader(f,delimiter=' ')
-        self.mat=np.zeros((self.nrows,self.ncols),dtype=DTYPE)
-        for i in range(self.nrows):
-            line =reader.next()
-            if(line[0]!=''):
-                for j in range(self.ncols):
-                    if(line[j]!=''):
-                        self.mat[i,j]=float(line[j])
-                    else:
-                        self.mat[i,j]=self.nodata
-            else:
-                for j in range(1,self.ncols+1):
-                    if(line[j]!=''):
-                        self.mat[i,j-1]=float(line[j])
-                    else:
-                        self.mat[i,j-1]=self.nodata
         f.close()
+        self.mat=np.loadtxt(filename, dtype=np.float32, skiprows=6)
         return True
     def write_ascii(self, str filename):
         """ stores a ascii file and the header as export to the GIS """
