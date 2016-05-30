@@ -116,12 +116,13 @@ gx.and_grid(g1)		 # includes nodata from both grids
 gx.or_grid(g1)           # replaces nodata in gx.mat with gx.mat1
 
 # Point algorithms  x=int y=int z=float =====================================
-gx.transform_to_ij(x,y)  # takes a list [np.ndarray] in geo to ij
-gx.interpolate(x,y,z,m)  # interpolates x,y,z to a grid using m= 
+gx.transform_to_ij(y,x)  # takes a list [np.ndarray] in geo to ij
+gx.inside_geo(y,x)       # takes a geo. coord and returns the value of the grid
+gx.interpolate(y,x,z,m)  # interpolates x,y,z to a grid using m= 
 # multiquadratic, inverse, gaussian, linear, cubic, quintic, thin_plate
-gx.voronoi(x,y,z)        # voronoi
-gx.distance(x,y)         # distance to all grid cells from pos x,y
-gx.poisson(x,y,z,eps,iter) # x,y: np.ndarray(dtype=np.int)
+gx.voronoi(y,x,z)        # voronoi
+gx.distance(y,x)         # distance to all grid cells from pos x,y
+gx.poisson(y,x,z,eps,iter) # x,y: np.ndarray(dtype=np.int)
 			   # z=np.ndarray(dtype=np.double), eps,iter=25
 			   # poisson equation solver
 

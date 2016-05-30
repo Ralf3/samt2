@@ -1934,6 +1934,16 @@ cdef class grid(object):
             if(y[i]<0 or y[i]>=self.nrows or x[i]<0 or x[i]>=self.ncols):
                 return None, None
         return y,x
+    def inside_geo(self,y1,x1):
+        """ takes a coordinate y1,x1 and returns the value of the grid
+        """
+        cdef int i,j
+        j=int((x1-(self.x+self.csize/2.0))/self.csize)
+        i=int((y1-(self.y+self.csize/2.0))/self.csize)
+        i=self.nrows-1-i
+        if(i<0 or i>=self.nrows or j<0 or j>=self.ncols):
+            return None
+        return self.mat[i,j] 
     def transform_from_ij(self,i1,j1):
         """ takes two lists with grid coordinates and
             transforms them to geographic coordinates
