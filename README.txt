@@ -118,6 +118,7 @@ gx.or_grid(g1)           # replaces nodata in gx.mat with gx.mat1
 # Point algorithms  x=int y=int z=float =====================================
 gx.transform_to_ij(y,x)  # takes a list [np.ndarray] in geo to ij
 gx.inside_geo(y,x)       # takes a geo. coord and returns the value of the grid
+gx.set_geo(y,x,z)	 # set mat=z at pos y,x
 gx.interpolate(y,x,z,m)  # interpolates x,y,z to a grid using m= 
 # multiquadratic, inverse, gaussian, linear, cubic, quintic, thin_plate
 gx.voronoi(y,x,z)        # voronoi
