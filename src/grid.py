@@ -355,6 +355,14 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
         mat[:,:]=val
         return True
+    def set_all_nd(self,DTYPE_t val):
+        """ set all value exept nodata """
+        cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
+        for i in range(self.nrows):
+            for j in range(self.ncols):
+                if(int(mat[i,j]!=self.nodata)):
+                    mat[i,j]=val
+        return True
     def size(self):
         """ returns the size: nrows, ncols """
         return self.nrows, self.ncols
