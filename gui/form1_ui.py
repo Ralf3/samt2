@@ -67,7 +67,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.mpl_widget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 866, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 866, 30))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName(_fromUtf8("menuHelp"))
@@ -305,6 +305,8 @@ class Ui_MainWindow(object):
         self.actionFuzzy_Analysis.setObjectName(_fromUtf8("actionFuzzy_Analysis"))
         self.actionCreate = QtGui.QAction(MainWindow)
         self.actionCreate.setObjectName(_fromUtf8("actionCreate"))
+        self.actionSet_ND = QtGui.QAction(MainWindow)
+        self.actionSet_ND.setObjectName(_fromUtf8("actionSet_ND"))
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionManual)
         self.menuTable.addAction(self.actionTABLE_Lut)
@@ -327,6 +329,7 @@ class Ui_MainWindow(object):
         self.menuAGrid.addAction(self.menuSpecial.menuAction())
         self.menuSGrid.addAction(self.actionCreate)
         self.menuSGrid.addAction(self.actionSet)
+        self.menuSGrid.addAction(self.actionSet_ND)
         self.menuSGrid.addAction(self.actionReplace)
         self.menuSGrid.addAction(self.actionAdd)
         self.menuSGrid.addAction(self.actionMul)
@@ -646,5 +649,7 @@ class Ui_MainWindow(object):
         self.actionFuzzy_Analysis.setStatusTip(_translate("MainWindow", "Fuzzy_Analysis:  P1=grid,  P2=[grid],  P3=[grid],  highlighted fuzzy model", None))
         self.actionCreate.setText(_translate("MainWindow", "Create", None))
         self.actionCreate.setStatusTip(_translate("MainWindow", "creates a random grid with P1=name, P2=rows, P3=cols", None))
+        self.actionSet_ND.setText(_translate("MainWindow", "Set_ND", None))
+        self.actionSet_ND.setStatusTip(_translate("MainWindow", "Set_ND: set all value exept nodata=P1, (overwrite) ", None))
 
 from matplotlibwidgetFile import matplotlibWidget

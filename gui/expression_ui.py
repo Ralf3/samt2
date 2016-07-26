@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'expression.ui'
 #
-# Created: Fri Apr 24 08:21:37 2015
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -40,14 +39,14 @@ class Ui_expression(object):
         self.main_frame.setMidLineWidth(0)
         self.main_frame.setObjectName(_fromUtf8("main_frame"))
         self.ledit_res = QtGui.QLineEdit(self.main_frame)
-        self.ledit_res.setGeometry(QtCore.QRect(80, 50, 251, 31))
+        self.ledit_res.setGeometry(QtCore.QRect(90, 50, 251, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.ledit_res.setFont(font)
         self.ledit_res.setCursorPosition(0)
         self.ledit_res.setObjectName(_fromUtf8("ledit_res"))
         self.label_6 = QtGui.QLabel(self.main_frame)
-        self.label_6.setGeometry(QtCore.QRect(40, 60, 31, 20))
+        self.label_6.setGeometry(QtCore.QRect(40, 60, 41, 20))
         self.label_6.setObjectName(_fromUtf8("label_6"))
         self.label_5 = QtGui.QLabel(self.main_frame)
         self.label_5.setGeometry(QtCore.QRect(470, 20, 21, 18))
@@ -66,7 +65,7 @@ class Ui_expression(object):
         self.label_4.setFont(font)
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.ledit_exp = QtGui.QLineEdit(self.main_frame)
-        self.ledit_exp.setGeometry(QtCore.QRect(80, 90, 601, 31))
+        self.ledit_exp.setGeometry(QtCore.QRect(90, 90, 591, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.ledit_exp.setFont(font)
@@ -84,13 +83,12 @@ class Ui_expression(object):
         self.label_2.setGeometry(QtCore.QRect(10, 140, 531, 18))
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.label_7 = QtGui.QLabel(self.main_frame)
-        self.label_7.setGeometry(QtCore.QRect(10, 95, 60, 18))
+        self.label_7.setGeometry(QtCore.QRect(10, 95, 71, 18))
         self.label_7.setObjectName(_fromUtf8("label_7"))
         self.layoutWidget = QtGui.QWidget(self.main_frame)
         self.layoutWidget.setGeometry(QtCore.QRect(10, 360, 671, 36))
         self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget)
-        self.horizontalLayout.setMargin(0)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
@@ -164,7 +162,7 @@ class Ui_expression(object):
         QtCore.QMetaObject.connectSlotsByName(expression)
 
     def retranslateUi(self, expression):
-        self.label_6.setText(_translate("expression", "result", None))
+        self.label_6.setText(_translate("expression", "result:", None))
         self.label_5.setText(_translate("expression", "c_", None))
         self.label_4.setText(_translate("expression", "b_", None))
         self.label_3.setText(_translate("expression", "a_", None))
@@ -177,14 +175,4 @@ class Ui_expression(object):
 "\n"
 "", None))
         self.label_7.setText(_translate("expression", "Expression:", None))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    expression = QtGui.QMainWindow()
-    ui = Ui_expression()
-    ui.setupUi(expression)
-    expression.show()
-    sys.exit(app.exec_())
 

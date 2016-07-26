@@ -49,6 +49,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.gdoc = gisdoc.gisdoc()
 	self.env = os.environ['SAMT2MASTER']+'/gui' # s. Zeile 1025
 	self.daten_path = os.environ['SAMT2DATEN']
+	self.openedModelPath = '' 	# writes fileOpen only
 	
 	env = self.env+'/pixmaps'
         self.setWindowIcon(QIcon(env+'/samt2_icon.png'))
@@ -215,6 +216,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			self.slotGRID_Create)
 	self.connect(self.ui.actionSet, SIGNAL('triggered()'), 
 			self.slotGRID_Set)
+	self.connect(self.ui.actionSet_ND, SIGNAL('triggered()'), 
+			self.slotGRID_Set_ND)
 	self.connect(self.ui.actionReplace, SIGNAL('triggered()'), 
 			self.slotGRID_Replace)
 	self.connect(self.ui.actionAdd, SIGNAL('triggered()'), 
@@ -708,13 +711,20 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     
     #------------ menu IO ----------------------------------------------
     def slotHDF_Open(self):
-	path = self.daten_path +'/hdf'
+	if self.openedModelPath == '':
+	    path = self.daten_path +'/hdf'
+	else:
+	    path = self.openedModelPath
 	name_hdf = QString()
 	name_hdf = QtGui.QFileDialog.getOpenFileName(self, 
 		    self.tr("Open File"), 
 		    path, self.tr("Images (*.hdf *hdf5 *h5)"))
-	if(name_hdf.isEmpty()): 
+	
+	if(name_hdf.isEmpty()):
+	    #self.openedModelPath = QString("") 
 	    return
+	self.openedModelPath = name_hdf  
+	
 	li_namen_grid = self.gdoc.get_list_grids(str(name_hdf))
 	if li_namen_grid == None:
 	    print "HDF_Open Error"
@@ -747,13 +757,18 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	
     #------------------------------------------------------------------
     def slotASCII_Open(self):
-	path = self.daten_path +'/ascii'
+	if self.openedModelPath == '':
+	    path = self.daten_path +'/ascii'
+	else:
+	    path = self.openedModelPath
 	name_file = QString()
 	name_file = QtGui.QFileDialog.getOpenFileName(self, 
 		    self.tr("Open File"), path, 
 		    self.tr("Images (*.asc *.ascii *.txt)"))
-	if(name_file.isEmpty()): 
+	if(name_file.isEmpty()):
+	    #self.openedModelPath = QString("") 
 	    return
+	self.openedModelPath = name_file  
 	li = name_file.split('/')
 	li2 = li[-1].split('.')   # li[-1]  name.asc
 	ds_new = self.gdoc.add_ascii(str(name_file), str(li2[0]))
@@ -775,7 +790,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 				  P3=remark expected")
 	    self.ui.statusBar.showMessage(msg, 10000)
 	    return
-	path = self.daten_path +'/hdf'
+	path = self.openedModelPath   #self.daten_path +'/hdf'
 	filename = QtGui.QFileDialog.getSaveFileName(self,
 	    "Choose a filename to save under", path,
 	    "Images (*.hdf *h5 *hdf5)");
@@ -795,7 +810,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     	
     #-------------------------------------------------------------------
     def slotASCII_File_Save(self):
-	path = self.daten_path +'/ascii'
+	path = self.openedModelPath    #= self.daten_path +'/ascii'
 	filename = QtGui.QFileDialog.getSaveFileName(self,
 	    "Choose a filename to save under", path,
 	    "Images (*.asc *.ascii *.txt)");
@@ -813,13 +828,18 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.statusBar.showMessage(self.tr(msg))
 	    return
 	art = 'yx'
-	path = self.daten_path +'/points'
+	if self.openedModelPath == '':
+	    path = self.daten_path +'/points'
+	else:
+	    path = self.openedModelPath
 	name_file = QString()
 	name_file = QtGui.QFileDialog.getOpenFileName(self, 
 		    self.tr("Open File"), path, 
 		    self.tr("Points (*.csv *.asc *.txt)"))
-	if(name_file.isEmpty()): 
+	if(name_file.isEmpty()):
+	    #self.openedModelPath = QString("") 
 	    return
+	self.openedModelPath = name_file 
 	name_file = str(name_file)
 	li = name_file.split('/')
 	li22 = li[-1].split('.')  
@@ -872,13 +892,18 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    return
 	art = 'ij'
 	#samtpath = window.get_samt_path()
-	path = self.daten_path +'/points'
+	if self.openedModelPath == '':
+	    path = self.daten_path +'/points'
+	else:
+	    path = self.openedModelPath
+
 	name_file = QString()
 	name_file = QtGui.QFileDialog.getOpenFileName(self, 
 		    self.tr("Open File"), path, 
 		    self.tr("Points (*.csv *.asc *.txt)"))
 	if(name_file.isEmpty()): 
 	    return
+	self.openedModelPath = name_file
 	name_file = str(name_file)
 	li = name_file.split('/')
 	li22 = li[-1].split('.')
@@ -976,13 +1001,17 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	
     #-------------------------------------------------------------------
     def slotFUZZY_Open(self):
-	path = self.daten_path +'/model/fuzzy'     #/fis'
+	if self.openedModelPath == '':
+	    path = self.daten_path +'/model/fuzzy'     #/fis'
+	else:
+	    path = self.openedModelPath
 	name_file = QString()
 	name_file = QtGui.QFileDialog.getOpenFileName(self, 
 		    self.tr("Open File"), path, 
 		    self.tr("Models (*.fis)"))
 	if(name_file.isEmpty()): 
 	    return
+	self.openedModelPath = name_file
 	li = name_file.split('/')
 	li2 = li[-1].split('.')   
 	ds_new = self.gdoc.add_model_fuz(str(name_file), str(li2[0]))
@@ -996,13 +1025,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     #-------------------------------------------------------------------
     def slotSVM_Open(self):
-	path = self.daten_path +'/model/svm'        
+	if self.openedModelPath == '':
+	    path = self.daten_path +'/model/svm'
+	else:
+	    path = self.openedModelPath
 	name_file = QString()
 	name_file = QtGui.QFileDialog.getOpenFileName(self, 
 		    self.tr("Open File"), path, 
 		    self.tr("Models (*.svm)"))
 	if(name_file.isEmpty()): 
 	    return
+	self.openedModelPath = name_file
+	
+	
 	li = name_file.split('/')
 	li2 = li[-1].split('.')  
 	#print "slotSVM_Open::", name_file, li2[0] # 
@@ -1232,6 +1267,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    return
 	if self.gdoc.grid_set(self.gname, v1) == False:
 	    print "set error"
+	else:
+	    self.slotVIS_Start(1)
+	    
+    #-------------------------------------------------------------------
+    def slotGRID_Set_ND(self):
+	v1 = str(self.ui.ledit_p1.text())
+	if self.is_number(v1) == False:
+	    return
+	if self.gdoc.grid_set_nd(self.gname, v1) == False:
+	    print "set_all_nd error"
 	else:
 	    self.slotVIS_Start(1)
 

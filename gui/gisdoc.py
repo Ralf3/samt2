@@ -621,7 +621,6 @@ class gisdoc:
 	return gname_new    
 	
     #-------------------------------------------------------------------
- 
     def grid_set(self, gridname, val1):
 	"""
 	    in:	val1	value to set	
@@ -632,6 +631,18 @@ class gisdoc:
 	if gx == None:
 	    return False
 	gx.set_all(float(val1))
+	
+	#-------------------------------------------------------------------
+    def grid_set_nd(self, gridname, val1):
+	"""
+	    in:	val1	value to set	
+	    out:	True / False
+	    set all value exept nodata
+	"""
+	gx = self.d_grids[gridname]
+	if gx == None:
+	    return False
+	gx.set_all_nd(float(val1))
 	
     #-------------------------------------------------------------------
     def grid_replace(self, gridname, val1, val2):
