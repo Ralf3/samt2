@@ -58,8 +58,10 @@ cdef class grid(object):
     cdef np.ndarray d8_mat  # store the result of d8 
     cdef int x1,x2          # help for kadane
     cdef np.ndarray sub     # maximum subarray
-    cdef str time1        # time and date of a grid
+    cdef str time1          # time and date of a grid
     cdef str date1
+    cdef np.ndarray partition # used to calculate the complexity
+    cdef int counter          # used to calculate the complexity
     def __init__(self,int nrows=0, int ncols=0,
                  double x=0.0, double y=0.0,
                  double csize=1.0,int nodata=-9999):
@@ -76,6 +78,8 @@ cdef class grid(object):
         self.d8_mat=None
         self.time1=str('\0')
         self.date1=str('\0')
+        self.partition=None
+        self.counter=0
         # create a empty grid if the nrows and ncols are given 
         if(self.nrows!=0 and self.ncols!=0):
             self.mat=np.zeros((self.nrows,self.ncols),dtype=DTYPE)
@@ -1096,6 +1100,106 @@ cdef class grid(object):
         arr=z[0:count]           # select the non zeros
         np.random.shuffle(arr)   # shuffle the points
         return arr[0:n]
+    # mixin after William Seitz ===========================================
+    def get_mixin(self,int nr=30):
+        cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
+        cdef int i,j,k,nodata,data
+        nodata=0
+        data=0
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
+                if(int(mat[i,j])==self.nodata):
+                    nodata+=1
+                else:
+                    data+=1
+        cdef np.ndarray[DOUBLE_t,ndim=1] mx=np.zeros(data) # collect only data
+        k=0
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
+                if(int(mat[i,j])!=self.nodata):
+                    mx[k]=mat[i,j]
+                    k+=1
+        h=np.histogram(mx, bins=nr)  # build an histogram
+        d1=h[0]                      # extract the data
+        d1=d1.astype(float)
+        d1/=np.sum(d1)
+        d1*=nr                       # normalize data
+        d1=np.cumsum(d1)
+        return d1
+    def gen_partition(self,int n, a, int level):
+        """ helpfunction to generate the partition rekurent
+        """
+        a=np.copy(a)
+        if(n<1):
+            return
+        a[level]=n
+        self.partition[self.counter]=np.cumsum(a)
+        self.counter+=1
+        if(level==0):
+            first=1
+        else:
+            first=a[level-1]
+        for i in xrange(first,int(n/2+1.0)):
+            a[level]=i
+            self.gen_partition(n-i,a,level+1)
+        
+    def complexity(self, mixin, int nr=30):
+        """ 
+        The mixin will be compared with all 5604 possible
+        partitions of nr=30 and the normlized incompareabel 
+        will be returned
+        """
+        cdef int i,j, n,flow,fhigh
+        self.counter=0
+        trys={5 : 7,
+              6 : 11,
+              7 : 15,
+              8 : 22,
+              9 : 30,
+              10: 42,
+              11: 56,
+              12: 77,
+              13: 101,
+              14: 135,
+              15: 176,
+              16: 231,
+              17: 297,
+              18: 385,
+              19: 490,
+              20: 627,
+              21: 792,
+              22: 1002,
+              23: 1255,
+              24: 1575,
+              25: 1958,
+              26: 2436,
+              27: 3010,
+              28: 3718,
+              29: 4565,
+              30: 5604}
+        n=nr
+        if(n<5):
+            print 'error in complexity: use a nr in [6,30]'
+            return -9999
+        a=[0 for i in range(n)]
+        self.partition=np.zeros((trys[n],n))
+        self.gen_partition(n,a,0)
+        # print self.partition
+        comp_counter=0
+        cdef float delta=0.001
+        # print n, trys[n]
+        for i in xrange(trys[n]):
+            flow=0
+            fhigh=0
+            for j in xrange(n):
+                if(self.partition[i,j]<mixin[j]-delta):
+                    fhigh=1
+                if(self.partition[i,j]>mixin[j]+delta):
+                    flow=1
+            if(flow==0 or fhigh==0):
+                comp_counter+=1
+        return float(trys[n]-comp_counter)/float(trys[n])
+            
     # simple destructive operations =======================================
     def norm(self):
         """

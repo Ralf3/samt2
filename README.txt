@@ -60,6 +60,8 @@ gx.sample_det(val)     # returns the coord. with mat==val
 gx.sample_neg(i,j,dist,n) # samples random [i,j] with a dist from
 			  # the list i,j, returns an nd.array 
 gx.statr(a,b)          # returns the total,mean,std of cells>=a and cells<=b
+gx.get_mixin(nr=30)    # get an array containing the mixin of a grid
+gx.complexity(mixin,nr=30) # uses the mixin to calculate a complexity number
 
 # Simple destructive operations (overwrites the mat) ========================
 gx.norm()              # normalizes the mat in [0.0,1.0]
