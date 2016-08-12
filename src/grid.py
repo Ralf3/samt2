@@ -1203,9 +1203,10 @@ cdef class grid(object):
             for j in xrange(n):
                 if(self.partition[i,j]<mixin[j]-delta):
                     fhigh=1
-                if(self.partition[i,j]>mixin[j]+delta):
-                    flow=1
-            if(flow==0 or fhigh==0):
+                #if(self.partition[i,j]>mixin[j]+delta):
+                #    flow=1
+                # if(flow==0 or fhigh==0):
+            if fhigh==0:
                 comp_counter+=1
         return float(trys[n]-comp_counter)/float(trys[n])
             
