@@ -1106,6 +1106,7 @@ cdef class grid(object):
         cdef int i,j,k,nodata,data
         nodata=0
         data=0
+        # self.n=nr
         for i in xrange(self.nrows):
             for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
@@ -1122,18 +1123,25 @@ cdef class grid(object):
         h=np.histogram(mx, bins=nr)  # build an histogram
         d1=h[0]                      # extract the data
         d1=d1.astype(float)
+        d1.sort()
+        d1=d1[::-1]                  # revers d1
         d1/=np.sum(d1)
         d1*=nr                       # normalize data
         d1=np.cumsum(d1)
+        # print d1
         return d1
     def gen_partition(self,int n, a, int level):
-        """ helpfunction to generate the partition rekurent
+        """ helpfunction to generate the partition recurrent
         """
         a=np.copy(a)
+        N=len(a)
         if(n<1):
             return
         a[level]=n
-        self.partition[self.counter]=np.cumsum(a)
+        swp=np.zeros(N)
+        swp[0:(level+1)]=(a[::-1])[(N-level-1):N]
+        self.partition[self.counter]=np.cumsum(swp)
+        # self.partition[self.counter]=np.cumsum(a)
         self.counter+=1
         if(level==0):
             first=1
@@ -1143,7 +1151,7 @@ cdef class grid(object):
             a[level]=i
             self.gen_partition(n-i,a,level+1)
         
-    def complexity(self, mixin, int nr=30):
+    def complexity(self, int nr=30):
         """ 
         The mixin will be compared with all 5604 possible
         partitions of nr=30 and the normlized incompareabel 
@@ -1181,6 +1189,7 @@ cdef class grid(object):
         if(n<5):
             print 'error in complexity: use a nr in [6,30]'
             return -9999
+        mixin=self.get_mixin(nr)
         a=[0 for i in range(n)]
         self.partition=np.zeros((trys[n],n))
         self.gen_partition(n,a,0)
