@@ -4,6 +4,7 @@ import csv
 import random
 # import required modules
 import numpy as np
+from scipy import signal
 import pylab as plt
 
 # ------------------------------------------------------------
@@ -302,6 +303,139 @@ def gini(o):
         area += height - value / 2.
     fair_area = height * len(o) / 2
     return (fair_area - area) / fair_area
+
+# ------------------------------------------------------------
+# some function for Mixin and Complexity added by William Seitz
+# ------------------------------------------------------------
+class complexity(object):
+    def __init__(self,n=30,delta=0.001):
+        """ generates the partion for a given number n=30
+        """
+        self.n=n
+        self.delta=delta
+        self.trys={5 : 7,
+                   6 : 11,
+                   7 : 15,
+                   8 : 22,
+                   9 : 30,
+                   10: 42,
+                   11: 56,
+                   12: 77,
+                   13: 101,
+                   14: 135,
+                   15: 176,
+                   16: 231,
+                   17: 297,
+                   18: 385,
+                   19: 490,
+                   20: 627,
+                   21: 792,
+                   22: 1002,
+                   23: 1255,
+                   24: 1575,
+                   25: 1958,
+                   26: 2436,
+                   27: 3010,
+                   28: 3718,
+                   29: 4565,
+                   30: 5604}
+        self.partition=np.zeros((self.trys[n],n))
+        a=[0 for i in range(n)]
+        self.counter=0    # counter to fill the self.partition
+        self.gen_partition(n,a,0)
+        # print self.partition
+        self.mixin=None
+    def gen_partition(self,n,a,level):
+        """ recurrent implementation for partition of a given number
+        """
+        # print 'gen:',n,level,a
+        a=np.copy(a)
+        if(n<1):
+            return
+        a[level]=n
+        swp=np.zeros(self.n)
+        swp[0:(level+1)]=(a[::-1])[(self.n-level-1):self.n]
+        self.partition[self.counter]=np.cumsum(swp)
+        self.counter+=1
+        if(level==0):
+            first=1
+        else:
+            first=a[level-1]
+        for i in xrange(first,int(n/2+1.0)):
+            a[level]=i
+            self.gen_partition(n-i,a,level+1)
+    def get_mixin(self,mx):
+        """ takes a data set mx and generates a historgram
+        """
+        h=np.histogram(mx, bins=self.n)  # build an histogram
+        d1=h[0]                      # extract the data
+        d1=d1.astype(float)
+        d1.sort()
+        d1=d1[::-1]
+        # print d1
+        # print h[1]
+        d1/=np.sum(d1)
+        d1*=self.n                   # normalize data
+        d1=np.cumsum(d1)
+        self.mixin=d1
+        # print d1
+        return d1
+    def comp(self,mx):
+        """ calculates the complexity by comparison the 
+            mixin with all possible
+            the mixin will be caculated using the gen_mixin(mx) 
+        """
+        self.get_mixin(mx)
+        comp_counter=0
+        for i in xrange(self.trys[self.n]):
+            flow=0
+            fhigh=0
+            for j in xrange(self.n):
+                if(self.partition[i,j]<self.mixin[j]-self.delta):
+                    fhigh=1
+            if fhigh==0:
+                comp_counter+=1
+        return float(self.trys[self.n]-comp_counter)/float(self.trys[self.n])
+    def plot(self,data,ws=32):
+        """ plot the function, calcs the complexity and a continous wavelet """
+        N=len(data)
+        x=np.arange(N)
+        # wavelet part
+        widths = np.arange(1, ws)
+        cwtmatr = signal.cwt(data, signal.ricker, widths)
+        # define the multiple plot
+        plt.subplot(2,1,1)
+        c=self.comp(data)
+        plt.title('Signal complexity='+str(c))
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.grid(True)
+        plt.plot(x,data)
+        plt.subplot(2,1,2)
+        cax=plt.imshow(cwtmatr,aspect='auto')
+        cbar = plt.colorbar(cax)
+        plt.xlabel('dt')
+        plt.ylabel('dF')
+        plt.grid(True)
+        plt.show()
+
+def majorization(l1,l2):
+    """ defines the majorizatiin between two lists
+    a_1 >= b_1
+    a_1 + a_2 >= b_1 + b_2
+    a_1 + a_2 + a_3 >= b_1 + b_2 + b_3
+    ...
+    a_1 + a_2 + ... + a_n-1 >= b_1 + b_2 + ... + b_n-1
+    a_1 + a_2 + ... + a_n-1 + a_n >= b_1 + b_2 + ... + b_n-1 + b_n
+    """
+    a=0
+    b=0
+    r={0}
+    for (x,y) in zip(l1,l2):
+        a+=x
+        b+=y
+        r|={cmp(a,b)}
+    return sum(r)
 
 # ------------------------------------------------------------
 # some functions added by Ralf Wieland

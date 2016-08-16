@@ -1101,7 +1101,7 @@ cdef class grid(object):
         np.random.shuffle(arr)   # shuffle the points
         return arr[0:n]
     # shannon indexgamma.astype(float)
-    def get_shannon(self):
+    def shannon(self):
         """ calculates the shannon index over an normalized array
             x/sum(x)
         """
@@ -1120,7 +1120,7 @@ cdef class grid(object):
         # print 'shannon:',s,sum(x)
         return -np.sum(x[x>0]*np.log(x[x>0]))
      # shannon indexgamma.astype(float)
-    def get_shannons(self,nr=1000):
+    def shannons(self,nr=1000):
         """ calculates the scaled shannon index over an normalized array
             x/sum(x)
         """
@@ -1129,6 +1129,9 @@ cdef class grid(object):
         cdef int i,j
         cdef float s
         X=[]
+        if(nr<10):
+            print 'error in get_shannons: nr=',nr,' must be >10 '
+            return self.nodata
         for i in xrange(self.nrows):
             for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
@@ -1140,7 +1143,7 @@ cdef class grid(object):
         x/=float(s)
         return -np.sum(x[x>0]*np.log(x[x>0]))/np.log(float(nr))
     # mixin after William Seitz ===========================================
-    def get_mixin(self,int nr=30):
+    def mixin(self,int nr=30):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         cdef int i,j,k,nodata,data
         nodata=0
@@ -1227,7 +1230,7 @@ cdef class grid(object):
         if(n<5):
             print 'error in complexity: use a nr in [6,30]'
             return -9999
-        mixin=self.get_mixin(nr)
+        mixin=self.mixin(nr)
         a=[0 for i in range(n)]
         self.partition=np.zeros((trys[n],n))
         self.gen_partition(n,a,0)
