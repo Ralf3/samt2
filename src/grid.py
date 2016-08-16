@@ -375,8 +375,8 @@ cdef class grid(object):
         cdef int i,j
         cdef np.ndarray[DTYPE_t,ndim=2] mx=np.copy(self.mat)
         count=0
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])==self.nodata):
                     count+=1
         return self.nrows*self.ncols-count
@@ -1100,6 +1100,45 @@ cdef class grid(object):
         arr=z[0:count]           # select the non zeros
         np.random.shuffle(arr)   # shuffle the points
         return arr[0:n]
+    # shannon indexgamma.astype(float)
+    def get_shannon(self):
+        """ calculates the shannon index over an normalized array
+            x/sum(x)
+        """
+        cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
+        cdef np.ndarray[DOUBLE_t,ndim=1] x
+        cdef int i,j
+        cdef float s
+        X=[]
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
+                if(int(mat[i,j])!=self.nodata):
+                    X.append(mat[i,j])
+        x=np.array(X)
+        s=np.sum(x)  # normalze the data
+        x=x/s
+        # print 'shannon:',s,sum(x)
+        return -np.sum(x[x>0]*np.log(x[x>0]))
+     # shannon indexgamma.astype(float)
+    def get_shannons(self,nr=1000):
+        """ calculates the scaled shannon index over an normalized array
+            x/sum(x)
+        """
+        cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
+        cdef np.ndarray[DOUBLE_t,ndim=1] x
+        cdef int i,j
+        cdef float s
+        X=[]
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
+                if(int(mat[i,j])!=self.nodata):
+                    X.append(mat[i,j])
+        h=np.histogram(X,bins=nr,density=True)
+        x=h[0]
+        s=np.sum(x)
+        x=x.astype(float)
+        x/=float(s)
+        return -np.sum(x[x>0]*np.log(x[x>0]))/np.log(float(nr))
     # mixin after William Seitz ===========================================
     def get_mixin(self,int nr=30):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
@@ -1126,9 +1165,8 @@ cdef class grid(object):
         d1.sort()
         d1=d1[::-1]                  # revers d1
         d1/=np.sum(d1)
-        d1*=nr                       # normalize data
+        d1*=float(nr)                # normalize data
         d1=np.cumsum(d1)
-        # print d1
         return d1
     def gen_partition(self,int n, a, int level):
         """ helpfunction to generate the partition recurrent
