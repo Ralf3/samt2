@@ -1143,6 +1143,27 @@ cdef class grid(object):
         x/=float(s)
         return -np.sum(x[x>0]*np.log(x[x>0]))/np.log(float(nr))
     # mixin after William Seitz ===========================================
+    def histogram(self,mx,nr):
+        """ help function replaces the numpy.histogram
+        """
+        cdef np.ndarray[DOUBLE_t,ndim=1] m=np.array(mx)
+        cdef np.ndarray[ITYPE_t, ndim=1] im
+        cdef int i
+        m=m.astype(float)       # make sure that is float
+        # normalize it check max!=min
+        if(float(np.max(m)-np.min(m))!=0):
+            m=(m-float(np.min(m)))/(float(np.max(m)-np.min(m)))
+        else:
+            print 'error in histogram: Min==Max'
+        m*=(nr-1)                # put in range 0..n-1
+        im=m.astype(int)         # transform it to int
+        h={}                     # use a dict for histogram
+        for i in xrange(len(im)):
+            if im[i] in h:
+                h[im[i]]+=1
+            else:
+                h[im[i]]=1
+        return h.values()
     def mixin(self,int nr=30):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         cdef int i,j,k,nodata,data
@@ -1162,8 +1183,10 @@ cdef class grid(object):
                 if(int(mat[i,j])!=self.nodata):
                     mx[k]=mat[i,j]
                     k+=1
-        h=np.histogram(mx, bins=nr)  # build an histogram
-        d1=h[0]                      # extract the data
+        #h=np.histogram(mx, bins=nr)  # build an histogram
+        #d1=h[0]                      # extract the data
+        d1=self.histogram(mx,nr)      # new version of hist
+        d1=np.array(d1)
         d1=d1.astype(float)
         d1.sort()
         d1=d1[::-1]                  # revers d1
@@ -1227,14 +1250,13 @@ cdef class grid(object):
               29: 4565,
               30: 5604}
         n=nr
-        if(n<5):
+        if(n<5 or n>30):
             print 'error in complexity: use a nr in [6,30]'
             return -9999
         mixin=self.mixin(nr)
         a=[0 for i in range(n)]
         self.partition=np.zeros((trys[n],n))
         self.gen_partition(n,a,0)
-        # print self.partition
         comp_counter=0
         cdef float delta=0.001
         # print n, trys[n]
@@ -1244,9 +1266,6 @@ cdef class grid(object):
             for j in xrange(n):
                 if(self.partition[i,j]<mixin[j]-delta):
                     fhigh=1
-                #if(self.partition[i,j]>mixin[j]+delta):
-                #    flow=1
-                # if(flow==0 or fhigh==0):
             if fhigh==0:
                 comp_counter+=1
         return float(trys[n]-comp_counter)/float(trys[n])

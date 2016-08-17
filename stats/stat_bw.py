@@ -311,6 +311,9 @@ class complexity(object):
     def __init__(self,n=30,delta=0.001):
         """ generates the partion for a given number n=30
         """
+        if(n<5 or n>30):
+            print 'error in complexity nmust be 5>= n <=30'
+            return None
         self.n=n
         self.delta=delta
         self.trys={5 : 7,
@@ -343,8 +346,8 @@ class complexity(object):
         a=[0 for i in range(n)]
         self.counter=0    # counter to fill the self.partition
         self.gen_partition(n,a,0)
-        # print self.partition
-        self.mixin=None
+        print self.partition
+        self.mixin1=None
     def gen_partition(self,n,a,level):
         """ recurrent implementation for partition of a given number
         """
@@ -364,34 +367,58 @@ class complexity(object):
         for i in xrange(first,int(n/2+1.0)):
             a[level]=i
             self.gen_partition(n-i,a,level+1)
-    def get_mixin(self,mx):
+    def histogram(self,mx):
+        """ uses the self.n as bins 
+            uses int values after normalization
+        """
+        m=np.array(mx)          # transform it to an ndarray
+        m=m.astype(float)       # make sure that is float
+        # normalize it check max!=min
+        if(float(np.max(m)-np.min(m))!=0):
+            m=(m-float(np.min(m)))/(float(np.max(m)-np.min(m)))
+        else:
+            print 'error in histogram: Min==Max'
+        m*=(self.n-1)           # put in range 0..self.n-1
+        m=m.astype(int)         # transform it to int
+        h={}                    # generates the hist
+        for i in xrange(len(m)):
+            if m[i] in h:
+                h[m[i]]+=1
+            else:
+                h[m[i]]=1
+        
+        return h.values()
+    def mixin(self,mx):
         """ takes a data set mx and generates a historgram
         """
-        h=np.histogram(mx, bins=self.n)  # build an histogram
-        d1=h[0]                      # extract the data
+        #h=np.histogram(mx, bins=self.n)  # build an histogram
+        #d1=h[0]                          # extract the data
+        d1=self.histogram(mx)              # build an histogram
+        d1=np.array(d1)
         d1=d1.astype(float)
-        d1.sort()
-        d1=d1[::-1]
-        # print d1
-        # print h[1]
-        d1/=np.sum(d1)
-        d1*=self.n                   # normalize data
-        d1=np.cumsum(d1)
-        self.mixin=d1
-        # print d1
-        return d1
+        d1.sort()                          # sort the float 
+        d1=d1[::-1]                        # sort from high to low
+        d1/=np.sum(d1)                     # normalze the data
+        d1*=self.n                          
+        d1=np.cumsum(d1)                   # cumsum as result
+        d2=np.ones(self.n)                 # normalize the length
+        d2*=self.n
+        d2=d2.astype(float)
+        d2[0:len(d1)]=d1
+        self.mixin1=d2
+        return d2
     def comp(self,mx):
         """ calculates the complexity by comparison the 
             mixin with all possible
             the mixin will be caculated using the gen_mixin(mx) 
         """
-        self.get_mixin(mx)
+        self.mixin(mx)
         comp_counter=0
         for i in xrange(self.trys[self.n]):
             flow=0
             fhigh=0
             for j in xrange(self.n):
-                if(self.partition[i,j]<self.mixin[j]-self.delta):
+                if(self.partition[i,j]<self.mixin1[j]-self.delta):
                     fhigh=1
             if fhigh==0:
                 comp_counter+=1
