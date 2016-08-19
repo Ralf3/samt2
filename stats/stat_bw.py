@@ -136,6 +136,13 @@ def shannon(o):
     pt,x=pt_pr(o)
     return sum(-x[x>0]*np.log(x[x>0]))
 
+def shannons(o):
+    """ calculates normalized Shannon index
+        o: population of algae, normalized (see pt_pr)
+    """
+    pt,x=pt_pr(o)
+    return sum(-x[x>0]*np.log(x[x>0]))/np.log(len(o))
+
 def margalefo(o):
     """ r is the number of species (richness)
         n is total of individuals
@@ -308,7 +315,7 @@ def gini(o):
 # some function for Mixin and Complexity added by William Seitz
 # ------------------------------------------------------------
 class complexity(object):
-    def __init__(self,n=30,delta=0.001):
+    def __init__(self,n=30,delta=0.0):
         """ generates the partion for a given number n=30
         """
         if(n<5 or n>30):
@@ -370,6 +377,8 @@ class complexity(object):
     def histogram(self,mx):
         """ uses the self.n as bins 
             uses int values after normalization
+            it replaces negativ numbers by normalization
+            to 0..1
         """
         m=np.array(mx)          # transform it to an ndarray
         m=m.astype(float)       # make sure that is float
@@ -388,13 +397,23 @@ class complexity(object):
                 h[m[i]]=1
         
         return h.values()
-    def mixin(self,mx):
+    def mixin(self,mx,dis=0):
         """ takes a data set mx and generates a historgram
+            if dis!=0 the data has to be discrete numbers
         """
         #h=np.histogram(mx, bins=self.n)  # build an histogram
         #d1=h[0]                          # extract the data
-        d1=self.histogram(mx)              # build an histogram
-        d1=np.array(d1)
+        if(dis==0):
+            d1=self.histogram(mx)         # build an histogram
+            d1=np.array(d1)
+        else:
+            d1=np.array(mx)
+            n=len(d1)
+            if(n<5 or n>30):
+                print 'error in mixin, len(mx):',n,'is wrong!'
+                self.mixin1=None
+                return None
+            self.n=n
         d1=d1.astype(float)
         d1.sort()                          # sort the float 
         d1=d1[::-1]                        # sort from high to low
@@ -413,6 +432,10 @@ class complexity(object):
             the mixin will be caculated using the gen_mixin(mx) 
         """
         self.mixin(mx)
+        if(self.mixin1==None):
+            return -1
+        self.mixin=np.round(self.mixin)    # round it to come closer to
+        self.mixin=self.mixin.astype(int)  # theory of Ruch (natural numbers)
         comp_counter=0
         for i in xrange(self.trys[self.n]):
             flow=0

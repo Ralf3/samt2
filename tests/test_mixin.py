@@ -13,6 +13,6 @@ gx=samt2.grid()
 gx.read_hdf('/home/ralf/master/samt2/data/ziethen.hdf','zie_dgm')
 
 for i in xrange(5,31):
-    print i, gx.complexity(i)
+    print  gx.complexity(i)
 
     

@@ -1145,6 +1145,8 @@ cdef class grid(object):
     # mixin after William Seitz ===========================================
     def histogram(self,mx,nr):
         """ help function replaces the numpy.histogram
+            implements only positiv numbers (negativ will be normalized
+            to 0..1)
         """
         cdef np.ndarray[DOUBLE_t,ndim=1] m=np.array(mx)
         cdef np.ndarray[ITYPE_t, ndim=1] im
@@ -1164,7 +1166,7 @@ cdef class grid(object):
             else:
                 h[im[i]]=1
         return h.values()
-    def mixin(self,int nr=30):
+    def mixin(self,int nr=30, int dis=0):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         cdef int i,j,k,nodata,data
         nodata=0
@@ -1185,8 +1187,15 @@ cdef class grid(object):
                     k+=1
         #h=np.histogram(mx, bins=nr)  # build an histogram
         #d1=h[0]                      # extract the data
-        d1=self.histogram(mx,nr)      # new version of hist
-        d1=np.array(d1)
+        if(dis==0):                   # floating point values
+            d1=self.histogram(mx,nr)      # new version of hist
+            d1=np.array(d1)
+        else:
+            d1=np.array((self.unique()).values())
+            nr=len(d1)
+            if(nr<5 or nr>30):
+                print 'error in unique values: ',nr,' wrong!'
+                return None
         d1=d1.astype(float)
         d1.sort()
         d1=d1[::-1]                  # revers d1
@@ -1215,13 +1224,15 @@ cdef class grid(object):
             a[level]=i
             self.gen_partition(n-i,a,level+1)
         
-    def complexity(self, int nr=30):
+    def complexity(self, int nr=30, int dis=0):
         """ 
         The mixin will be compared with all 5604 possible
         partitions of nr=30 and the normlized incompareabel 
         will be returned
+        The parameter dis=0 menas a floting point map is analyzed
+        using a histogram, if dis=1 the unique() is used to extract the values.
         """
-        cdef int i,j, n,flow,fhigh
+        cdef int i,j,k,l, n,flow,fhigh
         self.counter=0
         trys={5 : 7,
               6 : 11,
@@ -1253,21 +1264,31 @@ cdef class grid(object):
         if(n<5 or n>30):
             print 'error in complexity: use a nr in [6,30]'
             return -9999
-        mixin=self.mixin(nr)
+        mixin=self.mixin(nr,dis)
+        if(mixin is None):
+            return self.nodata
+        n=len(mixin)
         a=[0 for i in range(n)]
         self.partition=np.zeros((trys[n],n))
         self.gen_partition(n,a,0)
         comp_counter=0
-        cdef float delta=0.001
+        cdef float delta=0.0
         # print n, trys[n]
+        self.partition=self.partition.astype(int)
+        # print mixin
+        mixin=np.round(mixin)
+        mixin=mixin.astype(int)
+        #print mixin
         for i in xrange(trys[n]):
             flow=0
             fhigh=0
             for j in xrange(n):
-                if(self.partition[i,j]<mixin[j]-delta):
+                if(self.partition[i,j]<mixin[j]):
                     fhigh=1
+                    break
             if fhigh==0:
                 comp_counter+=1
+        print 'n:', n,' trys(n):',trys[n],' counter:', comp_counter 
         return float(trys[n]-comp_counter)/float(trys[n])
             
     # simple destructive operations =======================================
