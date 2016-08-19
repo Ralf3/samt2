@@ -315,14 +315,13 @@ def gini(o):
 # some function for Mixin and Complexity added by William Seitz
 # ------------------------------------------------------------
 class complexity(object):
-    def __init__(self,n=30,delta=0.0):
+    def __init__(self,n=30):
         """ generates the partion for a given number n=30
         """
         if(n<5 or n>30):
             print 'error in complexity nmust be 5>= n <=30'
             return None
         self.n=n
-        self.delta=delta
         self.trys={5 : 7,
                    6 : 11,
                    7 : 15,
@@ -395,7 +394,7 @@ class complexity(object):
                 h[m[i]]+=1
             else:
                 h[m[i]]=1
-        
+        # print h
         return h.values()
     def mixin(self,mx,dis=0):
         """ takes a data set mx and generates a historgram
@@ -415,37 +414,59 @@ class complexity(object):
                 return None
             self.n=n
         d1=d1.astype(float)
-        d1.sort()                          # sort the float 
-        d1=d1[::-1]                        # sort from high to low
-        d1/=np.sum(d1)                     # normalze the data
-        d1*=self.n                          
-        d1=np.cumsum(d1)                   # cumsum as result
-        d2=np.ones(self.n)                 # normalize the length
-        d2*=self.n
-        d2=d2.astype(float)
+        d1/=np.sum(d1)            # normalze the data
+        d1*=self.n                # range 0..n
+        d1.sort()                 # sort the float 
+        d1=d1[::-1]               # sort from high to low
+        d1=np.round(d1)
+        d1.astype(int)            # theory of Ruch (natural numbers)
+        d2=np.zeros(self.n)       # normalize the length
+        d2=d2.astype(int)
         d2[0:len(d1)]=d1
+        l=len(d2)
+        for i in xrange(1,l):
+            if(d2[i-1]>d2[i] and d2[i]>0):
+                d2[i]+=d2[i-1]
+                continue
+            if(d2[i]==0 and d2[i-1]!=l):
+                d2[i]=d2[i-1]+1
+                continue
+            if(d2[i]==0 and d2[i-1]==l):
+                d2[i]=l
+                continue
         self.mixin1=d2
-        return d2
-    def comp(self,mx):
+        return True
+    def comp(self,mx,dis=0):
         """ calculates the complexity by comparison the 
             mixin with all possible
             the mixin will be caculated using the gen_mixin(mx) 
         """
-        self.mixin(mx)
-        if(self.mixin1==None):
+        self.mixin(mx,dis)
+        if(self.mixin1 is None):
             return -1
-        self.mixin=np.round(self.mixin)    # round it to come closer to
-        self.mixin=self.mixin.astype(int)  # theory of Ruch (natural numbers)
-        comp_counter=0
+        print self.mixin1
+        clow=0
+        chigh=0
+        icomp=1
         for i in xrange(self.trys[self.n]):
-            flow=0
-            fhigh=0
+            f1=0
+            f2=0
             for j in xrange(self.n):
-                if(self.partition[i,j]<self.mixin1[j]-self.delta):
-                    fhigh=1
-            if fhigh==0:
-                comp_counter+=1
-        return float(self.trys[self.n]-comp_counter)/float(self.trys[self.n])
+                if(self.partition[i,j]>self.mixin1[j]):
+                    f1=1
+                    break
+            for j in xrange(self.n):
+                if(self.partition[i,j]<self.mixin1[j]):
+                    f2=1
+                    break
+            if f1==1 and f2==1:
+               icomp+=1
+            if f1==0 and f2==1:
+                clow+=1
+            if f1==1 and f2==0:
+                chigh+=1
+        print 'icomp:',icomp,' clow:',clow,' chigh:',chigh
+        return float(icomp)/float(self.trys[self.n])
     def plot(self,data,ws=32):
         """ plot the function, calcs the complexity and a continous wavelet """
         N=len(data)

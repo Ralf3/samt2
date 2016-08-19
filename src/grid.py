@@ -103,9 +103,9 @@ cdef class grid(object):
         self.ncols=len(x[0].rsplit())
         if(self.nrows>0 and self.ncols>0):
             self.mat=np.zeros((self.nrows,self.ncols),dtype=DTYPE)
-            for i in range(self.nrows):
+            for i in xrange(self.nrows):
                 line=x[i].rsplit()
-                for j in range(len(line)):
+                for j in xrange(len(line)):
                     self.mat[i,j]=np.float32(line[j])
         f.close()
         self.csize=1.0
@@ -170,8 +170,8 @@ cdef class grid(object):
         f.write('yllcorner\t'+str(self.y)+'\n')
         f.write('cellsize\t'+str(self.csize)+'\n')
         f.write('NODATA_value\t'+str(self.nodata)+'\n')
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(j<self.ncols-1):
                     s="%f " % mx[i,j]
                 else:
@@ -301,8 +301,8 @@ cdef class grid(object):
             return False
         gridmax=-np.finfo(np.double).max
         gridmin=np.finfo(np.double).max
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])!=self.nodata and mx[i,j]<gridmin):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
@@ -327,8 +327,8 @@ cdef class grid(object):
             return False
         gridmax=-np.finfo(np.double).max
         gridmin=np.finfo(np.double).max
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])!=self.nodata and mx[i,j]<gridmin):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
@@ -362,8 +362,8 @@ cdef class grid(object):
     def set_all_nd(self,DTYPE_t val):
         """ set all value exept nodata """
         cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j]!=self.nodata)):
                     mat[i,j]=val
         return True
@@ -474,8 +474,8 @@ cdef class grid(object):
         if(self.nrows<=0 or self.ncols<=0):
             return None
         img=[]
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     img.append(mat[i,j])
         if(flag!=0):
@@ -510,8 +510,8 @@ cdef class grid(object):
         nodata=g1.get_nodata()
         if(self.nrows != nrows or self.ncols != ncols):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])==self.nodata or int(m1[i,j])==nodata):
                     mx[i,j]=self.nodata
                 else:
@@ -541,8 +541,8 @@ cdef class grid(object):
             mx=np.copy(self.sub)
         gridmax=-np.finfo(np.double).max
         gridmin=np.finfo(np.double).max
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])!=self.nodata and mx[i,j]<gridmin):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
@@ -580,8 +580,8 @@ cdef class grid(object):
             mx=np.copy(self.sub)
         gridmax=-np.finfo(np.double).max
         gridmin=np.finfo(np.double).max
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])!=self.nodata and mx[i,j]<gridmin):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
@@ -626,16 +626,16 @@ cdef class grid(object):
         
         gridmax=-np.finfo(np.double).max
         gridmin=np.finfo(np.double).max
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])!=self.nodata and mx[i,j]<gridmin):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
         d=gridmin-(gridmax-gridmin)/100.0
         print('show:', gridmin, gridmax, self.nodata)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])==self.nodata):
                     mx[i,j]=d
         if(flag!=0):
@@ -679,16 +679,16 @@ cdef class grid(object):
             mx=np.copy(self.sub)
         gridmax=-np.finfo(np.double).max
         gridmin=np.finfo(np.double).max
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])!=self.nodata and mx[i,j]<gridmin):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
         d=gridmin-(gridmax-gridmin)/100.0
         print('show:', gridmin, gridmax, self.nodata)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])==self.nodata):
                     mx[i,j]=d
         if(flag!=0):
@@ -725,8 +725,8 @@ cdef class grid(object):
         cdef np.ndarray[ITYPE_t,ndim=1] vals=np.array(vals1,dtype=np.int)
         cdef np.ndarray[DTYPE_t,ndim=2] mx=np.copy(self.mat)
         cdef DTYPE_t gridmin=np.min(vals)-1.0
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])==self.nodata or (not (int(mx[i,j]) in vals))):
                     mx[i,j]=self.nodata
         if(flag==1):
@@ -751,8 +751,8 @@ cdef class grid(object):
         cdef int i,j,x,y
         cdef double mi,ma
         cdef np.ndarray[DTYPE_t,ndim=2] mx=np.copy(self.mat)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mx[i,j])==self.nodata or mx[i,j]<val1 or mx[i,j]>val2):
                     mx[i,j]=self.nodata
         if(flag==1):
@@ -851,8 +851,8 @@ cdef class grid(object):
         print('NODATA_value:',self.nodata)
         if((mat is None) or self.nrows<=0 or self.ncols<=0):
             return
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
                     nodata+=1
                 else:
@@ -871,8 +871,8 @@ cdef class grid(object):
             mean=np.mean(self.mat) 
             std=np.std(self.mat)
             return mean,std
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     mean+=mat[i,j]
                     mean2+=mat[i,j]*mat[i,j]
@@ -889,8 +889,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):
             return self.nodata,self.nodata
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata and mat[i,j]<minval):
                     minval=mat[i,j]
                 if(int(mat[i,j])!=self.nodata and mat[i,j]>maxval):
@@ -902,8 +902,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):
             return x,y,self.nodata
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])>mark and mat[i,j]<minval):
                     x=i
                     y=j
@@ -916,8 +916,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):
             return x,y,self.nodata
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=nodata and mat[i,j]>maxval):
                     x=i
                     y=j
@@ -929,8 +929,8 @@ cdef class grid(object):
         if(self.nrows<=0 or self.ncols<=0):
             return None
         vals={}
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(self.mat[i,j])!=self.nodata):
                     if(not(int(self.mat[i,j]) in vals)):
                         vals[int(self.mat[i,j])]=1
@@ -952,8 +952,8 @@ cdef class grid(object):
             a=np.finfo(np.float32).min
         if(b==-9999.0):
             b=np.finfo(np.float32).max
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata and a<=mat[i,j] and mat[i,j]<=b):
                     mean+=mat[i,j]
                     sumx+=mat[i,j]
@@ -979,8 +979,8 @@ cdef class grid(object):
         cdef int ycount=0
         if(self.nrows!=gx.size()[0] or self.ncols!=gx.size()[1]):
             return 0
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat1[i,j])!=self.nodata and int(mat2[i,j])!=nodata):
                     xmean+=mat1[i,j]
                     xcount+=1
@@ -992,8 +992,8 @@ cdef class grid(object):
         ymean/=ycount
         xcount=0
         ycount=0
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat1[i,j])!=self.nodata and int(mat2[i,j])!=nodata):
                     sx+=(mat1[i,j]-xmean)**2
                     sy+=(mat2[i,j]-ymean)**2
@@ -1024,8 +1024,8 @@ cdef class grid(object):
         if(nr<1):
             return None,None,None
         # sample from data cells
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     c[count,0]=i
                     c[count,1]=j
@@ -1037,7 +1037,7 @@ cdef class grid(object):
         np.random.shuffle(arr)
         # fill the outputs
         if(filename is None):
-            for k in range(nr):
+            for k in xrange(nr):
                 x[k]=arr[k,1]
                 y[k]=arr[k,0]
                 z[k]=np.double(mat[y[k],x[k]])
@@ -1045,7 +1045,7 @@ cdef class grid(object):
         else:
             f=open(filename,'w')
             f.write("x y z\n")
-            for k in range(nr):
+            for k in xrange(nr):
                 x[k]=arr[k,1]
                 y[k]=arr[k,0]
                 z[k]=np.double(mat[y[k],x[k]])
@@ -1061,8 +1061,8 @@ cdef class grid(object):
         cdef int i,j
         cdef np.ndarray[ITYPE_t,ndim=1] x=np.array([],dtype=np.int)
         cdef np.ndarray[ITYPE_t,ndim=1] y=np.array([],dtype=np.int)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(mat[i,j]==val):
                     x=np.append(x,j)
                     y=np.append(y,i)
@@ -1081,11 +1081,11 @@ cdef class grid(object):
         cdef float r=float(radius)**2
         # collect all points which are outside the radius
         count=0;
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 flag=0
                 if(int(mat[i,j])!=self.nodata):
-                    for k in range(len(i1)):
+                    for k in xrange(len(i1)):
                         if((i-i1[k])*(i-i1[k])+
                            (j-j1[k])*(j-j1[k])<r):
                             flag=1
@@ -1167,11 +1167,13 @@ cdef class grid(object):
                 h[im[i]]=1
         return h.values()
     def mixin(self,int nr=30, int dis=0):
+        """ takes a data set mx and generates a historgram
+            if dis!=0 the data has to be discrete numbers
+        """
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
-        cdef int i,j,k,nodata,data
+        cdef int i,j,k,l,nodata,data
         nodata=0
         data=0
-        # self.n=nr
         for i in xrange(self.nrows):
             for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
@@ -1185,8 +1187,6 @@ cdef class grid(object):
                 if(int(mat[i,j])!=self.nodata):
                     mx[k]=mat[i,j]
                     k+=1
-        #h=np.histogram(mx, bins=nr)  # build an histogram
-        #d1=h[0]                      # extract the data
         if(dis==0):                   # floating point values
             d1=self.histogram(mx,nr)      # new version of hist
             d1=np.array(d1)
@@ -1197,12 +1197,32 @@ cdef class grid(object):
                 print 'error in unique values: ',nr,' wrong!'
                 return None
         d1=d1.astype(float)
-        d1.sort()
-        d1=d1[::-1]                  # revers d1
-        d1/=np.sum(d1)
-        d1*=float(nr)                # normalize data
-        d1=np.cumsum(d1)
-        return d1
+        d1/=np.sum(d1)            # normalze the data
+        d1*=nr                    # range 0..n
+        d1.sort()                 # sort the float 
+        d1=d1[::-1]               # sort from high to low
+        d1=np.round(d1)
+        d1.astype(int)            # theory of Ruch (natural numbers)
+        #d2=np.zeros(nr)           # normalize the length
+        #d2=d2.astype(int)
+        #d2[0:len(d1)]=d1
+        d2=d1
+        print d2
+        print nr, len(d2)
+        l=len(d2)                 # build the cumsum by filling
+        for i in xrange(1,l):     # l is necessary
+            if(d2[i-1]>=d2[i] and d2[i]>0):
+                d2[i]+=d2[i-1]
+                if(d2[i]>=l):
+                    d2[i]=l
+                continue
+            if(d2[i-1]<l):
+                d2[i]=d2[i-1]+1
+                if(d2[i]>=l):
+                    d2[i]=l
+                continue
+        print d2
+        return d2
     def gen_partition(self,int n, a, int level):
         """ helpfunction to generate the partition recurrent
         """
@@ -1232,7 +1252,7 @@ cdef class grid(object):
         The parameter dis=0 menas a floting point map is analyzed
         using a histogram, if dis=1 the unique() is used to extract the values.
         """
-        cdef int i,j,k,l, n,flow,fhigh
+        cdef int i,j,k,l, n,f1,f2,clow,chigh,icomp
         self.counter=0
         trys={5 : 7,
               6 : 11,
@@ -1264,7 +1284,7 @@ cdef class grid(object):
         if(n<5 or n>30):
             print 'error in complexity: use a nr in [6,30]'
             return -9999
-        mixin=self.mixin(nr,dis)
+        mixin=self.mixin(n,dis)
         if(mixin is None):
             return self.nodata
         n=len(mixin)
@@ -1273,23 +1293,30 @@ cdef class grid(object):
         self.gen_partition(n,a,0)
         comp_counter=0
         cdef float delta=0.0
-        # print n, trys[n]
         self.partition=self.partition.astype(int)
-        # print mixin
-        mixin=np.round(mixin)
-        mixin=mixin.astype(int)
-        #print mixin
+        clow=0
+        chigh=0
+        icomp=1
         for i in xrange(trys[n]):
-            flow=0
-            fhigh=0
+            f1=0
+            f2=0
+            for j in xrange(n):
+                if(self.partition[i,j]>mixin[j]):
+                    f1=1
+                    break
             for j in xrange(n):
                 if(self.partition[i,j]<mixin[j]):
-                    fhigh=1
+                    f2=1
                     break
-            if fhigh==0:
-                comp_counter+=1
-        print 'n:', n,' trys(n):',trys[n],' counter:', comp_counter 
-        return float(trys[n]-comp_counter)/float(trys[n])
+            if f1==1 and f2==1:
+               icomp+=1
+            if f1==0 and f2==1:
+                clow+=1
+            if f1==1 and f2==0:
+                chigh+=1
+        print 'icomp:',icomp,' clow:',clow,' chigh:',chigh
+        return float(icomp)/float(trys[n])
+          
             
     # simple destructive operations =======================================
     def norm(self):
@@ -1337,8 +1364,8 @@ cdef class grid(object):
         if(nodata==0 and len(np.where(self.mat==self.nodata)[0])==0):
             self.mat[:,:]=val
             return True
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(nodata==0):
                     mat[i,j]=val
                 else:
@@ -1355,8 +1382,8 @@ cdef class grid(object):
         if(len(np.where(mat==self.nodata)[0])==0):
             self.mat[:,:]+=val
             return True
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     mat[i,j]+=val
         return True
@@ -1370,8 +1397,8 @@ cdef class grid(object):
         if(len(np.where(mat==self.nodata)[0])==0):
             self.mat[:,:]*=val
             return True
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     mat[i,j]*=val
         return True
@@ -1385,8 +1412,8 @@ cdef class grid(object):
         if(len(np.where(mat==self.nodata)[0])==0):
             mat[:,:]=mat[:,:]*mul+add
             return True
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     mat[i,j]=mat[i,j]*mul+add
         return True
@@ -1428,13 +1455,13 @@ cdef class grid(object):
             return False
         (x,y,gridmax)=self.get_max()
         gridmin=gridmax
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     if(gridmin>mat[i,j]):
                         gridmin=mat[i,j]
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     mat[i,j]=gridmax-mat[i,j]+gridmin
         return True
@@ -1447,8 +1474,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     mat[i,j]=(gridmax-mat[i,j])
         return True
@@ -1458,8 +1485,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata or not (int(mat[i,j]) in table)):
                     continue
                 mat[i,j]=table[int(mat[i,j])]
@@ -1471,8 +1498,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=1] vals=np.array(vals_arr).astype('float32')
         if(self.nrows<=0 or self.ncols<=0):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
                     continue
                 if(int(mat[i,j]) in vals):
@@ -1489,8 +1516,8 @@ cdef class grid(object):
         if(self.nrows<=0 or self.ncols<=0):
             return None
         lut={}
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
                     continue
                 if(int(mat[i,j])==val):
@@ -1521,8 +1548,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     if(mat[i,j]<min):
                         mat[i,j]=min1
@@ -1536,8 +1563,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     if(mat[i,j]>=max1):
                         mat[i,j]=val
@@ -1548,8 +1575,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         if(self.nrows<=0 or self.ncols<=0):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     if(mat[i,j]>=min and mat[i,j]<max):
                         mat[i,j]=val
@@ -1564,8 +1591,8 @@ cdef class grid(object):
             return False
         min=np.finfo(np.double).max
         max=np.finfo(np.double).min
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
                     continue
                 if(mat[i,j]<min1):
@@ -1576,8 +1603,8 @@ cdef class grid(object):
         min1=np.round(min1)
         d=(max1-min1)*1.001 # small delta
         print('classify:',min1,max1,d)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
                     continue
                 mat[i,j]=int(nr*(mat[i,j]-min1)/d)
@@ -1609,7 +1636,7 @@ cdef class grid(object):
         r0=rect(0,self.nrows,0,self.ncols)  # the complete grid
         rect_arr[0]=r0                 # add the grid
         var_dict[0]=np.var(mat)        # add the variance
-        for i in range(nr):
+        for i in xrange(nr):
             d=max(var_dict.iteritems(), key=operator.itemgetter(1))[0]
             r0=rect_arr.pop(d)         # remove the largest subarray
             var_dict.pop(d)            # remove the old variance
@@ -1658,7 +1685,7 @@ cdef class grid(object):
         cdef double maxx=0.0, cur=0.0
         self.x1=0
         self.x2=0  
-        for i in range(len(input)):
+        for i in xrange(len(input)):
             cur += input[i]  
             if(cur > maxx):  
                 maxx = cur  
@@ -1677,16 +1704,16 @@ cdef class grid(object):
         if(self.nrows<=0 or self.ncols<=0):
             return False
         min1=-9999.0
-        for i in range(n):
+        for i in xrange(n):
             if(thresh==0):
                 thresh=np.mean(sub)
             sub-=thresh
             tmp=np.zeros(self.ncols,dtype=DTYPE)
             fx1=fx2=fy1=fy2=max_sum=cur=-1
-            for i in range(self.nrows):
-                for k in range(self.ncols):
+            for i in xrange(self.nrows):
+                for k in xrange(self.ncols):
                     tmp[k]=0.0
-                for j in range(i,self.nrows):
+                for j in xrange(i,self.nrows):
                     for k in range(self.ncols):
                         tmp[k]+=sub[j,k]
                     cur=self.kadane(tmp)
@@ -1732,7 +1759,7 @@ cdef class grid(object):
                 A[k,0]=i
                 A[k,1]=j
                 A[k,2]=1
-                for l in range(k):
+                for l in xrange(k):
                     if(A[l,0]==A[k,0] and A[l,1]==A[k,1]):
                         flag=1
                 if(flag==1):
@@ -1742,16 +1769,16 @@ cdef class grid(object):
         a,b,c=np.linalg.lstsq(A,y)[0]
         print('a:',a,'b:',b,'c:',c)
         # remove the trend from the map
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     mat[i,j]-=(a*i+b*j+c)
         # new minval
         (a,b,minval)=self.get_min()
         print('minval:',minval)
         # add minval
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     mat[i,j]-=minval
         return True
@@ -1768,8 +1795,8 @@ cdef class grid(object):
         (i1,j1)=np.shape(res)
         di=int((i1-self.nrows)/2)
         dj=int((j1-self.ncols)/2)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 self.mat[i,j]=np.sqrt(res[i+di,j+dj])
         return True
     def kernel_sci(self,int ai, int bj,double sigma=1.0):
@@ -1788,8 +1815,8 @@ cdef class grid(object):
         ai0=ai/2
         bj0=bj/2
         size=0
-        for i in range(ai):
-            for j in range(bj):
+        for i in xrange(ai):
+            for j in xrange(bj):
                 w[i,j]+=np.exp(-((i-ai0)**2+(j-bj0)**2)/sigma)
                 size+=w[i,j]
         res=signal.convolve2d(mat,w,boundary='symm')
@@ -1798,8 +1825,8 @@ cdef class grid(object):
         di=int((i1-self.nrows)/2)
         dj=int((j1-self.ncols)/2)
         size=np.sqrt(size)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 self.mat[i,j]=res[i+di,j+dj]/size
         return True
     def kernel_squ(self,int ai,int bj):
@@ -1820,8 +1847,8 @@ cdef class grid(object):
         (i1,j1)=np.shape(res)
         di=int((i1-self.nrows)/2)
         dj=int((j1-self.ncols)/2)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 self.mat[i,j]=res[i+di,j+dj]/size
                 # self.mat[i,j]=np.sqrt(res[i+di,j+dj])
         return True
@@ -1843,8 +1870,8 @@ cdef class grid(object):
             return False
         # fill the array for convolution
         w=np.zeros((ai,bj),dtype=np.float32)
-        for i in range(ai):
-            for j in range(bj):
+        for i in xrange(ai):
+            for j in xrange(bj):
                 if(i*i+j*j<r2):
                     w[i,j]=1.0
                     size+=1.0
@@ -1853,8 +1880,8 @@ cdef class grid(object):
         (i1,j1)=np.shape(res)
         di=int((i1-self.nrows)/2)
         dj=int((j1-self.ncols)/2)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 self.mat[i,j]=res[i+di,j+dj]/size
         return True
     def knn(self,int k, float min1, float max1):
@@ -1870,12 +1897,12 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t,ndim=2] mx=np.copy(self.mat)
         if(k%2==0):
             k+=1 # odd numbers
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     k1=0
-                    for i1 in range(-k/2,k/2+1):
-                        for j1 in range(-k/2,k/2+1):
+                    for i1 in xrange(-k/2,k/2+1):
+                        for j1 in xrange(-k/2,k/2+1):
                             j2=j+j1
                             i2=i+i1
                             if(i2>=0 and i2<self.nrows and
@@ -2015,8 +2042,8 @@ cdef class grid(object):
         mat1_nodata=g1.get_nodata()
         if(g1i!=self.nrows or g1j!=self.ncols):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata or 
                    int(mat1[i,j])==mat1_nodata):
                     mat[i,j]=self.nodata
@@ -2032,8 +2059,8 @@ cdef class grid(object):
         mat1_nodata=g1.get_nodata()
         if(g1i!=self.nrows or g1j!=self.ncols):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata or 
                    int(mat1[i,j])==mat1_nodata):
                     mat[i,j]=self.nodata
@@ -2049,8 +2076,8 @@ cdef class grid(object):
         mat1_nodata=g1.get_nodata()
         if(g1i!=self.nrows or g1j!=self.ncols):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata or 
                    int(mat1[i,j])==mat1_nodata):
                     mat[i,j]=self.nodata
@@ -2066,8 +2093,8 @@ cdef class grid(object):
         mat1_nodata=g1.get_nodata()
         if(g1i!=self.nrows or g1j!=self.ncols):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata or 
                    int(mat1[i,j])==mat1_nodata):
                     mat[i,j]=self.nodata
@@ -2083,8 +2110,8 @@ cdef class grid(object):
         mat1_nodata=g1.get_nodata()
         if(g1i!=self.nrows or g1j!=self.ncols):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata or 
                    int(mat1[i,j])==mat1_nodata):
                     mat[i,j]=self.nodata
@@ -2099,8 +2126,8 @@ cdef class grid(object):
         (g1i,g1j)=g1.size()
         if(g1i!=self.nrows or g1j!=self.ncols):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
                     mat[i,j]=mat1[i,j]
         return True
@@ -2114,8 +2141,8 @@ cdef class grid(object):
         if(g1i!=self.nrows or g1j!=self.ncols):
             return False
         nodata=g1.get_nodata()
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat1[i,j])==nodata):
                     mat[i,j]=self.nodata
         return True
@@ -2130,7 +2157,7 @@ cdef class grid(object):
         cdef int i
         if(len(x1)!=len(y1)):
             return None, None
-        for i in range(len(x1)):
+        for i in xrange(len(x1)):
             x[i]=int((x1[i]-(self.x+self.csize/2.0))/self.csize)
             y[i]=int((y1[i]-(self.y+self.csize/2.0))/self.csize)
             y[i]=self.nrows-1-y[i]
@@ -2166,7 +2193,7 @@ cdef class grid(object):
         cdef int i
         if(len(i1)!=len(j1)):
             return None, None
-        for i in range(len(i1)):
+        for i in xrange(len(i1)):
             x[i]=self.x+j1[i]*self.csize+self.csize/2.0
             y[i]=self.y+(self.nrows-i1[i]-1)*self.csize+self.csize/2.0
         return y,x
@@ -2209,11 +2236,11 @@ cdef class grid(object):
             return False
         if(len(x)!=len(y) or len(y)!=len(z)<=0):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 dist0=np.finfo(np.double).max
                 k0=0
-                for k in range(len(x)):
+                for k in xrange(len(x)):
                     dist=(i-y[k])*(i-y[k])+(j-x[k])*(j-x[k])
                     if(dist<dist0):
                         dist0=dist
@@ -2232,10 +2259,10 @@ cdef class grid(object):
             return False
         if(len(x)!=len(y)):
             return False
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 dist0=np.finfo(np.double).max
-                for k in range(len(x)):
+                for k in xrange(len(x)):
                     dist=(i-y[k])*(i-y[k])+(j-x[k])*(j-x[k])
                     if(dist<dist0):
                         dist0=dist
@@ -2259,15 +2286,15 @@ cdef class grid(object):
         cdef double h2=1.0/(self.csize*self.csize)
         cdef double error=2*eps
         cdef double f
-        for k in range(len(x)):
+        for k in xrange(len(x)):
             # cfd1[y[k],x[k]]=z[k]
             # rho[self.nrows-1-y[k],x[k]]=z[k] 23.1.2015
             rho[y[k],x[k]]=z[k]
         while iterations<iter and error> eps:
             V_temp = np.copy(cfd1)
             error=0.0
-            for i in range(1,self.nrows):
-                for j in range(1,self.ncols):
+            for i in xrange(1,self.nrows):
+                for j in xrange(1,self.ncols):
                     cfd1[i,j] = 0.25*(V_temp[i+1,j] + cfd1[i-1,j] +
                                       cfd1[i,j-1] + V_temp[i,j+1] + rho[i,j]*h2)
                     error += abs(cfd1[i,j]-V_temp[i,j])
@@ -2276,8 +2303,8 @@ cdef class grid(object):
         print('cfd_poisson error=',error, 'iterartions=', iterations)
         # transform it back to self.mat
         f=np.max(z)/np.max(cfd1)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 mat[i,j]=np.float32(cfd1[i+1,j+1])*f
         return True
 
@@ -2291,8 +2318,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
         cdef np.ndarray[DTYPE_t, ndim=2] d4_mat=\
             np.zeros((self.nrows,self.ncols),dtype=DTYPE)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     dir=-1 # sink
                     minval=mat[i,j]
@@ -2319,8 +2346,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
         cdef np.ndarray[DTYPE_t, ndim=2] d8_mat=\
             np.zeros((self.nrows,self.ncols),dtype=DTYPE)
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])!=self.nodata):
                     dir=-1 # sink
                     minval=mat[i,j]
@@ -2362,8 +2389,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
         cdef np.ndarray[DTYPE_t, ndim=2] matn=np.copy(self.mat)
         cdef np.ndarray[DTYPE_t, ndim=2] d4_mat=self.d4_mat
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
                     continue
                 if(int(d4_mat[i,j])==-1):
@@ -2394,8 +2421,8 @@ cdef class grid(object):
         cdef np.ndarray[DTYPE_t, ndim=2] mat=self.mat
         cdef np.ndarray[DTYPE_t, ndim=2] matn=np.copy(self.mat)
         cdef np.ndarray[DTYPE_t, ndim=2] d8_mat=self.d8_mat
-        for i in range(self.nrows):
-            for j in range(self.ncols):
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
                     continue
                 if(int(d8_mat[i,j])==-1):
