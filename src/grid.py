@@ -1171,7 +1171,7 @@ cdef class grid(object):
             if dis!=0 the data has to be discrete numbers
         """
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
-        cdef int i,j,k,l,nodata,data
+        cdef int i,j,k,l,nodata,data,delta
         nodata=0
         data=0
         for i in xrange(self.nrows):
@@ -1196,32 +1196,20 @@ cdef class grid(object):
             if(nr<5 or nr>30):
                 print 'error in unique values: ',nr,' wrong!'
                 return None
-        d1=d1.astype(float)
-        d1/=np.sum(d1)            # normalze the data
-        d1*=nr                    # range 0..n
-        d1.sort()                 # sort the float 
-        d1=d1[::-1]               # sort from high to low
-        d1=np.round(d1)
-        d1.astype(int)            # theory of Ruch (natural numbers)
-        #d2=np.zeros(nr)           # normalize the length
-        #d2=d2.astype(int)
-        #d2[0:len(d1)]=d1
-        d2=d1
-        print d2
-        print nr, len(d2)
-        l=len(d2)                 # build the cumsum by filling
-        for i in xrange(1,l):     # l is necessary
-            if(d2[i-1]>=d2[i] and d2[i]>0):
-                d2[i]+=d2[i-1]
-                if(d2[i]>=l):
-                    d2[i]=l
-                continue
-            if(d2[i-1]<l):
+        d1=d1.astype(float)       # transform it in a ndarray
+        d1=np.sort(np.round(nr*d1/np.sum(d1)))[::-1]  # nomalize it
+        d2=nr*np.ones(nr,dtype=int)  
+        l=nr                           
+        d2[0]=np.int(np.round(d1[0]))     # start with the first of d1[0] 
+        for i in xrange(1,l):             # l is necessary
+            delta=np.int(np.round(d1[i])) # transform the next of d1 
+            if(delta>=1):
+                d2[i]=d2[i-1]+delta
+            else:
                 d2[i]=d2[i-1]+1
-                if(d2[i]>=l):
+            if(d2[i]>l):
                     d2[i]=l
-                continue
-        print d2
+                    return d2
         return d2
     def gen_partition(self,int n, a, int level):
         """ helpfunction to generate the partition recurrent
@@ -1280,6 +1268,32 @@ cdef class grid(object):
               28: 3718,
               29: 4565,
               30: 5604}
+        maxi={5: 0,
+              6: 1,
+              7: 2,
+              8: 4,
+              9: 7,
+              10: 12,
+              11: 19,
+              12: 29,
+              13: 42,
+              14: 61,
+              15: 87,
+              16: 120,
+              17: 164,
+              18: 222,
+              19: 297,
+              20: 392,
+              21: 515,
+              22: 669,
+              23: 866,
+              24: 1109,
+              25: 1415,
+              26: 1792,
+              27: 2265,
+              28: 2838,
+              29: 3550,
+              30: 4413}
         n=nr
         if(n<5 or n>30):
             print 'error in complexity: use a nr in [6,30]'
@@ -1315,7 +1329,9 @@ cdef class grid(object):
             if f1==1 and f2==0:
                 chigh+=1
         print 'icomp:',icomp,' clow:',clow,' chigh:',chigh
-        return float(icomp)/float(trys[n])
+        if(maxi[n]==0):
+            return 0
+        return float(icomp)/float(maxi[n])
           
             
     # simple destructive operations =======================================

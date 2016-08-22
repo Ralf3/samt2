@@ -348,12 +348,67 @@ class complexity(object):
                    28: 3718,
                    29: 4565,
                    30: 5604}
+        self.maxi={5: 0,
+                   6: 1,
+                   7: 2,
+                   8: 4,
+                   9: 7,
+                   10: 12,
+                   11: 19,
+                   12: 29,
+                   13: 42,
+                   14: 61,
+                   15: 87,
+                   16: 120,
+                   17: 164,
+                   18: 222,
+                   19: 297,
+                   20: 392,
+                   21: 515,
+                   22: 669,
+                   23: 866,
+                   24: 1109,
+                   25: 1415,
+                   26: 1792,
+                   27: 2265,
+                   28: 2838,
+                   29: 3550,
+                   30: 4413}
+
         self.partition=np.zeros((self.trys[n],n))
         a=[0 for i in range(n)]
         self.counter=0    # counter to fill the self.partition
         self.gen_partition(n,a,0)
-        print self.partition
+        # print self.partition
         self.mixin1=None
+        
+    def max_complexity(self):
+        self.maxi=0    # maximum incomparable
+        # iterate over all partitions
+        for n in xrange(self.trys[self.n]):
+            clow=0
+            chigh=0
+            icomp=0
+            for i in xrange(self.trys[self.n]):
+                f1=0
+                f2=0
+                for j in xrange(self.n):
+                    if(self.partition[i,j]>self.partition[n,j]):
+                        f1=1
+                        break
+                for j in xrange(self.n):
+                    if(self.partition[i,j]<self.partition[n,j]):
+                        f2=1
+                        break
+                if f1==1 and f2==1:
+                    icomp+=1
+                if f1==0 and f2==1:
+                    clow+=1
+                if f1==1 and f2==0:
+                    chigh+=1
+            if(self.maxi<icomp):
+                self.maxi=icomp
+        print self.maxi
     def gen_partition(self,n,a,level):
         """ recurrent implementation for partition of a given number
         """
@@ -413,28 +468,21 @@ class complexity(object):
                 self.mixin1=None
                 return None
             self.n=n
-        d1=d1.astype(float)
-        d1/=np.sum(d1)            # normalze the data
-        d1*=self.n                # range 0..n
-        d1.sort()                 # sort the float 
-        d1=d1[::-1]               # sort from high to low
-        d1=np.round(d1)
-        d1.astype(int)            # theory of Ruch (natural numbers)
-        d2=np.zeros(self.n)       # normalize the length
-        d2=d2.astype(int)
-        d2[0:len(d1)]=d1
-        l=len(d2)
-        for i in xrange(1,l):
-            if(d2[i-1]>d2[i] and d2[i]>0):
-                d2[i]+=d2[i-1]
-                continue
-            if(d2[i]==0 and d2[i-1]!=l):
+        d1=d1.astype(float)       # transform it in a ndarray
+        d1=np.sort(np.round(self.n*d1/np.sum(d1)))[::-1]  # nomalize it
+        d2=self.n*np.ones(self.n,dtype=int)  
+        l=self.n                           
+        d2[0]=np.int(np.round(d1[0]))     # start with the first of d1[0] 
+        for i in xrange(1,l):             # l is necessary
+            delta=np.int(np.round(d1[i])) # transform the next of d1 
+            if(delta>=1):
+                d2[i]=d2[i-1]+delta
+            else:
                 d2[i]=d2[i-1]+1
-                continue
-            if(d2[i]==0 and d2[i-1]==l):
-                d2[i]=l
-                continue
-        self.mixin1=d2
+            if(d2[i]>l):
+                    d2[i]=l
+                    self.mixin1=d2
+                    return True
         return True
     def comp(self,mx,dis=0):
         """ calculates the complexity by comparison the 
@@ -466,7 +514,9 @@ class complexity(object):
             if f1==1 and f2==0:
                 chigh+=1
         print 'icomp:',icomp,' clow:',clow,' chigh:',chigh
-        return float(icomp)/float(self.trys[self.n])
+        if(self.maxi[self.n]==0):
+            return 0
+        return float(icomp)/float(self.maxi[self.n])
     def plot(self,data,ws=32):
         """ plot the function, calcs the complexity and a continous wavelet """
         N=len(data)
