@@ -379,7 +379,7 @@ class complexity(object):
         a=[0 for i in range(n)]
         self.counter=0    # counter to fill the self.partition
         self.gen_partition(n,a,0)
-        # print self.partition
+        print self.partition
         self.mixin1=None
         
     def max_complexity(self):
@@ -495,7 +495,7 @@ class complexity(object):
         print self.mixin1
         clow=0
         chigh=0
-        icomp=1
+        icomp=0
         for i in xrange(self.trys[self.n]):
             f1=0
             f2=0

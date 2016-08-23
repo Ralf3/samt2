@@ -1310,7 +1310,7 @@ cdef class grid(object):
         self.partition=self.partition.astype(int)
         clow=0
         chigh=0
-        icomp=1
+        icomp=0
         for i in xrange(trys[n]):
             f1=0
             f2=0
