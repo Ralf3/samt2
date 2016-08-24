@@ -1336,7 +1336,7 @@ cdef class grid(object):
               50: 187593}
         n=nr
         if(n<5 or n>50):
-            print 'error in complexity: use a nr in [6,30]'
+            print 'error in complexity: use a nr in [6,50]'
             return -9999
         mixin=self.mixin(n,dis)
         if(mixin is None):
