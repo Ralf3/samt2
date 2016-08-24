@@ -318,8 +318,8 @@ class complexity(object):
     def __init__(self,n=30):
         """ generates the partion for a given number n=30
         """
-        if(n<5 or n>30):
-            print 'error in complexity nmust be 5>= n <=30'
+        if(n<5 or n>50):
+            print 'error in complexity nmust be 5>= n <=50'
             return None
         self.n=n
         self.trys={5 : 7,
@@ -347,7 +347,27 @@ class complexity(object):
                    27: 3010,
                    28: 3718,
                    29: 4565,
-                   30: 5604}
+                   30: 5604,
+                   31: 6842,
+                   32: 8349,
+                   33: 10143,
+                   34: 12310,
+                   35: 14883,
+                   36: 17977,
+                   37: 21637,
+                   38: 26015,
+                   39: 31185,
+                   40: 37338,
+                   41: 44583,
+                   42: 53174,
+                   43: 63261,
+                   44: 75175,
+                   45: 89134,
+                   46: 105558,
+                   47: 124754,
+                   48: 147273,
+                   49: 173525,
+                   50: 204226}
         self.maxi={5: 0,
                    6: 1,
                    7: 2,
@@ -373,41 +393,70 @@ class complexity(object):
                    27: 2265,
                    28: 2838,
                    29: 3550,
-                   30: 4413}
+                   30: 4413,
+                   31: 5475,
+                   32: 6751,
+                   33: 8314,
+                   34: 10043,
+                   35: 12460,
+                   36: 15169,
+                   37: 18444,
+                   38: 22332,
+                   39: 27012,
+                   40: 32538,
+                   41: 39156,
+                   42: 46955,
+                   43: 56250,
+                   44: 67162,
+                   45: 80119,
+                   46: 95288,
+                   47: 113229,
+                   48: 134173,
+                   49: 158850,
+                   50: 187593}
 
         self.partition=np.zeros((self.trys[n],n))
         a=[0 for i in range(n)]
         self.counter=0    # counter to fill the self.partition
         self.gen_partition(n,a,0)
-        print self.partition
+        self.part=np.zeros((self.trys[n],n))
+        a=[0 for i in range(n)]
+        self.counter=0    # counter to fill the self.part
+        self.gen_partitions(n,a,0)
+        print self.part
         self.mixin1=None
         
     def max_complexity(self):
+        """ approximate soluten for tests only """
         self.maxi=0    # maximum incomparable
-        # iterate over all partitions
-        for n in xrange(self.trys[self.n]):
-            clow=0
-            chigh=0
-            icomp=0
-            for i in xrange(self.trys[self.n]):
-                f1=0
-                f2=0
-                for j in xrange(self.n):
-                    if(self.partition[i,j]>self.partition[n,j]):
-                        f1=1
-                        break
-                for j in xrange(self.n):
-                    if(self.partition[i,j]<self.partition[n,j]):
-                        f2=1
-                        break
-                if f1==1 and f2==1:
-                    icomp+=1
-                if f1==0 and f2==1:
-                    clow+=1
-                if f1==1 and f2==0:
-                    chigh+=1
-            if(self.maxi<icomp):
-                self.maxi=icomp
+        #  found maximum partition
+        p=self.n*np.ones(self.n,dtype=int)
+        p[0]=int(np.round(self.n/2+0.1))
+        for i in xrange(1,self.n):
+            p[i]=1+p[i-1]
+            if(p[i]==self.n):
+                break
+        clow=0
+        chigh=0
+        icomp=0
+        for i in xrange(self.trys[self.n]):
+            f1=0
+            f2=0
+            for j in xrange(self.n):
+                if(self.partition[i,j]>p[j]):
+                    f1=1
+                    break
+            for j in xrange(self.n):
+                if(self.partition[i,j]<p[j]):
+                    f2=1
+                    break
+            if f1==1 and f2==1:
+                icomp+=1
+            if f1==0 and f2==1:
+                clow+=1
+            if f1==1 and f2==0:
+                chigh+=1
+        self.maxi=icomp
         print self.maxi
     def gen_partition(self,n,a,level):
         """ recurrent implementation for partition of a given number
@@ -428,6 +477,26 @@ class complexity(object):
         for i in xrange(first,int(n/2+1.0)):
             a[level]=i
             self.gen_partition(n-i,a,level+1)
+    def gen_partitions(self,n,a,level):
+        """ recurrent implementation for partition of a given number
+            without cumsum
+        """
+        # print 'gen:',n,level,a
+        a=np.copy(a)
+        if(n<1):
+            return
+        a[level]=n
+        swp=np.zeros(self.n)
+        swp[0:(level+1)]=(a[::-1])[(self.n-level-1):self.n]
+        self.part[self.counter]=swp
+        self.counter+=1
+        if(level==0):
+            first=1
+        else:
+            first=a[level-1]
+        for i in xrange(first,int(n/2+1.0)):
+            a[level]=i
+            self.gen_partitions(n-i,a,level+1)
     def histogram(self,mx):
         """ uses the self.n as bins 
             uses int values after normalization
@@ -463,7 +532,7 @@ class complexity(object):
         else:
             d1=np.array(mx)
             n=len(d1)
-            if(n<5 or n>30):
+            if(n<5 or n>50):
                 print 'error in mixin, len(mx):',n,'is wrong!'
                 self.mixin1=None
                 return None
@@ -474,14 +543,18 @@ class complexity(object):
         l=self.n                           
         d2[0]=np.int(np.round(d1[0]))     # start with the first of d1[0] 
         for i in xrange(1,l):             # l is necessary
-            delta=np.int(np.round(d1[i])) # transform the next of d1 
+            if(i>=len(d1)):
+                delta=1.0
+            else:
+                delta=np.int(np.round(d1[i])) # transform the next of d1 
             if(delta>=1):
                 d2[i]=d2[i-1]+delta
             else:
                 d2[i]=d2[i-1]+1
-            if(d2[i]>l):
+            if(d2[i]>=l):
                     d2[i]=l
                     self.mixin1=d2
+                    # print self.mixin1
                     return True
         return True
     def comp(self,mx,dis=0):
@@ -509,6 +582,7 @@ class complexity(object):
                     break
             if f1==1 and f2==1:
                icomp+=1
+               # print self.partition[i]
             if f1==0 and f2==1:
                 clow+=1
             if f1==1 and f2==0:
