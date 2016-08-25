@@ -6,6 +6,7 @@ import random
 import numpy as np
 from scipy import signal
 import pylab as plt
+import math
 
 # ------------------------------------------------------------
 # Some elementary functions
@@ -142,6 +143,19 @@ def shannons(o):
     """
     pt,x=pt_pr(o)
     return sum(-x[x>0]*np.log(x[x>0]))/np.log(len(o))
+
+def boltzmann(o):
+    """ calculates the Boltzmann entropy over a list of 
+        unsign int values
+    """
+    if len(o) > 100:
+        print 'error in blotzmann:', len(o), ' should be <=100'
+        return -1
+    x=np.array(o,dtype=int)
+    s=[math.factorial(i) for i in x]
+    s=np.double(np.prod(s))
+    f=np.double(math.factorial(len(o)))
+    return np.log(f/s)/np.log(f)
 
 def margalefo(o):
     """ r is the number of species (richness)
