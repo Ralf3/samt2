@@ -62,6 +62,7 @@ gx.sample_neg(i,j,dist,n) # samples random [i,j] with a dist from
 gx.statr(a,b)          # returns the total,mean,std of cells>=a and cells<=b
 gx.mixin(nr=30,dist=0) # get an array containing the mixin, dist=1 use unique 
 gx.complexity(nr=30,dist=0) # uses the mixin to calculate a complexity number
+gx.majorization(g1,nr=10,dist=0) # returns 0:non comparable, -1:gx<g1 else 1
 gx.shannon()           # the shannon entropy
 gx.shannons(nr=1000)   # a normalized shannon entropy 0..1
 # Simple destructive operations (overwrites the mat) ========================

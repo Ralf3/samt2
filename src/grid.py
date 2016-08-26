@@ -1211,6 +1211,44 @@ cdef class grid(object):
                     d2[i]=l
                     return d2
         return d2
+    def majorization(self, grid g1, int nr=10, int dis=0):
+        """ 
+        majorization compares two grids according to:
+        defines the majorizatiin between two lists
+        a_1 >= b_1
+        a_1 + a_2 >= b_1 + b_2
+        a_1 + a_2 + a_3 >= b_1 + b_2 + b_3
+        ...
+        a_1 + a_2 + ... + a_n-1 >= b_1 + b_2 + ... + b_n-1
+        a_1 + a_2 + ... + a_n-1 + a_n >= b_1 + b_2 + ... + b_n-1 + b_n
+        
+        The data come out of a histogram or a unique and will be
+        normalized using mixin before the majorization is applied.
+        """
+        cdef int f1,f2,j
+        cdef np.ndarray[ITYPE_t,ndim=1] m1,m2
+        m1=self.mixin(nr,dis)  # extract the mixin from the grid
+        m2=g1.mixin(nr,dis)    # extract the mixin from g1
+        print m1
+        print m2
+        f1=0
+        f2=0
+        for j in xrange(nr):
+            if(m1[j]>m2[j]):
+                f1=1
+                break
+        for j in xrange(nr):
+            if(m1[j]<m2[j]):
+                f2=1
+                break
+        if f1==1 and f2==1:
+            return 0   # non comparable
+        if f1==0 and f2==1:
+            return -1  # m1<m2
+        if f1==1 and f2==0:
+            return 1   # m2<m1
+        if f1==0 and f2==0:
+            return self.nodata
     def gen_partition(self,int n, a, int level):
         """ helpfunction to generate the partition recurrent
         """
@@ -1231,7 +1269,6 @@ cdef class grid(object):
         for i in xrange(first,int(n/2+1.0)):
             a[level]=i
             self.gen_partition(n-i,a,level+1)
-        
     def complexity(self, int nr=30, int dis=0):
         """ 
         The mixin will be compared with all 5604 possible
