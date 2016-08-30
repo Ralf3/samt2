@@ -1214,7 +1214,7 @@ cdef class grid(object):
     def majorization(self, grid g1, int nr=10, int dis=0):
         """ 
         majorization compares two grids according to:
-        defines the majorizatiin between two lists
+        defines the majorization between two lists
         a_1 >= b_1
         a_1 + a_2 >= b_1 + b_2
         a_1 + a_2 + a_3 >= b_1 + b_2 + b_3
@@ -1229,8 +1229,8 @@ cdef class grid(object):
         cdef np.ndarray[ITYPE_t,ndim=1] m1,m2
         m1=self.mixin(nr,dis)  # extract the mixin from the grid
         m2=g1.mixin(nr,dis)    # extract the mixin from g1
-        print m1
-        print m2
+        #print m1
+        #print m2
         f1=0
         f2=0
         for j in xrange(nr):
