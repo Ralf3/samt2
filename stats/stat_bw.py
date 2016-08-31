@@ -553,7 +553,8 @@ class complexity(object):
                 return None
             self.n=n
         d1=d1.astype(float)       # transform it in a ndarray
-        d1=np.sort(np.round(float(self.n)*d1/np.sum(d1)))[::-1]  # nomalize it
+        df=np.sort(float(self.n)*d1/np.sum(d1))[::-1]  # nomalize the float
+        d1=np.round(df)
         d2=self.n*np.ones(self.n,dtype=int)  
         l=self.n
         dx=0  # store the rest
@@ -563,7 +564,8 @@ class complexity(object):
                 delta=1.0
             else:
                 delta=np.int(np.round(d1[i]+dx)) # transform the next of d1
-                dx+=(delta-dx)
+                dx+=(df[i]-delta)
+                # print i, dx, delta
             if(delta>=1):
                 d2[i]=d2[i-1]+delta
             else:

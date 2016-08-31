@@ -1199,13 +1199,14 @@ cdef class grid(object):
                 print 'error in unique values: ',nr,' wrong!'
                 return None
         d1=d1.astype(float)       # transform it in a ndarray
-        d1=np.sort(np.round(nr*d1/np.sum(d1)))[::-1]  # nomalize it
+        df=np.sort(float(nr)*d1/np.sum(d1))[::-1]  # nomalize float
+        d1=np.round(df)
         d2=nr*np.ones(nr,dtype=int)  
         l=nr                           
         d2[0]=np.int(np.round(d1[0]))     # start with the first of d1[0] 
         for i in xrange(1,l):             # l is necessary
             delta=np.int(np.round(d1[i]+dx)) # transform the next of d1
-            dx += (d1[i]-delta)
+            dx += (df[i]-delta)
             if(delta>=1):
                 d2[i]=d2[i-1]+delta
             else:
