@@ -1409,7 +1409,6 @@ cdef class grid(object):
         if(maxi[n]==0):
             return 0
         return float(icomp)/float(maxi[n])
-          
             
     # simple destructive operations =======================================
     def norm(self):

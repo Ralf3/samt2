@@ -146,7 +146,7 @@ def shannons(o):
 
 def boltzmann(o):
     """ calculates the Boltzmann entropy over a list of 
-        unsign int values
+        unsigned int values
     """
     if len(o) > 100:
         print 'error in blotzmann:', len(o), ' should be <=100'
@@ -154,7 +154,8 @@ def boltzmann(o):
     x=np.array(o,dtype=int)
     s=[math.factorial(i) for i in x]
     s=np.double(np.prod(s))
-    f=np.double(math.factorial(len(o)))
+    f=math.factorial(np.sum(o))
+    # print s,f
     return np.log(f/s)/np.log(f)
 
 def margalefo(o):
