@@ -553,15 +553,17 @@ class complexity(object):
                 return None
             self.n=n
         d1=d1.astype(float)       # transform it in a ndarray
-        d1=np.sort(np.round(self.n*d1/np.sum(d1)))[::-1]  # nomalize it
+        d1=np.sort(np.round(float(self.n)*d1/np.sum(d1)))[::-1]  # nomalize it
         d2=self.n*np.ones(self.n,dtype=int)  
-        l=self.n                           
+        l=self.n
+        dx=0  # store the rest
         d2[0]=np.int(np.round(d1[0]))     # start with the first of d1[0] 
         for i in xrange(1,l):             # l is necessary
             if(i>=len(d1)):
                 delta=1.0
             else:
-                delta=np.int(np.round(d1[i])) # transform the next of d1 
+                delta=np.int(np.round(d1[i]+dx)) # transform the next of d1
+                dx+=(delta-dx)
             if(delta>=1):
                 d2[i]=d2[i-1]+delta
             else:

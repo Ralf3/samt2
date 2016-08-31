@@ -1172,8 +1172,10 @@ cdef class grid(object):
         """
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         cdef int i,j,k,l,nodata,data,delta
+        cdef float dx   # is use to store the rest between int and float
         nodata=0
         data=0
+        dx=0.0
         for i in xrange(self.nrows):
             for j in xrange(self.ncols):
                 if(int(mat[i,j])==self.nodata):
@@ -1202,7 +1204,8 @@ cdef class grid(object):
         l=nr                           
         d2[0]=np.int(np.round(d1[0]))     # start with the first of d1[0] 
         for i in xrange(1,l):             # l is necessary
-            delta=np.int(np.round(d1[i])) # transform the next of d1 
+            delta=np.int(np.round(d1[i]+dx)) # transform the next of d1
+            dx += (d1[i]-delta)
             if(delta>=1):
                 d2[i]=d2[i-1]+delta
             else:
