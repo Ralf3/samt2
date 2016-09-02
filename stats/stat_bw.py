@@ -146,16 +146,23 @@ def shannons(o):
 
 def boltzmann(o):
     """ calculates the Boltzmann entropy over a list of 
-        unsigned int values
+        unsign int values
+        W=N! / PI(Ni!)  with: N=length of the list
+                              Ni=length of equal numbers
+        log(W)/log(N!)  is used for normalization 
     """
     if len(o) > 100:
         print 'error in blotzmann:', len(o), ' should be <=100'
         return -1
-    x=np.array(o,dtype=int)
-    s=[math.factorial(i) for i in x]
+    h={}                    # generates the hist
+    for i in xrange(len(o)):
+        if o[i] in h:
+            h[o[i]]+=1
+        else:
+            h[o[i]]=1
+    s=[math.factorial(i) for i in h.values()]
     s=np.double(np.prod(s))
-    f=math.factorial(np.sum(o))
-    # print s,f
+    f=np.double(math.factorial(len(o)))
     return np.log(f/s)/np.log(f)
 
 def margalefo(o):

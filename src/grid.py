@@ -775,6 +775,7 @@ cdef class grid(object):
         return True
     def show_transect(self,int i0,int j0,int i1,int j1, int flag=0):
         """ shows a transect fron loc0=(i0,j0) to loc1=(i1,j1)
+            flag=1 : returns the transect without showing
         """
         cdef int i,j,num
         num=int(np.sqrt((i1-i0)*(i1-i0)+(j1-j0)*(j1-j0)))
