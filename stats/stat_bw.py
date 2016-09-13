@@ -671,15 +671,15 @@ def majorization(l1,l2):
     b=np.cumsum(l2)
     F1=1
     F2=1
-    for i in range(len(a)):
-        if a[i]<b[i]:
+    for i in range(len(a)-1):
+        if(a[i]<b[i]):
             F1=0
     if(F1==1):
         return 1
-    for i in range(len(a)):
-        if b[i]<a[i]:
+    for i in range(len(a)-1):
+        if(b[i]<a[i]):
             F2=0
-    if(F1==0 and F2==0):
+    if(F2==0):
         return 0
     return -1
 # ------------------------------------------------------------
