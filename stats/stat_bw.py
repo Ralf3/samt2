@@ -640,7 +640,7 @@ class complexity(object):
         plt.grid(True)
         plt.show()
 
-def majorization(l1,l2):
+def majorization_org(l1,l2):
     """ defines the majorizatiin between two lists
     a_1 >= b_1
     a_1 + a_2 >= b_1 + b_2
@@ -658,6 +658,30 @@ def majorization(l1,l2):
         r|={cmp(a,b)}
     return sum(r)
 
+def majorization(l1,l2):
+    """ defines the majorizatiin between two lists
+    a_1 >= b_1
+    a_1 + a_2 >= b_1 + b_2
+    a_1 + a_2 + a_3 >= b_1 + b_2 + b_3
+    ...
+    a_1 + a_2 + ... + a_n-1 >= b_1 + b_2 + ... + b_n-1
+    a_1 + a_2 + ... + a_n-1 + a_n >= b_1 + b_2 + ... + b_n-1 + b_n
+    """
+    a=np.cumsum(l1)
+    b=np.cumsum(l2)
+    F1=1
+    F2=1
+    for i in range(len(a)):
+        if a[i]<b[i]:
+            F1=0
+    if(F1==1):
+        return 1
+    for i in range(len(a)):
+        if b[i]<a[i]:
+            F2=0
+    if(F1==0 and F2==0):
+        return 0
+    return -1
 # ------------------------------------------------------------
 # some functions added by Ralf Wieland
 # ------------------------------------------------------------
