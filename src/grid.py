@@ -1121,7 +1121,7 @@ cdef class grid(object):
         # print 'shannon:',s,sum(x)
         return -np.sum(x[x>0]*np.log(x[x>0]))
      # shannon indexgamma.astype(float)
-    def shannons(self,nr=1000):
+    def shannons(self,nr=30):
         """ calculates the scaled shannon index over an normalized array
             x/sum(x)
         """
@@ -1216,7 +1216,7 @@ cdef class grid(object):
                     d2[i]=l
                     return d2
         return d2
-    def majorization(self, grid g1, int nr=10, int dis=0):
+    def majorization(self, grid g1, int nr=30, int dis=0):
         """ 
         majorization compares two grids according to:
         defines the majorization between two lists
