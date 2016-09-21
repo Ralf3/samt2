@@ -532,7 +532,7 @@ class gisdoc:
     
     def get_corr(self, gridname, g1):
 	"""
-	    in:		g1  gridname  str
+	    in:	        g1  gridname  str
 	    out:	corrcoef
 	    calculates the correlation between two grids
 	"""
@@ -544,12 +544,47 @@ class gisdoc:
 	    return False
 	return gx.corr(g2) 
     
+    #-------------------------------------------------------------------  
+    def get_entropy(self, gridname):
+	# the shannon entropy
+	gx = self.d_grids[gridname]
+	if gx == None: 
+	    return False
+	return gx.shannon()
+    
+    #-------------------------------------------------------------------  
+    def get_entropy_s(self, gridname, nr=30):
+	""" nr: integer, number of bins in histogram	"""
+	gx = self.d_grids[gridname]
+	if gx == None: 
+	    return False
+	return gx.shannons(nr=nr)
+    
+    #-------------------------------------------------------------------  
+    def get_complexity(self, gridname, nr=30, dis=0):
+	""" nr: int, number of bins in histogram
+	   dis: int, distribution=0, Histogramm=1 unique()	"""
+	gx = self.d_grids[gridname]
+	if gx == None: 
+	    return False
+	return gx.complexity(nr=int(nr), dis=int(dis))
+    
+    #-------------------------------------------------------------------  
+    def get_majorization(self, gridname, grid1_name, nr=10, dis=0):
+	gx = self.d_grids[gridname]
+	if gx == None: 
+	    return False
+	g1 = self.d_grids[grid1_name]
+	if g1 == None: 
+	    return False
+	return gx.majorization(g1, nr=nr, dis=0)
+    
     #-------------------------------------------------------------------
     def sample(self, gridname, nr):
         """ 
 	    in:		nr  int
 	    out:	3 arrays  i,j,z  
-	very fast version now, uses: np.random.shuffle
+	    very fast version now, uses: np.random.shuffle
         """
 	gx = self.d_grids[gridname]
 	if gx == None: 

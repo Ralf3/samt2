@@ -204,6 +204,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			self.slotResize)
 	self.connect(self.ui.actionCorr, SIGNAL('triggered()'), 
 			self.slotCorr)
+			
+	self.connect(self.ui.actionEntropy, SIGNAL('triggered()'), 
+			self.slotEntropy)
+	self.connect(self.ui.actionEntropy_S, SIGNAL('triggered()'), 
+			self.slotEntropy_S)
+	self.connect(self.ui.actionComplexity, SIGNAL('triggered()'), 
+			self.slotComplexity)
+	self.connect(self.ui.actionMajorization, SIGNAL('triggered()'), 
+			self.slotMajorization)
+			
 	self.connect(self.ui.actionSample, SIGNAL('triggered()'), 
 			self.slotSample)
 	self.connect(self.ui.actionSample_det, SIGNAL('triggered()'), 
@@ -1139,6 +1149,113 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    print "Corr errror"
 	    return
 	self.ui.ledit_p2.setText(str(corrcoef))
+	
+    #-------------------------------------------------------------------
+    def slotEntropy(self):
+	retu = self.gdoc.get_entropy(self.gname)
+	self.ui.ledit_p1.setText(str(round(retu,4)))
+    
+    #-------------------------------------------------------------------
+    def slotEntropy_S(self):
+	v1 = str(self.ui.ledit_p1.text())    # nr
+	if self.is_number(v1) == False:
+	    if v1 == "":
+		nr = 30  
+	    else: 
+		msg = self.tr("error: Entropy_S: P1=nr must be >= 10 !")
+		self.ui.statusBar.showMessage(msg,3000)
+		return
+	else:
+	    nr = int(float(v1))
+	if nr < 10: 
+	    msg = self.tr("error: Entropy_S: P1=nr must be >= 10 !")
+	    self.ui.statusBar.showMessage(msg,3000)
+	    return
+	
+	retu = self.gdoc.get_entropy_s(self.gname, nr=nr)  
+	self.ui.ledit_p1.setText(str(round(retu,4)))
+
+    #-------------------------------------------------------------------   
+    def slotComplexity(self):
+	v1 = str(self.ui.ledit_p1.text())    # nr
+	v2 = str(self.ui.ledit_p2.text())    # distribution
+	
+	# validate v1 nr >= 10
+	if self.is_number(v1) == False: 
+	    if v1 == "":
+		nr = 30  
+	    else: 
+		msg = self.tr("error: Complexity: P1=nr must be >= 10 !")
+		self.ui.statusBar.showMessage(msg,3000)
+		return
+	else:
+	    nr = int(float(v1))
+	if nr < 10:
+	    msg = self.tr("error: Complexity: P1=nr must be >= 10 !")
+	    self.ui.statusBar.showMessage(msg,3000)
+	    return
+	
+	# validate v2 dis= 0 or 1
+	if self.is_number(v2) == False:
+	    if v2 == "":
+		dis = 0  
+	    else: 
+		msg = self.tr("error: Complexity: P2=dist use a nr in [0,1]!")
+		self.ui.statusBar.showMessage(msg,3000)
+		return
+	else:
+	    dis = int(float(v2))
+	if dis not in [0,1]:   
+	    msg = self.tr("error: Complexity: P2=dist use a nr in [0,1]!")
+	    self.ui.statusBar.showMessage(msg,3000)
+	    return
+	retu = self.gdoc.get_complexity(self.gname, nr=nr, dis=dis)
+	self.ui.ledit_p1.setText(str(round(retu,4)))
+ 
+    #-------------------------------------------------------------------    
+    def slotMajorization(self):
+	v1 = str(self.ui.ledit_p1.text())    # grid1 (second grid)
+	v2 = str(self.ui.ledit_p2.text())    # nr 
+	v3 = str(self.ui.ledit_p3.text())    # distribution
+	
+	# validate v1 grid1 (the second grid)
+	if self.is_number(v1) == True:  
+	    msg = self.tr("error: Majorization: P1 is not grid1 ")
+	    self.ui.statusBar.showMessage(msg,2000)
+	    return
+	
+	# validate v2 nr >= 10
+	if self.is_number(v2) == False:
+	    if v2 == "":
+		nr = 10  
+	    else:
+		msg = self.tr("error: Complexity: P1=nr must be >= 10 !")
+		self.ui.statusBar.showMessage(msg,3000)
+		return
+	else:
+	    nr = int(float(v2))
+	if nr < 10:
+	    msg = self.tr("error: Complexity: P1=nr must be >= 10 !")
+	    self.ui.statusBar.showMessage(msg,3000)
+	    return
+	
+	# validate v3 dis= 0 or 1
+	if self.is_number(v3) == False:
+	    if v3 == "":
+		dis = 0  
+	    else:
+		msg = self.tr("error: Complexity: P3=dist must be 0 or 1!")
+		self.ui.statusBar.showMessage(msg,3000)
+		return
+	else:
+	    dis = int(float(v3))
+	if dis not in [0,1]:   
+	    msg = self.tr("error: Complexity: P3=dist must be 0 or 1!")
+	    self.ui.statusBar.showMessage(msg,3000)
+	    return
+	
+	retu =  self.gdoc.get_majorization(self.gname,v1,nr=nr,dis=dis) 	
+	self.ui.ledit_p1.setText(str(retu)) 
     
     #-------------------------------------------------------------------
     def slotSample(self):
