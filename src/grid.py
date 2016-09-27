@@ -2281,6 +2281,16 @@ cdef class grid(object):
             return False
         self.mat[i,j]=np.float32(z1)
         return True
+    def count_geo(self,float y1, float x1):
+        """ add 1 to the point at pos y1,x1 in geo coordinates """
+        cdef int i,j
+        j=int((x1-(self.x+self.csize/2.0))/self.csize)
+        i=int((y1-(self.y+self.csize/2.0))/self.csize)
+        i=self.nrows-1-i
+        if(i<0 or i>=self.nrows or j<0 or j>=self.ncols):
+            return False
+        self.mat[i,j]+=1.0
+        return True
     def transform_from_ij(self,i1,j1):
         """ takes two lists with grid coordinates and
             transforms them to geographic coordinates
