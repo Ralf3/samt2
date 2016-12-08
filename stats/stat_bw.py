@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import division
 import sys
 import csv
 import random
@@ -7,6 +8,7 @@ import numpy as np
 from scipy import signal
 import pylab as plt
 import math
+
 
 # ------------------------------------------------------------
 # Some elementary functions
@@ -710,6 +712,18 @@ def sensitivity(TP,FN):
         return TP/(TP+FN)
     return np.nan
 
+def precision(TP,FP):
+    """ see: Machine Learnig - A gentle introduction """
+    if(TP+FP>0):
+        return TP/(TP+FP)
+    return np.nan
+
+def recall(TP,FN):
+    """ see: Machine Learnig - A gentle introduction """
+    if(TP+FN>0):
+        return TP/(TP+FN)
+    return np.nan
+
 def specificity(FP,TN):
     """ also called TNR = TrueNegatives/(TrueNegatives+FalsePositives)
     """
@@ -717,9 +731,13 @@ def specificity(FP,TN):
         return TN/(TN+FP)
     return np.nan
 
-def accuracy(TP,TN,FP,FN):
+def accuracy(TP, TN, FP, FN):
     if(TP+TN+FP+FN>0):
         return (TP+TN)/(TP+TN+FP+FN)
+
+def f1_score(TP, FP, FN):
+    """ see: Machine Learnig - A gentle introduction """
+    return 2.0*precision(TP,FP)*recall(TP,FN)/(precision(TP,FP)+recall(TP,FN))
 
 # after:  benhamner:
 # https://github.com/benhamner/Metrics/blob/master/Python/ml_metrics/auc.py

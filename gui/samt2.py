@@ -25,7 +25,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 import pandas as pd
-import pandas.io.data
+# import pandas.io.data
+from pandas_datareader import data, wb
 from pandas import Series, DataFrame
 
 from form1_ui import Ui_MainWindow
