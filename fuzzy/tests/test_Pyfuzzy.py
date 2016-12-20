@@ -14,7 +14,7 @@ class TestClass:
     def test_calc2(self):
         """ check the calc2 """
         f1=fuzz.read_model('nahr_schreiadler.fis')
-        data=np.genfromtxt('train_nahr_leer.csv', delimiter=' ', skiprows=1)
+        data=np.loadtxt('train_nahr_leer.csv', delimiter=' ', skiprows=1)
         val=0
         count=data.shape[0]
         for i in range(count):
@@ -24,7 +24,7 @@ class TestClass:
     def test_calc3(self):
         """ check the calc3 """
         f1=fuzz.read_model('hab_schreiadler.fis')
-        data=np.genfromtxt('train_hab_leer.csv', delimiter=' ', skiprows=1)
+        data=np.loadtxt('train_hab_leer.csv', delimiter=' ', skiprows=1)
         val=0
         count=data.shape[0]
         for i in range(count):
