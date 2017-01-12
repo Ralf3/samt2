@@ -530,6 +530,7 @@ cdef class grid(object):
         plt.show()
         del mx
         return True
+   
     def show(self, sub1=False,title='', X='', Y='',flag=0):
         """ shows color with options title, X,Y only pos values"""
         cdef int i,j
@@ -569,6 +570,51 @@ cdef class grid(object):
         plt.show()
         del mx
         return True
+
+    def show_p(self,x,y,color='k',size=None, t='', X='', Y=''):
+        """
+        adds to an image made from show a set of point with the
+        colors = 'r', 'g', 'b', 'k', 'w'
+        and a size the matplotlib size as default: 20
+        """
+        cdef int i,j
+        cdef double gridmin, gridmax
+        cdef np.ndarray[DTYPE_t,ndim=2] mx=np.copy(self.mat)
+        if(self.nrows<=0 or self.ncols<=0):
+            return False
+        gridmax=-np.finfo(np.double).max
+        gridmin=np.finfo(np.double).max
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
+                if(int(mx[i,j])!=self.nodata and mx[i,j]<gridmin):
+                    gridmin=mx[i,j]
+                if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
+                    gridmax=mx[i,j]
+        print('show:', gridmin, gridmax, self.nodata)
+        plt.ioff()
+        plt.clf()
+        plt.subplot(111)
+        cmap = plt.get_cmap('jet', 500)
+        cmap.set_under('white')
+        img=plt.imshow(mx,cmap=cmap)
+        img.set_clim(gridmin,gridmax)
+        plt.colorbar(cmap=cmap)
+        if(t==''):
+            plt.title('nrows:' + str(self.nrows) + ' ncols:' + str(self.ncols))
+        else:
+            plt.title(t)
+        if(X!=''):
+            plt.xlabel(X)
+        if(Y!=''):
+            plt.ylabel(Y)
+        if size is None:
+            plt.scatter(x,y,c=color,alpha=1.0)
+        else:
+            plt.scatter(x,y,c=color,s=size,alpha=1.0)
+        plt.show()
+        del mx
+        return True
+       
     def show_bw(self, sub1=False, title='', X='', Y=''):
         """ shows bw with options title, X,Y """
         cdef int i,j
@@ -1054,9 +1100,36 @@ cdef class grid(object):
                 f.write(s)
             f.close()
             return y,x,z
+    def sample_p(self, int n, p):
+        """
+        returns a ndarrays x,y with n coordinates for
+        with mat[i,j]>=p
+        """
+        cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
+        cdef int i,j
+        cdef np.ndarray[ITYPE_t,ndim=1] x=np.array([],dtype=np.int)
+        cdef np.ndarray[ITYPE_t,ndim=1] y=np.array([],dtype=np.int)
+        cdef np.ndarray[DOUBLE_t,ndim=1] z=np.array([])
+        if(n<1):
+            return None
+        loc=[]  # list of locations
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
+                if(mat[i,j]>p):
+                    loc.append((i,j))
+        np.random.shuffle(loc)
+        # fill the x,y,z
+        for k in xrange(n):
+            i=loc[k][0]
+            j=loc[k][1]
+            x=np.append(x,j)
+            y=np.append(y,i)
+            z=np.append(z,mat[i,j])
+        return y,x,z
+        
     def sample_det(self, DTYPE_t val):
         """ returns ndarrays x,y with all coordinates for
-            which mat[i,j]==val
+            with mat[i,j]==val
         """
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         cdef int i,j
@@ -2243,7 +2316,7 @@ cdef class grid(object):
                 if(int(mat1[i,j])==nodata):
                     mat[i,j]=self.nodata
         return True
-    # point algorithms using x,y,z as np.arrays ===========================
+    # point  algorithms using x,y,z as np.arrays ===========================
     # use of int as coordinates x,y and float32 for z 
     def transform_to_ij(self,y1,x1):
         """ takes two lists or np.arrays with geo. coorinates and

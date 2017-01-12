@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'tablewin.ui'
 #
-# Created: Fri Apr 24 08:17:06 2015
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,7 +25,7 @@ except AttributeError:
 class Ui_tablewin(object):
     def setupUi(self, tablewin):
         tablewin.setObjectName(_fromUtf8("tablewin"))
-        tablewin.resize(227, 482)
+        tablewin.resize(255, 489)
         tablewin.setWindowTitle(_fromUtf8(""))
         self.centralwidget = QtGui.QWidget(tablewin)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
@@ -36,7 +35,6 @@ class Ui_tablewin(object):
         self.main_frame.setMinimumSize(QtCore.QSize(206, 408))
         self.main_frame.setObjectName(_fromUtf8("main_frame"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.main_frame)
-        self.horizontalLayout_2.setMargin(0)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.tblwid = QtGui.QTableWidget(self.main_frame)
         self.tblwid.setMinimumSize(QtCore.QSize(206, 408))
@@ -45,6 +43,7 @@ class Ui_tablewin(object):
         self.tblwid.setColumnCount(2)
         self.tblwid.setObjectName(_fromUtf8("tblwid"))
         self.tblwid.setRowCount(0)
+        self.tblwid.horizontalHeader().setDefaultSectionSize(105)
         self.tblwid.horizontalHeader().setStretchLastSection(True)
         self.tblwid.verticalHeader().setVisible(False)
         self.horizontalLayout_2.addWidget(self.tblwid)
@@ -74,7 +73,7 @@ class Ui_tablewin(object):
         self.verticalLayout.addLayout(self.horizontalLayout)
         tablewin.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(tablewin)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 227, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 255, 30))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         tablewin.setMenuBar(self.menubar)
 

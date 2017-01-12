@@ -33,6 +33,8 @@ gx.get_header()          # returns nrows, ncols, x, y, csize, nodata
 # Show data =================================================================
 gx.show_hist(bins=20)  # shows a hist with bins 
 gx.show(sub=False)     # shows a color picture of mat or sub (subarray)
+gx.show_p(x,y,color,size,t,X,Y)
+		       # color='r','g','b','k','w',y,x = i,j coord
 gx.show_contour(sub=False,title='',X='',Y='',clines=6,flag=0) 
 gx.showbw(sub=False)   # shows a bw picture of mat or sub (subarray)
                        # options: title, X, Y label
@@ -56,6 +58,7 @@ gx.unique()            # returns a dict with index:count of an int value mat
 gx.corr(gx)            # calculates the corrcoef between two arrays 
 gx.sample(nr=100,ix=10)# generates x,y,z as sample from gx without
   		       # nodata and without duplication in x,y
+gx.sample_p(n,p)       # samples x,y,z with mat>p
 gx.sample_det(val)     # returns the coord. with mat==val
 gx.sample_neg(i,j,dist,n) # samples random [i,j] with a dist from
 			  # the list i,j, returns an nd.array 

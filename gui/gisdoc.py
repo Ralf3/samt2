@@ -1233,17 +1233,55 @@ class gisdoc:
 	mi = str(round(mi, 4)) 
 	ma = str(round(ma, 4))	
 	mea = str(round(mea, 4))
+	li= []
+	#ss = "<strong><font color='mediumblue'>%s</font></strong>" % gridname
+	li.append(gridname)
+	li.append(str(count_cells))
+	li.append(str(count_nodatacells))
+	li.append(str(count_datacells))
+	li.append(str(int(gx.get_csize())))
+	li.append(mi)
+	li.append(ma)
+	li.append(total)	
+	li.append(mea)
+	li.append(str(round(std,4)))
+	return li, mi, ma, mea
+    #-------------------------------------------------------------------
+    def grid_statistic_old(self, gridname, fac_screen):
+	gx = self.d_grids[gridname]
+	if gx == None:
+	    return False, False, False, False
+	tup = gx.size()
+	ncols = tup[1]      
+	nrows = tup[0]
+	count_cells = ncols*nrows
+	count_datacells = gx.get_datacells()
+	count_nodatacells = count_cells - count_datacells
+	(mi,ma) = gx.get_minmax()  
+	mea, std = gx.mean_std()
+	total = str(round(mea * count_datacells, 2))
+	mi = str(round(mi, 4)) 
+	ma = str(round(ma, 4))	
+	mea = str(round(mea, 4))
 	msg = ''
-	msg += '\n\tName of the grid: ' + gridname
-	msg += '\n\n\tnumber of gridcells:\t' + str(count_cells)
-	msg += '\n\tnumber of nodata cells:\t' + str(count_nodatacells)
-	msg += '\n\tnumber of data cells:\t' + str(count_datacells)
-	msg += '\n\tsize:\t\t' + str(int(gx.get_csize()))
-	msg += '\n\tminvalue:\t\t' + mi   	
-	msg += '\n\tmaxvalue:\t\t' + ma
-	msg += '\n\ttotal:\t\t' + total	
-	msg += '\n\tmean:\t\t' + mea		
-	msg += '\n\tstandard deviation:\t' + str(round(std, 4))
+	msg += '\nName of the grid: ' + gridname
+	msg += '\n\nnumber of gridcells:\t' + str(count_cells)
+	msg += '\nnumber of nodata:\t' + str(count_nodatacells)
+	msg += '\nnumber of data cells:\t' + str(count_datacells)
+	
+	if fac_screen > 1.0:
+	    msg += '\nsize:\t\t\t' + str(int(gx.get_csize()))
+	else:
+	    msg += '\nsize:\t\t' + str(int(gx.get_csize()))
+	msg += '\nminvalue:\t\t' + mi   	
+	msg += '\nmaxvalue:\t\t' + ma
+	if fac_screen > 1.0:
+	    msg += '\ntotal:\t\t\t' + total	
+	    msg += '\nmean:\t\t\t' + mea
+	else:
+	    msg += '\ntotal:\t\t' + total	
+	    msg += '\nmean:\t\t' + mea
+	msg += '\nstandard deviation:\t' + str(round(std, 4))
 	return msg, mi, ma, mea
 
     #-------------------------------------------------------------------

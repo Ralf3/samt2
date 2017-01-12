@@ -25,10 +25,9 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 import pandas as pd
-# import pandas.io.data
+#import pandas.io.data
 from pandas_datareader import data, wb
 from pandas import Series, DataFrame
-
 from form1_ui import Ui_MainWindow
 from plotwin_ui import Ui_plotwin
 from plotwin3d_ui import Ui_plotwin3d
@@ -44,14 +43,26 @@ import gisdoc
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
 	QtGui.QWidget.__init__(self,  parent)
-	self.ui = Ui_MainWindow()
+	self.ui = Ui_MainWindow()	# s. form1_ui.py
 	self.ui.setupUi(self)
 	
+	global fac_screen  #, fac_screenw
+	if fac_screen > 1:
+ 	    self.resize(866*fac_screen, 664*fac_screen)
+	    #self.setMinimumSize(QtCore.QSize(854*fac_screen, 646*fac_screen))
+	    self.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen))
+	    #self.ui.centralwidget.setMinimumSize(QtCore.QSize(870*fac_screen, 575*fac_screen))
+	    self.ui.centralwidget.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen))
+	    self.ui.treeWidget.setMaximumSize(QtCore.QSize(200*fac_screen, 16777215))
+	    self.ui.treeWidget.setMinimumSize(QtCore.QSize(200*fac_screen, 551*fac_screen))
+	    self.ui.treeWidget.setMaximumSize(QtCore.QSize(200*fac_screen, 16777215))
+	    self.ui.mpl_widget.setMinimumSize(QtCore.QSize(100*fac_screen, 100*fac_screen))
+	    self.ui.menubar.setGeometry(QtCore.QRect(0, 0, 866*fac_screen, 30*fac_screen))
+	############
 	self.gdoc = gisdoc.gisdoc()
 	self.env = os.environ['SAMT2MASTER']+'/gui' # s. Zeile 1025
 	self.daten_path = os.environ['SAMT2DATEN']
 	self.openedModelPath = '' 	# writes fileOpen only
-	
 	env = self.env+'/pixmaps'
         self.setWindowIcon(QIcon(env+'/samt2_icon.png'))
 	
@@ -65,8 +76,21 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.ui.actionRun_model.setIcon(QIcon(env+'/run.png'))
 	self.ui.actionDelete.setIcon(QIcon(env+'/stop.png'))
 	self.ui.actionClear_p.setIcon(QIcon(env+'/editdelete.png'))
+	###########
+	# icon size anpassen an screen resolution
+	#~ ico = QIcon()
+	#~ pixmap = QPixmap(env+'/editdelete.png')
+	#~ image_size = pixmap.size()
+	#~ pixmap = pixmap.scaled(image_size.width()*fac, \
+			    #~ image_size.height()*fac,\
+			    #~ Qt.KeepAspectRatio, Qt.SmoothTransformation)
+	#~ ico.addPixmap(pixmap, QIcon.Normal, QIcon.Off)
+	#~ self.ui.actionClear_p.setIcon(ico)
+	###############
 	
-	# mpl_widget  
+
+	# mpl_widget 
+		 
 	vbox = QVBoxLayout()
         vbox.addWidget(self.ui.mpl_widget.canvas)      
 	self.ui.mpl_widget.setLayout(vbox)
@@ -78,8 +102,15 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.ui.mpl_widget.canvas.fig.subplots_adjust\
 				(left=0,right=1,top=1,bottom=0)
 	
-	self.w_wid_orig = 646   # mpl_widget.width()
-	self.h_wid_orig = 557   # mpl_widget.height()
+	#~ if fac_screen > 1.0:
+	    #~ w = self.ui.mpl_widget.width()*fac_screenw
+	    #~ h = self.ui.mpl_widget.height()*fac_screen
+	#~ else:
+	    #~ w = self.ui.mpl_widget.width()
+	    #~ h = self.ui.mpl_widget.height()
+	 
+	self.w_wid_orig = 0    		 
+	self.h_wid_orig = 0    		 
 	self.w_img_scaled = 0
 	self.h_img_scaled = 0
 	self.startPoint = (0,0)
@@ -187,10 +218,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# menuTools
 	self.connect(self.ui.actionFuzzy, SIGNAL('triggered()'), 
 			self.slotFuzzy)
-	#~ self.connect(self.ui.actionFuzzy_Generator, SIGNAL('triggered()'), 
-			#~ self.slotFuzzy_Generator)
-	#~ self.connect(self.ui.actionSadato, SIGNAL('triggered()'), 
-			#~ self.slotSadato)
 	
 	# menuAnalysis
 	self.connect(self.ui.actionHistogram, SIGNAL('triggered()'), 
@@ -359,10 +386,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			    'button_release_event', self.on_release)
 	
 	
-	#!!!!!!!!!!!!!!!nur f. test, f. Ralf raus 
-	#self.slotHDF_Open()
+	#!!!!!!!!!!!!!!! nur f. test
+	self.slotHDF_Open()
 	#self.ui.actionColorbar.setChecked(True)
-	print "*****************************************************"	
+		
 
     #===================================================================
     #============ TOOLBAR actions ======================================
@@ -423,7 +450,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# i0,j0 upper left corner / i1,j1 lower right corner
 	self.mxzoom,mi,ma,nrows,ncols,mea,std = self.gdoc.get_mx_zoom(
 						self.gname,i0,i1,j0,j1)
-	if mi == None:
+	if mi is None:
 	    print "Zoom_End errror"
 	    return
 	self.vis_zoomgrid(self.mxzoom,mi,ma,nrows,ncols)
@@ -445,11 +472,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	#print "vis_zoomgrid: nrows i, ncols j, self.startPoint: ", \
 	#				nrows, ncols, self.startPoint
 	# delete old line, rect if exists
-	if self.line1 != None:
+	if self.line1 is not None:
 	    self.clear_old_line()
 	    self.set_default_new_line()
 	    self.ui.mpl_widget.canvas.draw()
-	if self.rect != None:  
+	if self.rect is not None:  
 	    self.clear_old_rect()
 	    #self.set_default_new_rect()    # in [0,0]
 	    self.ui.mpl_widget.canvas.draw()
@@ -726,11 +753,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    path = self.daten_path +'/hdf'
 	else:
 	    path = self.openedModelPath
+	
 	name_hdf = QString()
 	name_hdf = QtGui.QFileDialog.getOpenFileName(self, 
 		    self.tr("Open File"), 
 		    path, self.tr("Images (*.hdf *hdf5 *h5)"))
-	
 	if(name_hdf.isEmpty()):
 	    #self.openedModelPath = QString("") 
 	    return
@@ -1069,18 +1096,17 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	s = os.environ['SAMT2MASTER']+'/fuzzy/gui/samt2fuzzy.py'
 	p = subprocess.Popen(s)
     
-    #-------------------------------------------------------------------
-    #~ def slotSadato(self):
-	#~ s = os.environ['SADATO']+'/sadato'
-	#~ p = subprocess.Popen(s)
- 
     
     #=========== menu Analysis =========================================
     
     def slotHistogram(self):
 	s = self.ui.ledit_p1.text()
-	if self.is_number(s) == False or float(s) < 0:  
-	    bins = 20
+	if self.is_number(s) == False or float(s) < 0: 
+	    global fac_screen 
+	    if fac_screen > 1:
+		bins = 50  
+	    else:
+		bins = 25
 	else:
 	    bins = int(s)
 	    self.ui.ledit_p1.clear()
@@ -1094,12 +1120,20 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    
     #-------------------------------------------------------------------
     def slotStatistic(self):
-	msg,mi,ma,mea = self.gdoc.grid_statistic(self.gname)  
-	QtGui.QMessageBox.information(self, \
-		    self.tr("Statistical output"), QString(msg)) 
+	global fac_screen
+	
+	li,mi,ma,mea = self.gdoc.grid_statistic(self.gname)  
+	
+	#~ QtGui.QMessageBox.information(self, \
+		    #~ self.tr("Statistical output"), QString(msg)) 
+	
 	self.ui.ledit_p1.setText(QString(mi))
 	self.ui.ledit_p2.setText(QString(ma))
 	self.ui.ledit_p3.setText(QString(mea))
+	
+	popup = Popup_statistic(self.gname, "Statistical output", fac_screen, li)
+	popup.show()
+	self.li_popups.append(popup)
 	
     #-------------------------------------------------------------------
     def slotInfo(self):
@@ -1133,6 +1167,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     #-------------------------------------------------------------------
     def slotResize(self):
+	# Analysis - Resize
 	v1 = str(self.ui.ledit_p1.text())  # nrows
 	v2 = str(self.ui.ledit_p2.text())  # ncols
 	if self.is_number(v1) == False or self.is_number(v2) == False:  
@@ -2148,6 +2183,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     ####################################################################
     
     def slotVIS_Start(self, clear=None):
+	
+	#global fac_screen
+	
+	w = self.ui.mpl_widget.width()    
+	h = self.ui.mpl_widget.height()   
+	#print "slotVis_Start: mpl_widget.width, mpl_widget.height:", w,h
+	
+	self.w_wid_orig = w
+	self.h_wid_orig = h  
+	
 	itemx = self.ui.treeWidget.currentItem()
 	if itemx != '':
 	    if self.item_is_child(itemx) == False:  
@@ -2181,7 +2226,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		print "show_Range error"
 		return
 	    mi, ma = self.gdoc.get_min_max(self.gname)  # gx gesamt
-	    if mi == None:
+	    if mi is None:
 		print "VIS_Start error"
 		return
 	    w_img = nc   #ncols    
@@ -2209,15 +2254,26 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		h_img = tup[0]  
 		w_img = tup[1]   
 		#print "Vis Normal: mi=%s, ma=%s" %  (mi, ma)
-	
+		
 	w_wid = self.w_wid_orig    
-	h_wid = self.h_wid_orig    
+	h_wid = self.h_wid_orig
+	#print "slotVis_Start: self.w_wid_orig, self.h_wid_orig :", self.w_wid_orig, self.h_wid_orig #646, 557
+	#print "slotVis_Start: w_img=%s, h_img=%s" %  (w_img, h_img)    
+		
+	#### neu jan 2017
 	fac = self.scale_coordsystem(w_wid, h_wid, w_img, h_img)
-	# the top left position of mpl_widget
-	pos = QPoint()   
-	pos = self.ui.mpl_widget.pos()  
 	self.w_img_scaled = float(w_img)*fac
 	self.h_img_scaled = float(h_img)*fac
+	"slotVis_Start: facw, self.w_img_scaled, self.h_img_scaled: ", fac, self.w_img_scaled, self.h_img_scaled
+		
+	#~ fac_w = float(w_wid)/float(w_img)
+	#~ fac_h = float(h_wid)/float(h_img)
+	#~ self.w_img_scaled = float(w_img)*fac_w
+	#~ self.h_img_scaled = float(h_img)*fac_h
+	#~ print "slotVis_Start: facw, self.w_img_scaled, fac_h, self.h_img_scaled: ", fac_w, self.w_img_scaled, fac_h, self.h_img_scaled
+	
+	pos = QPoint()   	# the top left position of mpl_widget
+	pos = self.ui.mpl_widget.pos() 
 	
 	self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
 					int(self.w_img_scaled), 
@@ -2360,7 +2416,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		return  
 	    
 	mi, ma = self.gdoc.get_min_max(self.gname) 
-	if mi == None:
+	if mi is None:
 	    print "show_img_from_list Error"
 	    return
 	w_img = nc   
@@ -2392,36 +2448,37 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def scale_coordsystem(self, w_wid, h_wid, w_img, h_img):
 	"""
-	    in:	    w_wid	width of the mpl_widget
+	    in:	   w_wid	width of the mpl_widget
 		    h_wid	height    "
 		    w_img	width of the img to plot
 		    h_wid	height    "
-	    out:    fac		scale factor
+	    out:  fac		scale factor
 	    scale mpl_widget to original img proportions
 	    called from slotVIS_Start
 	"""
 	fac = 0.0
 	if h_img < w_img:
 	    #print "Rechteck horizontal: fac= %d/%d" % (h_wid,h_img) 
+	    #print "Rechteck horizontal: fac= %d/%d" % (w_wid,w_img) 
 	    fac = float(w_wid)/float(w_img)
 	else:
 	    if h_img > w_img:
 		#print "Rechteck vertical: fac= %d/%d" % (h_wid,h_img)
 		fac = float(h_wid)/float(h_img)
 	    else:
-		#ralf raus: print "Quadrat: fac= %d/%d" % (h_wid,h_img)
+		#print "Quadrat: fac= %d/%d" % (h_wid,h_img)
 		fac = float(h_wid)/float(h_img)
 	return fac
     
     #-------------------------------------------------------------------
     def delete_old_line_or_rect(self):
 	# call from slotVIS_Start
-	if self.line1 != None:
+	if self.line1 is not None:
 	    self.clear_old_line()
 	    self.set_default_new_line()
 	    self.ui.mpl_widget.canvas.draw()
 	    self.ui.actionGraph.setChecked(False)
-	if self.rect != None:       
+	if self.rect is not None:       
 	    self.clear_old_rect()
 	    self.set_default_new_rect()
 	    self.ui.mpl_widget.canvas.draw()
@@ -2479,7 +2536,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def prepare_Fuzzy_Analysis_popup(self, X, Y, z):
 	# called by: mouse on_press 
-	# Fyzzy_Analysis (opens  with table)
+	# Fyzzy_Analysis (opens with table)
 	# can work, if gridname = modelname
 	if self.mname != self.gname:
 	    self.ui.actionFuzzy_Analysis.setChecked(False)
@@ -2742,6 +2799,14 @@ class Popup_vis_colorbar(QtGui.QMainWindow):
 	self.ui.main_frame.setLayout(vbox)
         self.setCentralWidget(self.ui.main_frame)
 	
+	global fac_screen, fontsiz
+	if fac_screen > 1:
+	    self.resize(661*fac_screen, 485*fac_screen)
+	    self.ui.main_frame.setMinimumSize(QtCore.QSize(480*fac_screen,360*fac_screen))
+	    self.ui.main_frame.setGeometry(QtCore.QRect(12,2,641*fac_screen,431*fac_screen))
+	    self.ui.menubar.setGeometry(QtCore.QRect(0,0,661*fac_screen,25*fac_screen))
+	    plt.rcParams['font.size'] = int(fontsiz*fac_screen)
+	
 	self.chbox_grid.stateChanged.connect(self.chbox_changed)  
 	self.ui.main_frame.canvas.mpl_connect(
 			     'motion_notify_event', self.on_motion)
@@ -2815,8 +2880,16 @@ class  Popup_show_3d(QtGui.QMainWindow):
 	vbox.addWidget(self.mpl_toolbar)
 	self.ui.main_frame.setLayout(vbox)
         self.setCentralWidget(self.ui.main_frame)
-	self.ui.main_frame.canvas.ax.mouse_init() 
 	
+	global fac_screen, fontsiz
+	if fac_screen > 1:
+	    self.resize(661*fac_screen, 485*fac_screen)
+	    self.ui.main_frame.setGeometry(QtCore.QRect(12,2,641*fac_screen,431*fac_screen))
+	    self.ui.main_frame.setMinimumSize(QtCore.QSize(480*fac_screen,360*fac_screen))
+	    self.ui.menubar.setGeometry(QtCore.QRect(0,0,661*fac_screen,21*fac_screen))
+	    plt.rcParams['font.size'] = int(fontsiz*fac_screen )
+	
+	self.ui.main_frame.canvas.ax.mouse_init() 
 	self.setWindowTitle('SAMT 2')
 	txt = '%s,  stride=%d' % (gridname, stride)
 	self.ui.main_frame.canvas.ax.set_title(txt)
@@ -2858,6 +2931,14 @@ class Popup_transect(QtGui.QMainWindow):
 	self.ui.main_frame.setLayout(vbox)
         self.setCentralWidget(self.ui.main_frame)
 	
+	global fac_screen, fontsiz
+	if fac_screen > 1:
+	    self.resize(661*fac_screen, 485*fac_screen)
+	    self.ui.main_frame.setMinimumSize(QtCore.QSize(480*fac_screen,360*fac_screen))
+	    self.ui.main_frame.setGeometry(QtCore.QRect(12,2,641*fac_screen,431*fac_screen))
+	    self.ui.menubar.setGeometry(QtCore.QRect(0,0,661*fac_screen,25*fac_screen))
+	    plt.rcParams['font.size'] = int(fontsiz*fac_screen)
+	
 	self.setWindowTitle('SAMT 2')
 	self.ui.main_frame.canvas.ax.clear()
 	self.ui.main_frame.canvas.ax.set_xlabel('distance  [m]')
@@ -2890,6 +2971,14 @@ class Popup_histogram(QtGui.QMainWindow):
 	self.ui.main_frame.setLayout(vbox)
         self.setCentralWidget(self.ui.main_frame)
 	
+	global fac_screen, fontsiz
+	if fac_screen > 1:
+	    self.resize(661*fac_screen, 485*fac_screen)
+	    self.ui.main_frame.setGeometry(QtCore.QRect(12,2,641*fac_screen,431*fac_screen))
+	    self.ui.main_frame.setMinimumSize(QtCore.QSize(480*fac_screen,360*fac_screen))
+	    self.ui.menubar.setGeometry(QtCore.QRect(0,0,661*fac_screen,25*fac_screen))
+	    plt.rcParams['font.size'] = int(fontsiz*fac_screen)
+	
 	self.setWindowTitle('SAMT 2')
 	self.ui.main_frame.canvas.ax.clear()
 	self.ui.main_frame.canvas.ax.set_xlabel('data')
@@ -2902,6 +2991,69 @@ class Popup_histogram(QtGui.QMainWindow):
 	
 ########################################################################
 
+class Popup_statistic(QtGui.QMainWindow):
+    # call from slotStatistic
+    def __init__(self, gridname, caller, fac_screen, li=None, parent=None):
+	QtGui.QWidget.__init__(self,  parent=None)
+	self.ui = Ui_tablewin()
+	self.ui.setupUi(self)
+	env = os.environ['SAMT2MASTER']+'/gui'
+        self.setWindowIcon(QIcon(env+'/pixmaps/samt2_icon.png'))
+
+	self.ui.btn_save_ijz.setVisible(False)
+	self.ui.btn_save_yxz.setVisible(False)
+	self.ui.btn_ok.setVisible(False)
+
+	self.resize(270*fac_screen, 330*fac_screen)
+	self.ui.main_frame.setMinimumSize(QtCore.QSize(206*fac_screen, 330*fac_screen))
+	self.ui.tblwid.setMinimumSize(QtCore.QSize(206*fac_screen, 330*fac_screen))
+	self.ui.btn_save_yxz.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	self.ui.btn_save_yxz.setMaximumSize(QtCore.QSize(71*fac_screen, 16777215))
+	self.ui.btn_save_ijz.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	self.ui.btn_save_ijz.setMaximumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	self.ui.btn_ok.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	self.ui.btn_ok.setMaximumSize(QtCore.QSize(61*fac_screen, 31*fac_screen))
+	self.ui.menubar.setGeometry(QtCore.QRect(0,0,255*fac_screen, 30*fac_screen))
+	
+	rh = 30*fac_screen  # row height
+	cw = 140*fac_screen   					
+	self.caller = caller
+	self.title = caller   # Show_List, Select, Lut, Statistical outp					    
+
+	#if self.caller == "Statistical output":
+	c = "%s" % caller
+	self.setWindowTitle(c)
+	self.ui.tblwid.horizontalHeader().setVisible(False)
+	self.ui.tblwid.setColumnWidth(0,cw)
+	ll = []
+	ll.append("name of the grid")
+	ll.append("number of gridcells")
+	ll.append("number of nodata")
+	ll.append("number of data cells")
+	ll.append("size")
+	ll.append("minvalue")
+	ll.append("maxvalue")
+	ll.append("total")
+	ll.append("mean")
+	ll.append("standard deviation")
+	i = 0
+	for it in li:
+	    self.ui.tblwid.insertRow(i)
+	    self.ui.tblwid.setRowHeight(i,rh)
+	    newItem1 = QtGui.QTableWidgetItem(ll[i])
+	    newItem1.setFlags(newItem1.flags() & ~Qt.ItemIsEditable) # ReadOnly
+	    self.ui.tblwid.setItem(i, 0, newItem1)
+	    
+	    newItem2 = QtGui.QTableWidgetItem(str(it))
+	    newItem2.setForeground(QColor(0,0,255))
+	    newItem2.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+	    newItem2.setFlags(newItem2.flags() & ~Qt.ItemIsEditable) 
+	    self.ui.tblwid.setItem(i, 1, newItem2)
+	    i += 1
+	self.ui.tblwid.resizeColumnToContents(0)
+	self.ui.tblwid.resizeColumnToContents(1)
+	    
+########################################################################
 class Popup_table(QtGui.QMainWindow):
     def __init__(self, d_unic, gridname, caller, parent=None):
 	QtGui.QWidget.__init__(self,  parent=None)
@@ -2914,6 +3066,22 @@ class Popup_table(QtGui.QMainWindow):
 	self.ui.btn_save_yxz.setVisible(False)
 	self.connect(self.ui.btn_ok, SIGNAL('clicked()'), 
 						self.btn_ok_clicked) 
+	global fac_screen
+	if fac_screen > 1:
+	    self.resize(255*fac_screen, 489*fac_screen)
+	    rh = 28*fac_screen  # row height
+	    self.ui.main_frame.setMinimumSize(QtCore.QSize(206*fac_screen, 408*fac_screen))
+	    self.ui.tblwid.setMinimumSize(QtCore.QSize(206*fac_screen, 408*fac_screen))
+	    self.ui.btn_save_yxz.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	    self.ui.btn_save_yxz.setMaximumSize(QtCore.QSize(71*fac_screen, 16777215))
+	    self.ui.btn_save_ijz.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	    self.ui.btn_save_ijz.setMaximumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	    self.ui.btn_ok.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	    self.ui.btn_ok.setMaximumSize(QtCore.QSize(61*fac_screen, 31*fac_screen))
+	    self.ui.menubar.setGeometry(QtCore.QRect(0,0,255*fac_screen, 30*fac_screen))
+	else:
+	    rh = 28
+	    					
 	self.caller = caller
 	self.title = caller   # Show_List, Select, Lut					    
 	s = "%s: %s" % (caller, gridname)
@@ -2924,11 +3092,11 @@ class Popup_table(QtGui.QMainWindow):
 	else:
 	    cn = "categories,."
 	self.ui.tblwid.setHorizontalHeaderLabels(QString(cn).split(","))  
-	self.ui.tblwid.setColumnWidth(1,25)
+	self.ui.tblwid.setColumnWidth(0,100*fac_screen)
 	i = 0
 	for key,value in sorted(d_unic.iteritems(),key=lambda(k,v):(k,v)):
 	    self.ui.tblwid.insertRow(i)
-	    self.ui.tblwid.setRowHeight(i,22)
+	    self.ui.tblwid.setRowHeight(i,rh)    #22)
 	    newItem = QtGui.QTableWidgetItem(str(key))
 	    self.ui.tblwid.setItem(i, 0, newItem) 
 	    if self.caller == "Lut":
@@ -2981,13 +3149,28 @@ class Popup_points_dataframe(QtGui.QMainWindow):
 	self.resize(570,520)
 	env = os.environ['SAMT2MASTER']+'/gui'
         self.setWindowIcon(QIcon(env+'/pixmaps/samt2_icon.png'))
-	
 	self.d_poin = d_poin
 	self.df = None
 	
+	global fac_screen
+	if fac_screen> 1:
+	    self.resize(255*fac_screen, 489*fac_screen)
+	    rh = 28*fac_screen  # row height
+	    self.ui.main_frame.setMinimumSize(QtCore.QSize(206*fac_screen, 408*fac_screen))
+	    self.ui.tblwid.setMinimumSize(QtCore.QSize(206*fac_screen, 408*fac_screen))
+	    self.ui.btn_save_yxz.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	    self.ui.btn_save_yxz.setMaximumSize(QtCore.QSize(71*fac_screen, 16777215))
+	    self.ui.btn_save_ijz.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	    self.ui.btn_save_ijz.setMaximumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	    self.ui.btn_ok.setMinimumSize(QtCore.QSize(71*fac_screen, 31*fac_screen))
+	    self.ui.btn_ok.setMaximumSize(QtCore.QSize(61*fac_screen, 31*fac_screen))
+	    self.ui.menubar.setGeometry(QtCore.QRect(0,0,255*fac_screen, 30*fac_screen))
+	else:
+	    rh = 28
+	
 	# all tablecells are editable and rows deletable
 	self.ui.lbl_tipp.setText(
-			    'After  z  values  were  edited, click  Refresh')
+		    'After  z  values  were  edited, click  Refresh')
 	self.ui.btn_ok.setText('Refresh')
 	self.connect(self.ui.btn_ok, SIGNAL('clicked()'), 
 				    self.btn_ok_clicked)
@@ -2996,7 +3179,7 @@ class Popup_points_dataframe(QtGui.QMainWindow):
 	self.connect(self.ui.btn_save_yxz, SIGNAL('clicked()'), 
 				    self.btn_save_clicked)
 	self.ui.tblwid.verticalHeader().setVisible(True)
-	
+		
 	if art == 'yx':
 	    s = 'y,x,i,j,z'
 	    s2 = '%s :   yx  TO  ij: ' % pname
@@ -3008,11 +3191,11 @@ class Popup_points_dataframe(QtGui.QMainWindow):
 	    s = ' , '     # problem !
 	    s2 = pname
 	self.setWindowTitle(s2)
-	self.tbl_show()  # has header only for col0, col1
+	self.tbl_show(rh, fac_screen)  # has header only for col0, col1
 	self.ui.tblwid.setHorizontalHeaderLabels(QString(s).split(","))
-    
+
     #-------------------------------------------------------------------
-    def tbl_show(self):
+    def tbl_show(self, rh, fac_screen):
     	self.df = pd.DataFrame(self.d_poin,
 				columns=['y','x','i','j','z']) 
 	#print "tbl_show df from d_poin"
@@ -3024,7 +3207,9 @@ class Popup_points_dataframe(QtGui.QMainWindow):
 	if self.ui.tblwid.columnCount() < 5:
 	    self.ui.tblwid.setColumnCount(ncols)
 	for r in range(nrows):
+	    self.ui.tblwid.setRowHeight(r, rh)    #22)
 	    for c in range(ncols):
+		self.ui.tblwid.setColumnWidth(c,110*fac_screen)
 		self.ui.tblwid.setItem(r,c,QtGui.QTableWidgetItem(
 					str(self.df.iget_value(r,c))))
 					
@@ -3089,6 +3274,28 @@ class Popup_expression(QtGui.QMainWindow):
         self.setWindowIcon(QIcon(env+'/pixmaps/samt2_icon.png'))
 	self.ui.statusBar.setStyleSheet("QStatusBar{color:red;}") 
 	
+	global fac_screen
+	if fac_screen > 1:
+	    self.resize(832*fac_screen, 449*fac_screen)
+	    self.ui.main_frame.setMinimumSize(QtCore.QSize(206*fac_screen, 400*fac_screen))
+	    self.ui.ledit_res.setGeometry(QtCore.QRect(90*fac_screen, 50*fac_screen, 351*fac_screen, 31*fac_screen))
+	    self.ui.label_6.setGeometry(QtCore.QRect(40*fac_screen, 60*fac_screen, 41*fac_screen, 20*fac_screen))
+	    self.ui.label_5.setGeometry(QtCore.QRect(470*fac_screen, 20*fac_screen, 21*fac_screen, 18*fac_screen))
+	    self.ui.label_4.setGeometry(QtCore.QRect(240*fac_screen, 20*fac_screen, 16*fac_screen, 18*fac_screen))
+	    self.ui.ledit_exp.setGeometry(QtCore.QRect(90*fac_screen, 90*fac_screen, 711*fac_screen, 31*fac_screen))
+	    self.ui.label_3.setGeometry(QtCore.QRect(10*fac_screen, 20*fac_screen, 21*fac_screen, 18*fac_screen))
+	    self.ui.label_2.setGeometry(QtCore.QRect(10*fac_screen, 140*fac_screen, 531*fac_screen, 18*fac_screen))
+	    self.ui.label_7.setGeometry(QtCore.QRect(10*fac_screen, 95*fac_screen, 71*fac_screen, 18*fac_screen))
+	    self.ui.layoutWidget.setGeometry(QtCore.QRect(10*fac_screen, 370*fac_screen, 801*fac_screen, 36*fac_screen))
+	    self.ui.btn_clear.setMinimumSize(QtCore.QSize(81*fac_screen, 31*fac_screen))
+	    self.ui.btn_clear.setMaximumSize(QtCore.QSize(81*fac_screen, 31*fac_screen))
+	    self.ui.btn_calc.setMinimumSize(QtCore.QSize(81*fac_screen, 31*fac_screen))
+	    self.ui.btn_calc.setMaximumSize(QtCore.QSize(81*fac_screen, 31*fac_screen))
+	    self.ui.lbl_a.setGeometry(QtCore.QRect(30*fac_screen, 20*fac_screen, 181*fac_screen, 21*fac_screen))
+	    self.ui.lbl_b.setGeometry(QtCore.QRect(260*fac_screen, 20*fac_screen, 181*fac_screen, 21*fac_screen))
+	    self.ui.lbl_c.setGeometry(QtCore.QRect(490*fac_screen, 20*fac_screen, 171*fac_screen, 21*fac_screen))
+	    self.ui.tblwid.setGeometry(QtCore.QRect(10*fac_screen, 170*fac_screen, 801*fac_screen,221*fac_screen))  
+	
 	# connects
 	self.connect(self.ui.btn_calc, SIGNAL('clicked()'), 
 						self.btn_calc_clicked) 
@@ -3119,11 +3326,23 @@ class Popup_expression(QtGui.QMainWindow):
 
 	ncols = len(self.df.columns)
 	nrows = len(self.df.index)
-	self.ui.tblwid.setColumnWidth(0,80)
-	self.ui.tblwid.setColumnWidth(1,90)
-	self.ui.tblwid.setColumnWidth(5,65)
-	self.ui.tblwid.setColumnWidth(6,70)
-	self.ui.tblwid.setColumnWidth(7,70)
+	rh = 30 *fac_screen   # row height
+	cw = 100 *fac_screen  # col widht
+	self.ui.tblwid.setRowHeight(0, rh)
+	self.ui.tblwid.setRowHeight(1, rh)
+	self.ui.tblwid.setRowHeight(2, rh)
+	self.ui.tblwid.setRowHeight(3, rh)
+	self.ui.tblwid.setRowHeight(4, rh)
+	self.ui.tblwid.setRowHeight(5, rh)
+	self.ui.tblwid.setColumnWidth(0,cw)
+	self.ui.tblwid.setColumnWidth(1,cw)
+	self.ui.tblwid.setColumnWidth(2,cw)
+    	self.ui.tblwid.setColumnWidth(3,cw)
+    	self.ui.tblwid.setColumnWidth(4,cw)
+	self.ui.tblwid.setColumnWidth(5,cw)  
+	self.ui.tblwid.setColumnWidth(6,cw)
+	#self.ui.tblwid.setColumnWidth(7,cw)
+
 	for r in range(nrows):
 	    for c in range(ncols):
 		self.ui.tblwid.setItem(r,c,QtGui.QTableWidgetItem(
@@ -3205,6 +3424,15 @@ class Popup_map(QtGui.QMainWindow):
 	vbox.addWidget(self.mpl_toolbar)
 	self.ui.main_frame.setLayout(vbox)
         self.setCentralWidget(self.ui.main_frame)
+	
+	global fac_screen, fontsiz
+	if fac_screen> 1:
+	    self.resize(661*fac_screen, 485*fac_screen)
+	    self.ui.main_frame.setMinimumSize(QtCore.QSize(480*fac_screen,360*fac_screen))
+	    self.ui.main_frame.setGeometry(QtCore.QRect(12,2,641*fac_screen,431*fac_screen))
+	    self.ui.menubar.setGeometry(QtCore.QRect(0,0,661*fac_screen,25*fac_screen))
+	    plt.rcParams['font.size'] = int(fontsiz*fac_screen)
+	
 	env = os.environ['SAMT2MASTER']+'/gui'
         self.setWindowIcon(QIcon(env+'/pixmaps/samt2_icon.png'))
 	
@@ -3234,17 +3462,25 @@ class Popup_active_rules(QtGui.QWidget):
 	self.setWindowTitle('SAMT2 ----- Fuzzy_Analysis')
 	#print "Popup_active_rules:: X=%.3f  Y=%.3f" % (X,Y)
 	#self.ui.table.verticalHeader().setVisible(False)
-	self.ui.table.setColumnWidth(0, 40)
-	self.ui.table.setColumnWidth(2, 60)
-	self.ui.table.setColumnWidth(6, 60)
+	
+	global fac_screen    #, fontsiz
+	if fac_screen > 1:
+	    self.resize(829*fac_screen, 242*fac_screen)
+	    rh = 30 * fac_screen   # row height
+	else:
+	    rh = 30
+	    
+	self.ui.table.setColumnWidth(0, 40*fac_screen)
+	self.ui.table.setColumnWidth(2, 60*fac_screen)
+	self.ui.table.setColumnWidth(6, 60*fac_screen)
 	
 	# input names for TableColumnHeader
 	self.ui.table.setHorizontalHeaderLabels(li_col_header)
 	#location = "X=%.3f  Y=%.3f" % (X,Y)  # --> für winlabel
-
-
+	    
 	for i in range(len(ruleList)):
 	    self.ui.table.insertRow(i)
+	    self.ui.table.setRowHeight(i, rh)
 	    
 	    item = QtGui.QTableWidgetItem("nr")
 	    s = str(ruleList[i])
@@ -3331,14 +3567,26 @@ class Popup_active_rules(QtGui.QWidget):
 	    self.ui.table.setItem(i,7,item)
 	    
 	    #self.ui.table.resizeColumnToContents(1) # QTextEdit not ok
-	    self.ui.table.setColumnWidth(1, 300)
+	    self.ui.table.setColumnWidth(1, 300*fac_screen)
 
 ########################################################################    
 	
 ########################################################################
 if __name__ == "__main__":
+    # global variables
     app = QtGui.QApplication(sys.argv)
     locale.setlocale(locale.LC_NUMERIC, "C") # decimal_point
+    print "************************************************************"
+    # scale factor for current monitor resolution (QDesktopWidget)
+    screen_resolution = app.desktop().screenGeometry()
+    w, h = screen_resolution.width(), screen_resolution.height()
+    if w <= 1920 and h <= 1200:  # monitor 24'' hat 1920x1200
+	fac_screen = 1.0
+    else:
+	fac_screen = float(h/1200.0)    
+	#fac_screenw = float(w/1920.0) 
+    #print "Monitor: width=%d, height=%d, fac_screen=%f" % (w, h, fac_screen)
+    fontsiz = plt.rcParams['font.size']   #12
     window = MyForm() 
     window.show()
     sys.exit(app.exec_())

@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_expression(object):
     def setupUi(self, expression):
         expression.setObjectName(_fromUtf8("expression"))
-        expression.resize(707, 436)
+        expression.resize(832, 449)
         expression.setWindowTitle(_fromUtf8(""))
         self.centralwidget = QtGui.QWidget(expression)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
@@ -39,7 +39,7 @@ class Ui_expression(object):
         self.main_frame.setMidLineWidth(0)
         self.main_frame.setObjectName(_fromUtf8("main_frame"))
         self.ledit_res = QtGui.QLineEdit(self.main_frame)
-        self.ledit_res.setGeometry(QtCore.QRect(90, 50, 251, 31))
+        self.ledit_res.setGeometry(QtCore.QRect(90, 50, 351, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.ledit_res.setFont(font)
@@ -65,7 +65,7 @@ class Ui_expression(object):
         self.label_4.setFont(font)
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.ledit_exp = QtGui.QLineEdit(self.main_frame)
-        self.ledit_exp.setGeometry(QtCore.QRect(90, 90, 591, 31))
+        self.ledit_exp.setGeometry(QtCore.QRect(90, 90, 711, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.ledit_exp.setFont(font)
@@ -86,7 +86,7 @@ class Ui_expression(object):
         self.label_7.setGeometry(QtCore.QRect(10, 95, 71, 18))
         self.label_7.setObjectName(_fromUtf8("label_7"))
         self.layoutWidget = QtGui.QWidget(self.main_frame)
-        self.layoutWidget.setGeometry(QtCore.QRect(10, 360, 671, 36))
+        self.layoutWidget.setGeometry(QtCore.QRect(10, 370, 801, 36))
         self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
@@ -137,7 +137,7 @@ class Ui_expression(object):
         self.lbl_c.setText(_fromUtf8(""))
         self.lbl_c.setObjectName(_fromUtf8("lbl_c"))
         self.tblwid = QtGui.QTableWidget(self.main_frame)
-        self.tblwid.setGeometry(QtCore.QRect(10, 170, 681, 186))
+        self.tblwid.setGeometry(QtCore.QRect(10, 170, 801, 191))
         self.tblwid.setFrameShape(QtGui.QFrame.Panel)
         self.tblwid.setFrameShadow(QtGui.QFrame.Raised)
         self.tblwid.setLineWidth(1)
@@ -151,6 +151,8 @@ class Ui_expression(object):
         self.tblwid.setColumnCount(8)
         self.tblwid.setObjectName(_fromUtf8("tblwid"))
         self.tblwid.horizontalHeader().setVisible(False)
+        self.tblwid.horizontalHeader().setMinimumSectionSize(50)
+        self.tblwid.horizontalHeader().setStretchLastSection(True)
         self.tblwid.verticalHeader().setVisible(False)
         self.verticalLayout.addWidget(self.main_frame)
         expression.setCentralWidget(self.centralwidget)
@@ -175,4 +177,14 @@ class Ui_expression(object):
 "\n"
 "", None))
         self.label_7.setText(_translate("expression", "Expression:", None))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    expression = QtGui.QMainWindow()
+    ui = Ui_expression()
+    ui.setupUi(expression)
+    expression.show()
+    sys.exit(app.exec_())
 

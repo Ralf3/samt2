@@ -6,7 +6,6 @@ import subprocess
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-
 from helpwin_ui import Ui_helpwin
 
 
@@ -19,6 +18,12 @@ class MyHelp(QtGui.QMainWindow, Ui_helpwin):
 	env = os.environ['SAMT2MASTER']+'/gui'
 	env1 = env+'/pixmaps'
 	self.setWindowIcon(QIcon(env1+'/area.png'))
+	
+	global fac
+	if fac > 1:
+	    self.resize(800*fac, 600*fac)
+	    self.ui.menubar.setGeometry(QtCore.QRect(0,0,800*fac,21*fac))
+	
 	
 	# toolbar icons
 	self.ui.actionHome.setIcon(QIcon(env1+'/home.png'))
@@ -64,6 +69,16 @@ class MyHelp(QtGui.QMainWindow, Ui_helpwin):
 	
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
+    
+    # scale factor for current monitor resolution (QDesktopWidget)
+    screen_resolution = app.desktop().screenGeometry()
+    w, h = screen_resolution.width(), screen_resolution.height()
+    if w <= 1920 and h <= 1200:  # monitor 24'' hat 1920x1200
+		fac = 1.0
+    else:
+		fac = float(h/1200.0)     # w/1920.0
+    print "Monitor width, height, fac", w, h, fac
+    
     window = MyHelp()      
     window.show()
     sys.exit(app.exec_())
