@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-              
-
+# -*- coding: utf-8 -*- 
+             
+#from __future__ import division
 import sys
 import os
 import subprocess
@@ -25,8 +26,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 import pandas as pd
-#import pandas.io.data
-from pandas_datareader import data, wb
+from pandas_datareader import data, wb #replaced 'import pandas.io.data'
 from pandas import Series, DataFrame
 from form1_ui import Ui_MainWindow
 from plotwin_ui import Ui_plotwin
@@ -45,20 +45,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	QtGui.QWidget.__init__(self,  parent)
 	self.ui = Ui_MainWindow()	# s. form1_ui.py
 	self.ui.setupUi(self)
-	
+	#----------------------
 	global fac_screen  #, fac_screenw
-	if fac_screen > 1:
- 	    self.resize(866*fac_screen, 664*fac_screen)
-	    #self.setMinimumSize(QtCore.QSize(854*fac_screen, 646*fac_screen))
-	    self.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen))
-	    #self.ui.centralwidget.setMinimumSize(QtCore.QSize(870*fac_screen, 575*fac_screen))
-	    self.ui.centralwidget.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen))
-	    self.ui.treeWidget.setMaximumSize(QtCore.QSize(200*fac_screen, 16777215))
-	    self.ui.treeWidget.setMinimumSize(QtCore.QSize(200*fac_screen, 551*fac_screen))
-	    self.ui.treeWidget.setMaximumSize(QtCore.QSize(200*fac_screen, 16777215))
-	    self.ui.mpl_widget.setMinimumSize(QtCore.QSize(100*fac_screen, 100*fac_screen))
-	    self.ui.menubar.setGeometry(QtCore.QRect(0, 0, 866*fac_screen, 30*fac_screen))
-	############
+	self.resize(866*fac_screen, 664*fac_screen) # MainWindow
+	self.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen)) 
+	self.ui.centralwidget.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen))
+	self.ui.treeWidget.setMaximumSize(QtCore.QSize(200*fac_screen, 16777215))
+	self.ui.treeWidget.setMinimumSize(QtCore.QSize(200*fac_screen, 551*fac_screen))
+	self.ui.treeWidget.setMaximumSize(QtCore.QSize(200*fac_screen, 16777215))
+	
+	self.ui.mpl_widget.setMinimumSize(QtCore.QSize(100*fac_screen, 100*fac_screen))
+	#self.ui.mpl_widget.setMinimumSize(QtCore.QSize(652*fac_screen, 565*fac_screen))
+	self.ui.menubar.setGeometry(QtCore.QRect(0, 0, 866*fac_screen, 30*fac_screen))
+	#--------------------
 	self.gdoc = gisdoc.gisdoc()
 	self.env = os.environ['SAMT2MASTER']+'/gui' # s. Zeile 1025
 	self.daten_path = os.environ['SAMT2DATEN']
@@ -90,7 +89,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	
 
 	# mpl_widget 
-		 
 	vbox = QVBoxLayout()
         vbox.addWidget(self.ui.mpl_widget.canvas)      
 	self.ui.mpl_widget.setLayout(vbox)
@@ -101,18 +99,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	#        entfernt rand
 	self.ui.mpl_widget.canvas.fig.subplots_adjust\
 				(left=0,right=1,top=1,bottom=0)
-	
-	#~ if fac_screen > 1.0:
-	    #~ w = self.ui.mpl_widget.width()*fac_screenw
-	    #~ h = self.ui.mpl_widget.height()*fac_screen
-	#~ else:
-	    #~ w = self.ui.mpl_widget.width()
-	    #~ h = self.ui.mpl_widget.height()
-	 
 	self.w_wid_orig = 0    		 
-	self.h_wid_orig = 0    		 
-	self.w_img_scaled = 0
-	self.h_img_scaled = 0
+	self.h_wid_orig = 0
 	self.startPoint = (0,0)
 	self.endPoint = (0,0)
 	self.startPointC = (0,0)  # copy of startPoint for actionReplot
@@ -138,6 +126,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.df = None
 	self.d_poi = {}
 	self.expr_popup = None
+	self.d_proj = {}
+	self.d_proj['GK_5'] = 'EPSG:31469'
+	self.d_proj['UTM_31'] = 'EPSG:32631'
+	self.d_proj['UTM_32'] = 'EPSG:32632'
+	self.d_proj['UTM_33'] = 'EPSG:32633'
+	self.d_proj['ERTS89_1'] = 'EPSG:25831'
+	self.d_proj['ERTS89_2'] = 'EPSG:25832'  
+	self.d_proj['ERTS89_3'] = 'EPSG:25833'
 	
 	self.ui.ledit_p1 = QLineEdit(self.ui.toolBar)
 	self.ui.ledit_p1.setObjectName(QString('P1'))
@@ -226,8 +222,22 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			self.slotStatistic)
 	self.connect(self.ui.actionInfo, SIGNAL('triggered()'), 
 			self.slotInfo)
-	self.connect(self.ui.actionMake_Map, SIGNAL('triggered()'), 
-			self.slotMake_Map)	    
+	
+	self.connect(self.ui.actionGK_5, SIGNAL('triggered()'), 
+			self.slotMake_Map)
+	self.connect(self.ui.actionUTM_31, SIGNAL('triggered()'),
+			self.slotMake_Map)		
+	self.connect(self.ui.actionUTM_32, SIGNAL('triggered()'), 
+			self.slotMake_Map)	
+	self.connect(self.ui.actionUTM_33, SIGNAL('triggered()'), 
+			self.slotMake_Map)	
+	self.connect(self.ui.actionERTS89_1, SIGNAL('triggered()'), 
+			self.slotMake_Map)	
+	self.connect(self.ui.actionERTS89_2, SIGNAL('triggered()'), 
+			self.slotMake_Map)		
+	self.connect(self.ui.actionERTS89_3, SIGNAL('triggered()'),
+			self.slotMake_Map)
+			
 	self.connect(self.ui.actionResize, SIGNAL('triggered()'), 
 			self.slotResize)
 	self.connect(self.ui.actionCorr, SIGNAL('triggered()'), 
@@ -386,9 +396,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			    'button_release_event', self.on_release)
 	
 	
-	#!!!!!!!!!!!!!!! nur f. test
-	self.slotHDF_Open()
-	#self.ui.actionColorbar.setChecked(True)
+	#self.slotHDF_Open() # f. test
+
 		
 
     #===================================================================
@@ -454,19 +463,21 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    print "Zoom_End errror"
 	    return
 	self.vis_zoomgrid(self.mxzoom,mi,ma,nrows,ncols)
-	
-	msg, mi, ma, mea = self.gdoc.zoom_statistic(self.gname,
+	li, mi, ma, mea = self.gdoc.zoom_statistic(self.gname,
 				    i0,i1,j0,j1,mi,ma,mea,std)
- 	QtGui.QMessageBox.information(self, \
-		    self.tr("Zoom: Statistical output"), QString(msg)) 
 	self.ui.ledit_p1.setText(QString(mi))
 	self.ui.ledit_p2.setText(QString(ma))
 	self.ui.ledit_p3.setText(QString(mea))
 	
-	# for mouse_click --> z value from self.mxzoom 
+	# for mouse_click --> z value from self.mxzoom 			????????????????????????????
 	# set = False in mouseEv on_release
-	self.isZoom = True 
-
+	
+	#####self.isZoom = True  # warum ??? raus 11.1.
+	
+	popup = Popup_statistic(self.gname, "Zoom: Statistical output", fac_screen, li)
+	popup.show()
+	self.li_popups.append(popup)
+	
     #-------------------------------------------------------------------
     def vis_zoomgrid(self, mx, mi, ma, nrows, ncols):
 	#print "vis_zoomgrid: nrows i, ncols j, self.startPoint: ", \
@@ -481,23 +492,29 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    #self.set_default_new_rect()    # in [0,0]
 	    self.ui.mpl_widget.canvas.draw()
 		
-	if mx != None:
-	    w_img = ncols    
-	    h_img = nrows
+	if mx is not None:
+	    w_cols = ncols    
+	    h_rows = nrows
 	    w_wid = self.w_wid_orig    
 	    h_wid = self.h_wid_orig
-	    #print "w_wid=%d, h_wid=%d" % (self.w_wid_orig,self.h_wid_orig)    
-	    fac = self.scale_coordsystem(w_wid, h_wid, w_img, h_img)
+	    #print "w_wid=%d, h_wid=%d" % (w_wid,h_wid)    
 	    
 	    # the top left position of mpl_widget
 	    pos = QPoint   
-	    pos = self.ui.mpl_widget.pos()	    
-	    self.w_img_scaled = float(w_img)*fac
-	    self.h_img_scaled = float(h_img)*fac
-	    #print "w_img_scaled=%d, h_img_scaled=%d" % (self.w_img_scaled, self.h_img_scaled)
-	    self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
-					    int(self.w_img_scaled), 
-					    int(self.h_img_scaled))
+	    pos = self.ui.mpl_widget.pos()
+	    
+	    #### neu jan 2017
+	    if float(w_cols)/float(w_wid) > float(h_rows)/float(h_wid):
+		h_scaled = w_wid*h_rows / w_cols
+		self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
+					int(w_wid), 
+					int(h_scaled))
+	    elif float(w_cols)/float(w_wid) < float(h_rows)/float(h_wid):
+		w_scaled = h_wid*w_cols / h_rows
+		self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
+					int(w_scaled), 
+					int(h_wid))
+	    
 	    self.ui.mpl_widget.canvas.fig.set_frameon(False) 
 	    self.ui.mpl_widget.canvas.ax.set_axis_off()   
 	    self.ui.mpl_widget.canvas.fig.subplots_adjust\
@@ -507,8 +524,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    img = self.ui.mpl_widget.canvas.ax.imshow(mx, cmap=cmap,\
 				    interpolation='none',aspect='auto')
 	    img.set_clim(mi, ma)
-	    self.ui.mpl_widget.canvas.draw()
-	    
+	    self.ui.mpl_widget.canvas.draw()	    
     
     #-------------------------------------------------------------------   
     def slotVIS_Line(self):
@@ -568,7 +584,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	i1 = self.endPointC[1]
 	j1 = self.endPointC[0]
 	t, mx = self.gdoc.get_mx_transect(self.gname,i0,j0,i1,j1)
-	if t == None:
+	if t is None:
 	    print "Line_End error"
 	    return
 	popup = Popup_transect(self.gname,t,mx,i0,j0,i1,j1)
@@ -643,20 +659,20 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if anz_g == 3:
 	    gx = self.gdoc.run_model(
 		    self.mname,self.model_kind,anz_g,v1,v2=v2,v3=v3)
-	    if gx == None:
+	    if gx is None:
 		print "calc3 error"
 	elif anz_g == 2:
 	    gx = self.gdoc.run_model(
 		    self.mname,self.model_kind,anz_g,v1,v2=v2)#,v3=None)
-	    if gx == None:
+	    if gx is None:
 		print "calc2 error"
 	elif anz_g == 1:    
 	    gx =self.gdoc.run_model(self.mname,self.model_kind,anz_g,v1)
-	    if gx == None:
+	    if gx is None:
 		print "calc1 error"
 	QtGui.QApplication.restoreOverrideCursor()
 	# append in TREE/grids
-	if gx != None:
+	if gx is not None:
 	    gname_new = self.gdoc.add_grid(self.mname, gx)
 	    self.append_new_grid(gname_new) 
 	    self.highlight_new_child(0)
@@ -667,19 +683,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	anza = 0
 	if v1 != '':
 	    g1 = self.gdoc.get_d_grids_val(v1)
-	    if g1 == None: 
+	    if g1 is None: 
 		print "error  run_expr: g1"
 		return None
 	    anza = 1
 	if v2 != '':
 	    g2 = self.gdoc.get_d_grids_val(v2)
-	    if g2 == None: 
+	    if g2 is None: 
 		print "error  run_expr: g2"
 		return None
 	    anza = 2
 	if v3 != '':
 	    g3 = self.gdoc.get_d_grids_val(v3)
-	    if g3 == None: 
+	    if g3 is None: 
 		print "error  run_expr: g3"
 		return None
 	    anza = 3
@@ -762,9 +778,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    #self.openedModelPath = QString("") 
 	    return
 	self.openedModelPath = name_hdf  
-	
 	li_namen_grid = self.gdoc.get_list_grids(str(name_hdf))
-	if li_namen_grid == None:
+	if li_namen_grid is None:
 	    print "HDF_Open Error"
 	    return
 	li_namen_grid.sort()   		
@@ -904,7 +919,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 	li3,li4,pname_new = self.gdoc.add_points(
 				    self.gname,pname,li1,li2,liz,art) 
-	if li3 == None:
+	if li3 is None:
 	    print "POINT_geo_Open Error"
 	    return
 	# now d_points[pname] filled with 5 lists and
@@ -968,7 +983,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 	li3,li4,pname_new = self.gdoc.add_points(
 				    self.gname,pname,li1,li2,liz,art) 
-	if li3 == None:
+	if li3 is None:
 	    print "POINT_Open Error"
 	    return
 	self.d_poi.clear()
@@ -1022,7 +1037,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.expr_res_name = res_name
 	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	gout = self.gdoc.get_expr_gout(expr, g1,g2,g3)
-	if gout == None:
+	if gout is None:
 	    QtGui.QApplication.restoreOverrideCursor()
 	    self.expr_popup.set_msg_statusbar("error in calc expression")
 	else:
@@ -1074,15 +1089,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if(name_file.isEmpty()): 
 	    return
 	self.openedModelPath = name_file
-	
-	
 	li = name_file.split('/')
 	li2 = li[-1].split('.')  
 	#print "slotSVM_Open::", name_file, li2[0] # 
 	 
 	ds_new = self.gdoc.add_model_svm(str(name_file), str(li2[0]))
-	
-	if ds_new != None:
+	if ds_new is not None:
 	    it = QTreeWidgetItem(self.root_models)
 	    it.setText(0, QString(ds_new))
 	    self.ui.treeWidget.addTopLevelItem(it)
@@ -1111,7 +1123,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    bins = int(s)
 	    self.ui.ledit_p1.clear()
 	mx = self.gdoc.get_mx_hist(self.gname, bins)
-	if mx == None:
+	if mx is None:
 	    print "Hist error"
 	    return
 	popup = Popup_histogram(self.gname, mx, bins)
@@ -1146,24 +1158,25 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.ui.ledit_p2.setText(s.setNum(ncols))
 	self.ui.ledit_p3.setText(s.setNum(nodata))
 	
-    #-------------------------------------------------------------------
+    #-----------------------------------------------------------------
+    
     def slotMake_Map(self):
-	v1 = str(self.ui.ledit_p1.text())  # precis
-	if self.is_number(v1) == False or v1 == '':  
-	    v1 = '2399'
+	sender = self.sender().objectName()  	# actionGK_5 
+	 	
+	lae =  sender.length()			# 10
+	same = sender.left(6)			# action
+	p = '%s' % sender.right(lae-6)		# 'GK_5'
+	print sender, p, self.d_proj[p]
 	
 	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-	mx = self.gdoc.make_map_mx(self.gname, int(v1)) 
+	mx= self.gdoc.make_map_mx(self.gname, self.d_proj[p]) 
 	QtGui.QApplication.restoreOverrideCursor()
-
-	if mx == None:
+	if mx is None:
 	    print "Make Map error"
 	else:
-	    #time.sleep(1)   #sec
-	    popup = Popup_map(self.gname, mx)
+	    popup = Popup_map(self.gname, mx, p)
 	    popup.show()
 	    self.li_popups.append(popup)
-	#threading.Timer(5, self.start_popup_map(mx)).start()
 
     #-------------------------------------------------------------------
     def slotResize(self):
@@ -1301,7 +1314,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if self.is_number(v1) == False:  
 	    v1 = 100
 	a_i,a_j,a_z = self.gdoc.sample(self.gname, int(v1))
-	if a_i == None:
+	if a_i is None:
 	    print "sample error"
 	    return
 	lii = a_i.tolist()
@@ -1329,7 +1342,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    v1 = '0'
 	v1 = float(v1)
 	a_i,a_j = self.gdoc.sample_det(self.gname, v1)
-	if a_i == None:
+	if a_i is None:
 	    print "sample error"
 	    return
 	lii = a_i.tolist()
@@ -1600,7 +1613,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    v2 = 10
 	# get mx
 	retu = self.gdoc.get_grid_rand_int(self.gname, int(v1), int(v2))
-	if retu == None:
+	if retu is None:
 	    print "grid_rand_int Error"
 	else:
 	    self.slotVIS_Start(1)		    
@@ -1610,7 +1623,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	""" fills an empty grid with random values """   
 	# get mx
 	retu = self.gdoc.get_grid_rand_float(self.gname)
-	if retu == None:
+	if retu is None:
 	    print "grid_rand_float Error"
 	else:
 	    self.slotVIS_Start(1)	
@@ -1620,7 +1633,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     
     def slotGRID_Add_Grid(self):
 	v1 = str(self.ui.ledit_p1.text())
-	if self.gdoc.grid_combine(self.gname, v1, 'add') == None:
+	if self.gdoc.grid_combine(self.gname, v1, 'add') is None:
 	    print "add_grid error"
 	else:
 	    self.slotVIS_Start()
@@ -1630,7 +1643,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def slotGRID_Diff_Grid(self):
 	v1 = str(self.ui.ledit_p1.text())
-	if self.gdoc.grid_combine(self.gname, v1, 'diff') == None:
+	if self.gdoc.grid_combine(self.gname, v1, 'diff') is None:
 	    print "diff_grid error"
 	else:
 	    self.slotVIS_Start()
@@ -1640,7 +1653,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def slotGRID_Mul_Grid(self):
 	v1 = str(self.ui.ledit_p1.text())
-	if self.gdoc.grid_combine(self.gname, v1,'mul') == None:
+	if self.gdoc.grid_combine(self.gname, v1,'mul') is None:
 	    print "mul_grid error"
 	else:
 	    self.slotVIS_Start()
@@ -1650,7 +1663,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def slotGRID_Min_Grid(self):
 	v1 = str(self.ui.ledit_p1.text())
-	if self.gdoc.grid_combine(self.gname, v1, 'min') == None:
+	if self.gdoc.grid_combine(self.gname, v1, 'min') is None:
 	    print "min_grid error"
 	else:
 	    self.slotVIS_Start()
@@ -1660,7 +1673,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def slotGRID_Max_Grid(self):
 	v1 = str(self.ui.ledit_p1.text())
-	if self.gdoc.grid_combine(self.gname, v1, 'max') == None:
+	if self.gdoc.grid_combine(self.gname, v1, 'max') is None:
 	    print "max_grid error"
 	else:
 	    self.slotVIS_Start()
@@ -1670,7 +1683,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def slotGRID_OR_Grid(self):
 	v1 = str(self.ui.ledit_p1.text())
-	if self.gdoc.grid_combine(self.gname, v1, 'or') == None:
+	if self.gdoc.grid_combine(self.gname, v1, 'or') is None:
 	    print "or_grid error"
 	else:
 	    self.slotVIS_Start()
@@ -1680,7 +1693,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def slotGRID_AND_Grid(self):
 	v1 = str(self.ui.ledit_p1.text())
-	if self.gdoc.grid_combine(self.gname, v1, 'and') == None:
+	if self.gdoc.grid_combine(self.gname, v1, 'and') is None:
 	    print "and_grid error"
 	else:
 	    self.slotVIS_Start()
@@ -1699,7 +1712,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    return
 	count = self.gdoc.grid_flood_fill(
 			    self.gname, int(v1), int(v2), float(v3))
-	if count == -9999 or count == None:
+	if count == -9999 or count is None:
 	    print "flood_fill error"
 	self.slotVIS_Start()
 	self.ui.ledit_p1.setText(str(count))
@@ -1718,7 +1731,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    return
 	std,varianz = self.gdoc.grid_flood_fill_std(
 			    self.gname, int(v1), int(v2), float(v3))
-	if std == -9999 or std == None:
+	if std == -9999 or std is None:
 	    print "flood_fills_std error"
 	self.slotVIS_Start()
 	self.ui.ledit_p1.setText(str(round(std, 4)))
@@ -1752,21 +1765,21 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	else:
 	    v1 = int(v1)
 	print "slotGRID_Remove_Trend: nr=%d" % v1
-	if self.gdoc.grid_remove_trend(self.gname, v1) == None:
+	if self.gdoc.grid_remove_trend(self.gname, v1) is None:
 	    print "remove_trend error"
 	else:
 	    self.slotVIS_Start()  
 	
     #-------------------------------------------------------------------
     def slotGRID_Grad_d4(self):
-	if self.gdoc.grid_grad_d4(self.gname) == None:
+	if self.gdoc.grid_grad_d4(self.gname) is None:
 	    print "grad_d4 error"
 	else:
 	    self.slotVIS_Start()  
         
     #-------------------------------------------------------------------
     def slotGRID_Grad_d8(self):
-	if self.gdoc.grid_grad_d8(self.gname) == None:
+	if self.gdoc.grid_grad_d8(self.gname) is None:
 	    print "grad_d8 error"
 	else:
 	    self.slotVIS_Start()  
@@ -1785,7 +1798,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if self.is_number(v3) == False:
 	    v3 = 1.0
 	v3 = float(v3)
-	if self.gdoc.kernel_sci(self.gname,v1,v2,v3) == None:
+	if self.gdoc.kernel_sci(self.gname,v1,v2,v3) is None:
 	    print "kernel_sci error"
 	else:
 	    self.slotVIS_Start()
@@ -1798,7 +1811,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	v2 = str(self.ui.ledit_p2.text())	# bj
 	if self.is_number(v1) == False or self.is_number(v2) == False: 
 	    return
-	if self.gdoc.kernel_rect(self.gname, int(v1), int(v2)) == None:
+	if self.gdoc.kernel_rect(self.gname, int(v1), int(v2)) is None:
 	    print "kernel_rect error"
 	else:
 	    self.slotVIS_Start()
@@ -1810,7 +1823,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	v1 = str(self.ui.ledit_p1.text())	# radius
 	if self.is_number(v1) == False: 
 	    return
-	if self.gdoc.kernel_cir(self.gname, int(v1)) == None:
+	if self.gdoc.kernel_cir(self.gname, int(v1)) is None:
 	    print "kernel_cir error"
 	else:
 	    self.slotVIS_Start()
@@ -1827,7 +1840,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	v1 = int(v1)
 	v2 = float(v2)
 	v3 = float(v3)
-	if self.gdoc.kernel_knn(self.gname, v1, v2, v3) == None:
+	if self.gdoc.kernel_knn(self.gname, v1, v2, v3) is None:
 	    print "kernel_knn error"
 	else:
 	    self.slotVIS_Start()
@@ -1867,7 +1880,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.append_new_grid(copy_name)  
 	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	if self.gdoc.points_interpolate(
-			    copy_name,lii,lij,liz,method) == None:    
+			    copy_name,lii,lij,liz,method) is None:    
 	    print 'Points_interpolation error'
 	else:
 	    self.highlight_new_child(0)
@@ -1930,7 +1943,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	copy_name = self.gdoc.grid_copy(v1, self.pname) 
 	self.append_new_grid(copy_name) 
 	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-	if self.gdoc.points_voronoi(copy_name,lii,lij,liz) == None:    
+	if self.gdoc.points_voronoi(copy_name,lii,lij,liz) is None:    
 	    print 'Points_voronoi error'
 	else:
 	    self.highlight_new_child(0)
@@ -1955,7 +1968,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    v3 = 25
 	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	if self.gdoc.points_poisson(
-		copy_name,lii,lij,liz,float(v2),int(v3)) == None:
+		copy_name,lii,lij,liz,float(v2),int(v3)) is None:
 	    print 'Poisson: errror'
 	else:
 	    self.highlight_new_child(0)
@@ -1974,7 +1987,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	copy_name = self.gdoc.grid_copy(v1, self.pname) 
 	self.append_new_grid(copy_name) 
 	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-	if self.gdoc.points_distance(copy_name,lii,lij) == None:    
+	if self.gdoc.points_distance(copy_name,lii,lij) is None:    
 	    print 'Points_distance error'
 	else:
 	    self.highlight_new_child(0)
@@ -1987,7 +2000,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def slotTABLE_Lut(self):
 	# get dictionary with unique categories
 	d_unic = self.gdoc.grid_unique(self.gname)
-	if d_unic == None:
+	if d_unic is None:
 	    print "unique error"
 	    return
 	# in table ist rechte col editierbar mit integer
@@ -2001,7 +2014,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	
 	# get dictionary with unique categories
 	d_unic = self.gdoc.grid_unique(self.gname)
-	if d_unic == None:
+	if d_unic is None:
 	    print "unique error"
 	    return
 	popup = Popup_table(d_unic, self.gname, "Select")
@@ -2085,16 +2098,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		
 		# search mname in d_models_fuzzy und d_models_svm
 		kind = ''
-		if self.gdoc.get_d_models_fuz(self.mname) != None:
+		if self.gdoc.get_d_models_fuz(self.mname) is not None:
 		    anz = self.gdoc.get_nr_fuz_inputs(self.mname)
 		    li =  self.gdoc.get_name_fuz_input(self.mname, anz)
-		    if li == None:
+		    if li is None:
 			print "error get_inputname"
 			return
 		    kind = 'fuzzy'
-		elif self.gdoc.get_d_models_svm(self.mname) != None:
+		elif self.gdoc.get_d_models_svm(self.mname) is not None:
 		    li =  self.gdoc.get_svm_name(self.mname)
-		    if li == None:
+		    if li is None:
 			print "error get inputname"
 		    anz = len(li)
 		    kind = 'svm'
@@ -2104,9 +2117,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		self.model_kind = kind
 		
 		if anz == 3:
-		    if li[2] == None: # --> P3: None raus
+		    if li[2] is None: # --> P3: None raus
 			s = "P1: %s,  P2: %s" % (li[0], li[1])
-		    elif li[1] == None:
+		    elif li[1] is None:
 			s = "P1: %s" % (li[0])
 		    else:
 			s = "P1: %s,  P2: %s,  P3: %s" % (li[0], li[1],li[2])
@@ -2180,19 +2193,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     
     ####################################################################
     #####   VISUALISATION    ###########################################
-    ####################################################################
-    
+    #####################################################################
+     
     def slotVIS_Start(self, clear=None):
-	
-	#global fac_screen
-	
-	w = self.ui.mpl_widget.width()    
-	h = self.ui.mpl_widget.height()   
-	#print "slotVis_Start: mpl_widget.width, mpl_widget.height:", w,h
-	
-	self.w_wid_orig = w
-	self.h_wid_orig = h  
-	
+	print "******** VIS Start ****************"
+	#print "VIS_Start: self.isZoom = " , self.isZoom 
+	if self.isZoom is False:
+	    self.w_wid_orig = self.ui.mpl_widget.width()    
+	    self.h_wid_orig = self.ui.mpl_widget.height()   
+	#print "slotVis_Start: self.w_wid_orig, self.h_wid_orig:", self.w_wid_orig,self.h_wid_orig
+
 	itemx = self.ui.treeWidget.currentItem()
 	if itemx != '':
 	    if self.item_is_child(itemx) == False:  
@@ -2202,7 +2212,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		return
 	self.delete_old_line_or_rect()
 	self.flag_mxzoom = False
-	
 	# self.gname only was saved in slotTREE_Clicked
 	# Sonderfall: self.gname='' wenn nach DELETE_Object kein 
 	# neues treeItem geKlickt, aber focus exist.
@@ -2213,7 +2222,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		    return
 		if self.parent == 'grids':
 		    self.gname = str(itemx.text(0))
-		    
 	# menu_View auswerten 
 	#--- Show_Range -->  Vis im Haupt-Fenster
 	if self.ui.actionShow_Range.isChecked():
@@ -2229,14 +2237,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    if mi is None:
 		print "VIS_Start error"
 		return
-	    w_img = nc   #ncols    
-	    h_img = nr   #nrows
+	    w_cols = nc   #ncols    
+	    h_rows = nr   #nrows
 	else:
 	    #--- Show_List --> Vis im Popup Window
 	    if self.ui.actionShow_List.isChecked():		
 		# get dictionary with unique categories
 		d_unic = self.gdoc.grid_unique(self.gname)
-		if d_unic == None:
+		if d_unic is None:
 		    print "Show_List: unique error"
 		    return
 		popup = Popup_table(d_unic, self.gname, "Show_List")
@@ -2248,36 +2256,31 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    else:
 		# ********* Vis Normalfall  im Haupt-Fenster *******
 		mx, mi, ma = self.gdoc.get_matrix(self.gname)
-		if mx == None:
+		if mx is None:
 		    return
 		tup = self.gdoc.get_gx_size(self.gname)
-		h_img = tup[0]  
-		w_img = tup[1]   
+		w_cols = tup[1] 
+		h_rows = tup[0]    
 		#print "Vis Normal: mi=%s, ma=%s" %  (mi, ma)
-		
-	w_wid = self.w_wid_orig    
-	h_wid = self.h_wid_orig
-	#print "slotVis_Start: self.w_wid_orig, self.h_wid_orig :", self.w_wid_orig, self.h_wid_orig #646, 557
-	#print "slotVis_Start: w_img=%s, h_img=%s" %  (w_img, h_img)    
-		
-	#### neu jan 2017
-	fac = self.scale_coordsystem(w_wid, h_wid, w_img, h_img)
-	self.w_img_scaled = float(w_img)*fac
-	self.h_img_scaled = float(h_img)*fac
-	"slotVis_Start: facw, self.w_img_scaled, self.h_img_scaled: ", fac, self.w_img_scaled, self.h_img_scaled
-		
-	#~ fac_w = float(w_wid)/float(w_img)
-	#~ fac_h = float(h_wid)/float(h_img)
-	#~ self.w_img_scaled = float(w_img)*fac_w
-	#~ self.h_img_scaled = float(h_img)*fac_h
-	#~ print "slotVis_Start: facw, self.w_img_scaled, fac_h, self.h_img_scaled: ", fac_w, self.w_img_scaled, fac_h, self.h_img_scaled
+	w_wid = self.w_wid_orig    # self.ui.mpl_widget.width()
+	h_wid = self.h_wid_orig	   # self.ui.mpl_widget.height() 
+	#print "slotVis_Start: w_wid =%s, h_wid =%s :"% (w_wid, h_wid) 
 	
 	pos = QPoint()   	# the top left position of mpl_widget
-	pos = self.ui.mpl_widget.pos() 
-	
-	self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
-					int(self.w_img_scaled), 
-					int(self.h_img_scaled))
+	pos = self.ui.mpl_widget.pos()
+		
+	#### new jan 2017
+	if float(w_cols)/float(w_wid) > float(h_rows)/float(h_wid):
+	    h_scaled = w_wid*h_rows / w_cols
+	    self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
+				    int(w_wid), 
+				    int(h_scaled))
+	elif float(w_cols)/float(w_wid) < float(h_rows)/float(h_wid):
+	    w_scaled = h_wid*w_cols / h_rows
+	    self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
+				    int(w_scaled), 
+				    int(h_wid))
+		
 	# weisser statt grauer frame
 	self.ui.mpl_widget.canvas.fig.set_frameon(False) 
 	# del x,y-achses incl. ticks 
@@ -2325,7 +2328,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		print "error Show_Diff: P1 expected"
 		return 
 	    mx = self.gdoc.get_mx_diff(self.gname, v1)
-	    if mx == None:
+	    if mx is None:
 		print "Error Show_Diff"
 		return
 	    mx2 = mx[mx > -9999.0] 
@@ -2411,7 +2414,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    d_lut = {}
 	    d_lut = dict(zip(li[0], li[1])) 
 	    mx,nr,nc = self.gdoc.get_mx_lut(self.gname, d_lut)
-	    if nr == None:
+	    if nr is None:
 		print "Lut error"
 		return  
 	    
@@ -2419,22 +2422,27 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if mi is None:
 	    print "show_img_from_list Error"
 	    return
-	w_img = nc   
-	h_img = nr
+	w_cols = nc   
+	h_rows = nr
 	w_wid = self.w_wid_orig    
 	h_wid = self.h_wid_orig    
-	fac = self.scale_coordsystem(w_wid, h_wid, w_img, h_img)
-
+	
 	# the top left position of mpl_widget
 	pos = QPoint()   
-	pos = self.ui.mpl_widget.pos()  # (165,9)
+	pos = self.ui.mpl_widget.pos()  
 	
-	self.w_img_scaled = float(w_img)*fac
-	self.h_img_scaled = float(h_img)*fac
-	#print "scaled:w=%d h=%d" %(self.w_img_scaled,self.h_img_scaled)
-	self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
-					int(self.w_img_scaled), 
-					int(self.h_img_scaled))
+	#### neu jan 2017
+	if float(w_cols)/float(w_wid) > float(h_rows)/float(h_wid):
+	    h_scaled = w_wid*h_rows / w_cols
+	    self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
+				    int(w_wid), 
+				    int(h_scaled))
+	elif float(w_cols)/float(w_wid) < float(h_rows)/float(h_wid):
+	    w_scaled = h_wid*w_cols / h_rows
+	    self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
+				    int(w_scaled), 
+				    int(h_wid))
+	
 	self.ui.mpl_widget.canvas.fig.set_frameon(False) 
 	self.ui.mpl_widget.canvas.ax.set_axis_off()   
 	self.ui.mpl_widget.canvas.fig.subplots_adjust(left=0,right=1,top=1,bottom=0)
@@ -2444,31 +2452,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	img = self.ui.mpl_widget.canvas.ax.imshow(mx,cmap=cmap,aspect='auto')
 	img.set_clim(mi, ma)
 	self.ui.mpl_widget.canvas.draw() 
-
-    #-------------------------------------------------------------------
-    def scale_coordsystem(self, w_wid, h_wid, w_img, h_img):
-	"""
-	    in:	   w_wid	width of the mpl_widget
-		    h_wid	height    "
-		    w_img	width of the img to plot
-		    h_wid	height    "
-	    out:  fac		scale factor
-	    scale mpl_widget to original img proportions
-	    called from slotVIS_Start
-	"""
-	fac = 0.0
-	if h_img < w_img:
-	    #print "Rechteck horizontal: fac= %d/%d" % (h_wid,h_img) 
-	    #print "Rechteck horizontal: fac= %d/%d" % (w_wid,w_img) 
-	    fac = float(w_wid)/float(w_img)
-	else:
-	    if h_img > w_img:
-		#print "Rechteck vertical: fac= %d/%d" % (h_wid,h_img)
-		fac = float(h_wid)/float(h_img)
-	    else:
-		#print "Quadrat: fac= %d/%d" % (h_wid,h_img)
-		fac = float(h_wid)/float(h_img)
-	return fac
     
     #-------------------------------------------------------------------
     def delete_old_line_or_rect(self):
@@ -2821,7 +2804,7 @@ class Popup_vis_colorbar(QtGui.QMainWindow):
 				(left=0.1,right=0.9,top=0.9,bottom=0.1)
 
 	self.ui.main_frame.canvas.ax.clear()    # only img
-	if diff_grid == None:
+	if diff_grid is None:
 	    self.ui.main_frame.canvas.ax.set_title(gridname)
 	else:
 	    s = "%s - %s" % (gridname, diff_grid)
@@ -2839,7 +2822,7 @@ class Popup_vis_colorbar(QtGui.QMainWindow):
     
     #-------------------------------------------------------------------
     def on_motion(self, event):
-	if event.xdata == None:
+	if event.xdata is None:
 	    return
 	X = int(event.xdata)   # col
 	Y = int(event.ydata)   # row
@@ -3030,7 +3013,9 @@ class Popup_statistic(QtGui.QMainWindow):
 	ll.append("number of gridcells")
 	ll.append("number of nodata")
 	ll.append("number of data cells")
-	ll.append("size")
+	if QString(caller).startsWith("Statistic"):
+	    print "Popup_statist: caller was Statistic.."
+	    ll.append("size")
 	ll.append("minvalue")
 	ll.append("maxvalue")
 	ll.append("total")
@@ -3411,7 +3396,7 @@ class Popup_expression(QtGui.QMainWindow):
 ########################################################################
 
 class Popup_map(QtGui.QMainWindow):
-    def __init__(self, gridname, mx, parent=None):
+    def __init__(self, gridname, mx, proj, parent=None):
 	QtGui.QWidget.__init__(self, parent=None)
 	self.ui = Ui_plotwin()
 	self.ui.setupUi(self)
@@ -3436,12 +3421,13 @@ class Popup_map(QtGui.QMainWindow):
 	env = os.environ['SAMT2MASTER']+'/gui'
         self.setWindowIcon(QIcon(env+'/pixmaps/samt2_icon.png'))
 	
-	s = 'Map for grid:  %s' % gridname
+	s = 'Map for grid:  %s ----- projection: %s' % (gridname,proj)
 	self.setWindowTitle(s)
 	self.ui.main_frame.canvas.ax.set_axis_on()
 	self.ui.main_frame.canvas.ax.set_xlabel('x')
 	self.ui.main_frame.canvas.ax.set_ylabel('y')
-	self.ui.main_frame.canvas.ax.set_title(gridname)
+	s = "%s  (%s)" % (gridname,proj)
+	self.ui.main_frame.canvas.ax.set_title(s)
 	
 	cmap = mpl.cm.get_cmap('jet', 500)
 	cmap.set_under('white') 
@@ -3578,14 +3564,16 @@ if __name__ == "__main__":
     locale.setlocale(locale.LC_NUMERIC, "C") # decimal_point
     print "************************************************************"
     # scale factor for current monitor resolution (QDesktopWidget)
+	
     screen_resolution = app.desktop().screenGeometry()
     w, h = screen_resolution.width(), screen_resolution.height()
     if w <= 1920 and h <= 1200:  # monitor 24'' hat 1920x1200
 	fac_screen = 1.0
     else:
-	fac_screen = float(h/1200.0)    
-	#fac_screenw = float(w/1920.0) 
-    #print "Monitor: width=%d, height=%d, fac_screen=%f" % (w, h, fac_screen)
+	#fac_screen = float(h/1200.0)  # 1.8  größerer mon hat 3840x2160
+	fac_screen = float(w/1920.0)   # 2.0
+    
+    print "Monitor:width=%d, height=%d, fac_screen=%f" % (w,h,fac_screen)
     fontsiz = plt.rcParams['font.size']   #12
     window = MyForm() 
     window.show()

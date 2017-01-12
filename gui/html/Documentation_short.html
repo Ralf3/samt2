@@ -6,9 +6,9 @@
 <title>Documentation(short)</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="title" content="Documentation(short)"/>
-<meta name="generator" content="Org-mode"/>
+<meta name="generator" content="Bluefish 2.2.7" />
 <meta name="generated" content="2015-05-06T15:02+0200"/>
-<meta name="author" content="Ralf Wieland"/>
+<meta name="author" content="karing" />
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
 <style type="text/css">
@@ -204,6 +204,12 @@ for the JavaScript code in this tag.
 <tr><td class="left">Histogram</td><td class="left">shows a histogram of the highlighted grid with P1=bins=20</td></tr>
 <tr><td class="left">Statistics</td><td class="left">shows statistics in a separate window: P1=min, P2=max, P3=std</td></tr>
 <tr><td class="left">Info</td><td class="left">shows in: P1=nrows, P2=ncols, P3=nodata</td></tr>
+
+<tr><td class="left">Entropy</td><td class="left">the shannon entropy</td></tr>
+<tr><td class="left">Entropy_S</td><td class="left">a normalized shannon entropy 0...1, P1= number of bins (must be >=10)</td></tr>
+<tr><td class="left">Complexity</td><td class="left">uses the mixin to calculate a complexity number, P1=nr (must be >=10), P2=distribution</td></tr>
+<tr><td>Majorization</td><td class="left">compares two grids, P1=grid1, P2=nr (must be >=10), P3=distribution<br></td></tr>
+
 <tr><td class="left">Make<sub>Map</sub></td><td class="left">shows an Open Street-map map of the highlighted grid</td></tr>
 <tr><td class="left">Resize</td><td class="left">resizes a grid using splines, P1=nrows, P2=ncols</td></tr>
 <tr><td class="left">Corr</td><td class="left">correlates the highlighted with the grid in P1: P2=corr</td></tr>
@@ -227,7 +233,9 @@ for the JavaScript code in this tag.
 <colgroup><col class="left" /><col class="left" />
 </colgroup>
 <tbody>
+<tr><td class="left">Create</td><td class="left">creates a random grid with P1=gridname, P2=nrows, P3=ncols</td></tr>
 <tr><td class="left">Set</td><td class="left">set mat=P1, (overwrite)</td></tr>
+<tr><td class="left">Set_ND</td><td class="left">set all value except nodata=P1, (overwrite)</td></tr>
 <tr><td class="left">Replace</td><td class="left">replaces the value P1 with the value P2, (overwrite)</td></tr>
 <tr><td class="left">Add</td><td class="left">mat+=P1, (overwrite)</td></tr>
 <tr><td class="left">Mul</td><td class="left">mat*=P1, (Overwrite)</td></tr>

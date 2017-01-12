@@ -18,7 +18,7 @@ from grid import copy_grid
 from grid import create_zoom
 from grid import sample
 from Pyfuzzy import read_model
-from make_map import create_map
+from osm_object import create_map
 
 
 class gisdoc:
@@ -137,7 +137,7 @@ class gisdoc:
 			gname_new	str
 	"""
 	gx = self.d_grids[gname1]
-	if gx == None:
+	if gx is None:
 	    return False
 	ga = copy_grid(gx)
 	gname_new = self.add_grid(gname2, ga)
@@ -163,7 +163,7 @@ class gisdoc:
 			gname_new	str
 	""" 
 	gx = self.d_grids[gname1]
-	if gx == None:
+	if gx is None:
 	    return False
 	del self.d_grids[gname1]      
 	gname_new = self.add_grid(gname2, gx)   
@@ -246,7 +246,7 @@ class gisdoc:
 
         """
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return False
 	return gx.write_hdf(filename, dataset, modell, bemerk)
 	
@@ -259,7 +259,7 @@ class gisdoc:
 	    out:	ascii file 
         """
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return False
 	return gx.write_ascii(filename)
 	
@@ -280,7 +280,7 @@ class gisdoc:
         """
 	#print "add_points gname=%s  pname=%s" %(gridname,pname)
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    print "error gx"
 	    return None
 	pname_new = pname
@@ -289,7 +289,7 @@ class gisdoc:
 	if art == 'yx':
 	    a_3, a_4 = gx.transform_to_ij(li1, li2)  # y,x
 	    # np.array ohne comma --> py_list, comma separated
-	    if a_3 == None:
+	    if a_3 is None:
 		print "err a_3"
 		return None, None, None
 	    else:
@@ -298,7 +298,7 @@ class gisdoc:
 		self.d_points[pname_new] = li1, li2, li3, li4, liz # y,x,i,j,z
 	else:
 	    a_3, a_4 = gx.transform_from_ij(li1, li2)  #y,x
-	    if a_3 == None:
+	    if a_3 is None:
 		print "err a_3"
 		return None, None, None
 	    else:
@@ -339,7 +339,7 @@ class gisdoc:
     def get_svm_name(self, modelname):
 	# called by: slotTREE_Clicked : model
 	sx = self.d_models_svm[modelname]
-	if sx == None: 
+	if sx is None: 
 	    return False
 	li = sx.names   	# list of max 3 names   
 	return li
@@ -395,7 +395,7 @@ class gisdoc:
     #-------------------------------------------------------------------
     def get_nr_fuz_inputs(self, modelname):
 	f1 = self.d_models_fuz[modelname]
-	if f1 == None: 
+	if f1 is None: 
 	    return False
 	nr = f1.get_number_of_inputs()
 	return nr
@@ -403,12 +403,12 @@ class gisdoc:
     #------------------------------------------------------------------- 
     def get_name_fuz_input(self, modelname, anz_inp):
 	f1 = self.d_models_fuz[modelname]
-	if f1 == None: 
+	if f1 is None: 
 	    return None
 	li = []	
 	for i in range(anz_inp):
 	    name = f1.get_input_name(i) 
-	    if name == None:
+	    if name is None:
 		print "error get_input_name"
 		return None
 	    li.append(name)
@@ -418,7 +418,7 @@ class gisdoc:
     def get_name_fuz_output(self, modelname):
 	# called by: Fuzzy_Analysis
 	f1 = self.d_models_fuz[modelname]
-	if f1 == None: 
+	if f1 is None: 
 	    return None
 	return f1.get_output_name()
 	  
@@ -427,21 +427,21 @@ class gisdoc:
 	# called by: slotRun_Model()
 	#print "gdoc.run_model : %s / anz inputs= %d" % (modelname,n)
 	anza = 0
-	if v1 != None:
+	if v1 is not None:
 	    g1 = self.d_grids[v1]
-	    if g1 == None: 
+	    if g1 is None: 
 		print "error  run_model: g1"
 		return None
 	    anza = 1
-	if v2 != None:
+	if v2 is not None:
 	    g2 = self.d_grids[v2]
-	    if g2 == None: 
+	    if g2 is None: 
 		print "error  run_model: g2"
 		return None
 	    anza = 2
-	if v3 != None:
+	if v3 is not None:
 	    g3 = self.d_grids[v3]
-	    if g3 == None: 
+	    if g3 is None: 
 		print "error  run_model: g3"
 		return None
 	    anza = 3
@@ -476,15 +476,15 @@ class gisdoc:
     #-------------------------------------------------------------------
     def get_expr_gout(self, expr, g1, g2=None, g3=None):
 	ctr = 0
-	if g1 != None:
+	if g1 is not None:
 	    g1.set_nan()
 	    a = 'g1'+'.get_matp()'
 	    ctr += 1
-	    if g2 != None:
+	    if g2 is not None:
 		g2.set_nan()
 		b = 'g2'+'.get_matp()'
 		ctr += 1
-		if g3 != None:
+		if g3 is not None:
 		    g3.set_nan()
 		    c = 'g3'+'.get_matp()'
 		    ctr += 1
@@ -537,10 +537,10 @@ class gisdoc:
 	    calculates the correlation between two grids
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return False
 	g2 = self.d_grids[g1]
-	if g2 == None: 
+	if g2 is None: 
 	    return False
 	return gx.corr(g2) 
     
@@ -548,7 +548,7 @@ class gisdoc:
     def get_entropy(self, gridname):
 	# the shannon entropy
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return False
 	return gx.shannon()
     
@@ -556,7 +556,7 @@ class gisdoc:
     def get_entropy_s(self, gridname, nr=30):
 	""" nr: integer, number of bins in histogram	"""
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return False
 	return gx.shannons(nr=nr)
     
@@ -565,17 +565,17 @@ class gisdoc:
 	""" nr: int, number of bins in histogram
 	   dis: int, distribution=0, Histogramm=1 unique()	"""
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return False
 	return gx.complexity(nr=int(nr), dis=int(dis))
     
     #-------------------------------------------------------------------  
     def get_majorization(self, gridname, grid1_name, nr=10, dis=0):
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return False
 	g1 = self.d_grids[grid1_name]
-	if g1 == None: 
+	if g1 is None: 
 	    return False
 	return gx.majorization(g1, nr=nr, dis=0)
     
@@ -587,7 +587,7 @@ class gisdoc:
 	    very fast version now, uses: np.random.shuffle
         """
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return None, None, None
 	return gx.sample(nr)   # y,x,z
     
@@ -598,7 +598,7 @@ class gisdoc:
 	    out:	2 arrays  i,j 
         """
 	gx = self.d_grids[gridname]
-	if gx == None: 
+	if gx is None: 
 	    return None, None
 	return gx.sample_det(val)   # y,x
 	
@@ -609,30 +609,30 @@ class gisdoc:
 	g2 = None
 	g3 = None
 	gx = self.d_grids[vx]	# Pflicht
-	if gx == None: 
+	if gx is None: 
 	    return None, None
 	g1 = self.d_grids[v1]	# Pflicht
-	if g1 == None: 
+	if g1 is None: 
 	    return None, None
 	n = 2000
 	anz = int(anzgrids)
 	if anz == 2:
 	    res, resy = sample(g1,g4=gx,n=n,filename=fname,x1=v1,x4=vx) 
 	elif anz == 3:
-	    if v2 != None:		
+	    if v2 is not None:		
 		g2 = self.d_grids[v2]
-		if g2 == None: 
+		if g2 is not None: 
 		    return None, None
 		res, resy = sample(g1,g4=gx,g2=g2,n=n,
 				    filename=fname,x1=v1,x2=v2,x4=vx) 
 	elif anz == 4:
-	    if v2 != None:		
+	    if v2 is not None:		
 		g2 = self.d_grids[v2]
-		if g2 == None: 
+		if g2 is None: 
 		    return None, None
-	    if v3 != None:		
+	    if v3 is not None:		
 		g3 = self.d_grids[v3]
-		if g3 == None: 
+		if g3 is None: 
 		    return None, None
 		res, resy = sample(g1,g4=gx,g2=g2,g3=g3,n=n,
 			    filename=fname,x1=v1,x2=v2,x3=v3,x4=vx) 
@@ -651,7 +651,7 @@ class gisdoc:
 	gname_new = self.add_grid(gname, gx)
 	# fill with random 
 	retu = self.get_grid_rand_float(gname_new)
-	if retu == None:
+	if retu is None:
 	    return False
 	return gname_new    
 	
@@ -663,7 +663,7 @@ class gisdoc:
 	    set all values to a const
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	gx.set_all(float(val1))
 	
@@ -675,7 +675,7 @@ class gisdoc:
 	    set all value exept nodata
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	gx.set_all_nd(float(val1))
 	
@@ -688,7 +688,7 @@ class gisdoc:
 	    replace the val1 with val2
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.replace(float(val1), float(val2))
 	
@@ -700,7 +700,7 @@ class gisdoc:
 	    add the grid with an float
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.add(float(val1))
 	
@@ -712,7 +712,7 @@ class gisdoc:
 	    multiply the grid with a float 
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.mul(float(val1))
 	
@@ -723,7 +723,7 @@ class gisdoc:
 	    calc: mat[mat<0]=0.0; lg(mat+d)
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.log(d)   
 
@@ -734,7 +734,7 @@ class gisdoc:
 	    calc: mat[mat<0]=0.0; ln(mat+d)
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.ln(d)
 	
@@ -744,7 +744,7 @@ class gisdoc:
 	    calc: mat[mat!=nodata]=fabs(mat[mat!=nodata])
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.fabs()
 	
@@ -756,7 +756,7 @@ class gisdoc:
 	    (x-min)/(max-min). Remove the nodata before 
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.norm()
 	
@@ -767,7 +767,7 @@ class gisdoc:
 	    normalizes the mat:=(mat-mean(mat))/std(mat)
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.znorm()
     
@@ -777,7 +777,7 @@ class gisdoc:
 	    invert a grid between min and max
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.inv()
 	    
@@ -788,7 +788,7 @@ class gisdoc:
 	    out: 	True / False
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.inv_ab(a)
 	    
@@ -800,7 +800,7 @@ class gisdoc:
 	    retrict all values in the range from [min,max]
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	if val3 == -9999:
 	    return gx.cond(float(mi), float(ma))
@@ -815,7 +815,7 @@ class gisdoc:
 	    clamps the max with v1
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	if val2 == -9999:
 	    return gx.cut(float(ma))
@@ -830,7 +830,7 @@ class gisdoc:
 	    removes all values in the range from [min,max)
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.cut_off(float(val1), float(val2), val=float(val3))
 	
@@ -843,14 +843,14 @@ class gisdoc:
 	    set {c1,c2,c3,...cnr},  default=10
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	gx.classify(nr=val1)    #int(val1))
 	
     #-------------------------------------------------------------------
     def grid_unique(self, gridname):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	dic = gx.unique()
 	#print dic.keys()
@@ -863,11 +863,11 @@ class gisdoc:
 	    set all values in grid to val1 else to val2
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False, False, False
 	nr, nc = gx.size()
 	vals_arr = li_categories
-	if vals_arr == None:
+	if vals_arr is None:
 	    print "grid_select error"
 	    return None,None,None
 	    
@@ -886,7 +886,7 @@ class gisdoc:
 	    generate a random mat using int numbers
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	if gx.randint(v1, v2) == True:
 	    return gx.get_matc()
@@ -901,7 +901,7 @@ class gisdoc:
 	"""
 	gx = self.d_grids[gridname]
 	print gx
-	if gx == None:
+	if gx is None:
 	    return None
 	if gx.randfloat() == True:
 	    return gx.get_matc()
@@ -920,10 +920,10 @@ class gisdoc:
 	    combine highlighted grid (gx) with P1:grid (g1)
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	g1 = self.d_grids[v1]
-	if g1 == None:
+	if g1 is None:
 	    return None
 	print "grid_combine: gx=%s ,  g1=%s" % (gridname, v1)
 	if kind == 'add':
@@ -962,7 +962,7 @@ class gisdoc:
 	    flood fill algorithm based on a stack implementation 
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	count = gx.floodFill(i,j,level1,mark=-1) 
 	return count
@@ -977,7 +977,7 @@ class gisdoc:
 	    flood fill algorithm based on a stack implementation 
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	std, varianz = gx.floodFills(i,j,level1,mark=-1)
 	return std, varianz  # bzw. count1,count or 0,0 or -9999,-9999 
@@ -992,7 +992,7 @@ class gisdoc:
 	    with min var criterion
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	dist = gx.varpart(nr)
 	return dist
@@ -1006,7 +1006,7 @@ class gisdoc:
 	    remove the trend from a map using a linear regression
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	retu = gx.remove_trend(nr)     
 	if retu == True:
@@ -1020,7 +1020,7 @@ class gisdoc:
 	    generates a map with gradient values from d4 
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	if gx.grad_d4() == True:
 	    return gx.get_matc()
@@ -1033,7 +1033,7 @@ class gisdoc:
 	    generates a map with gradient values from d8
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	if gx.grad_d8() == True:
 	    return gx.get_matc()
@@ -1053,7 +1053,7 @@ class gisdoc:
 	    convolves a gaussian kernel to mat
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	retu = gx.kernel_sci(ai, bj, sigma) 
 	if retu == True:
@@ -1070,7 +1070,7 @@ class gisdoc:
 	    convolves a rectangular kernel to mat
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	retu = gx.kernel_squ(ai, bj) 
 	if retu == True:
@@ -1086,7 +1086,7 @@ class gisdoc:
 	    convolves a circle kernel to mat
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	retu = gx.kernel_cir(r) 
 	if retu == True:
@@ -1108,7 +1108,7 @@ class gisdoc:
             the result is the majority of the k neighbors	
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	retu = gx.knn(k, mi, ma) 
 	if retu == True:
@@ -1128,9 +1128,9 @@ class gisdoc:
 		method= ...... s. grid.py
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
-	if gx.interpolate(lii,lij,liz,method=method) == None:
+	if gx.interpolate(lii,lij,liz,method=method) is None:
 	    return None
 	else:
 	    return gx.get_matc()
@@ -1142,9 +1142,9 @@ class gisdoc:
 	"""
 	#print "point_voronoi: %s" % gridname
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
-	if gx.voronoi(lii,lij,liz) == None:
+	if gx.voronoi(lii,lij,liz) is None:
 	    return None
 	else:
 	    return gx.get_matc()
@@ -1155,9 +1155,9 @@ class gisdoc:
 	    in: coordinates
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
-	if gx.distance(lii,lij) == None:
+	if gx.distance(lii,lij) is None:
 	    return None
 	else:
 	    return gx.get_matc()
@@ -1173,7 +1173,7 @@ class gisdoc:
             uses number of iterations=25
         """
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	if gx.poisson(lii,lij,liz,eps, iter=itnr) == True:
 	    return gx.get_matc()
@@ -1188,21 +1188,21 @@ class gisdoc:
     
     def get_gx_size(self, gridname):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.size()  # (nrows,ncols)
     
     #-------------------------------------------------------------------
     def get_gx_val(self, gridname, i, j):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.get(i,j)
     
     #-------------------------------------------------------------------    
     def get_matrix(self, gridname):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None, None, None      
 	mx = gx.get_matc()  # with nodata
 	(mi,ma) = gx.get_minmax()   
@@ -1211,7 +1211,7 @@ class gisdoc:
     #-------------------------------------------------------------------    
     def get_min_max(self, gridname):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None, None       
 	(mi,ma) = gx.get_minmax()  
 	return mi, ma
@@ -1219,7 +1219,7 @@ class gisdoc:
     #-------------------------------------------------------------------
     def grid_statistic(self, gridname):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False, False, False, False
 	tup = gx.size()
 	ncols = tup[1]      
@@ -1246,48 +1246,11 @@ class gisdoc:
 	li.append(mea)
 	li.append(str(round(std,4)))
 	return li, mi, ma, mea
-    #-------------------------------------------------------------------
-    def grid_statistic_old(self, gridname, fac_screen):
-	gx = self.d_grids[gridname]
-	if gx == None:
-	    return False, False, False, False
-	tup = gx.size()
-	ncols = tup[1]      
-	nrows = tup[0]
-	count_cells = ncols*nrows
-	count_datacells = gx.get_datacells()
-	count_nodatacells = count_cells - count_datacells
-	(mi,ma) = gx.get_minmax()  
-	mea, std = gx.mean_std()
-	total = str(round(mea * count_datacells, 2))
-	mi = str(round(mi, 4)) 
-	ma = str(round(ma, 4))	
-	mea = str(round(mea, 4))
-	msg = ''
-	msg += '\nName of the grid: ' + gridname
-	msg += '\n\nnumber of gridcells:\t' + str(count_cells)
-	msg += '\nnumber of nodata:\t' + str(count_nodatacells)
-	msg += '\nnumber of data cells:\t' + str(count_datacells)
-	
-	if fac_screen > 1.0:
-	    msg += '\nsize:\t\t\t' + str(int(gx.get_csize()))
-	else:
-	    msg += '\nsize:\t\t' + str(int(gx.get_csize()))
-	msg += '\nminvalue:\t\t' + mi   	
-	msg += '\nmaxvalue:\t\t' + ma
-	if fac_screen > 1.0:
-	    msg += '\ntotal:\t\t\t' + total	
-	    msg += '\nmean:\t\t\t' + mea
-	else:
-	    msg += '\ntotal:\t\t' + total	
-	    msg += '\nmean:\t\t' + mea
-	msg += '\nstandard deviation:\t' + str(round(std, 4))
-	return msg, mi, ma, mea
 
     #-------------------------------------------------------------------
     def zoom_statistic(self, gridname,i0,i1,j0,j1,mi,ma,mea,std):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False, False, False, False
 	
 	mx = gx.get_matc(i0, i1, j0, j1)  # incl. nodata
@@ -1297,25 +1260,23 @@ class gisdoc:
 	count_nodatacells = len(mx[mx==-9999])
 	count_datacells = count_cells-count_nodatacells
 	
-	#mxx = mx[mx != -9999]  # ok
-	#print 'neues min=', mxx.min()
 	mi = str(round(mi, 4))   
 	ma = str(round(ma, 4))
 	total = str(round(mea*count_datacells, 2))
 	mea = str(round(mea, 4))
 	std = str(round(std, 4))
-	msg = ''
-	msg += '\n\tName of the grid: ' + gridname
-	msg += '\n\n\tnumber of gridcells:\t' + str(count_cells)
-	msg += '\n\tnumber of nodata cells:\t' + str(count_nodatacells)
-	msg += '\n\tnumber of data cells:\t' + str(count_datacells)
-	msg += '\n\tminvalue:\t\t' + mi   	
-	msg += '\n\tmaxvalue:\t\t' + ma
-	msg += '\n\ttotal:\t\t' + total	
-	msg += '\n\tmean:\t\t' + mea		
-	msg += '\n\tstandard deviation:\t' + std
-	return msg, mi, ma, mea
-    
+	li= []
+	li.append(gridname)
+	li.append(str(count_cells))
+	li.append(str(count_nodatacells))
+	li.append(str(count_datacells))
+	li.append(mi)
+	li.append(ma)
+	li.append(total)	
+	li.append(mea)
+	li.append(std)
+	return li, mi, ma, mea
+	
     #-------------------------------------------------------------------
     def get_mx_zoom(self,gridname, i0,i1, j0,j1):
 	"""
@@ -1324,7 +1285,7 @@ class gisdoc:
 	    out: a new grid of the zoom , min, max, nrows, ncols, ...	
 	"""
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None, None, None, None, None, None, None
 	gz = create_zoom(gx,i0,i1,j0,j1)
 	(mi,ma) = gz.get_minmax()
@@ -1338,38 +1299,37 @@ class gisdoc:
     #-------------------------------------------------------------------
     def grid_info(self, gridname):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False, False, False
 	tup = gx.size()
 	nrows = tup[0]
 	ncols = tup[1]     
 	nodata = gx.get_nodata()
 	return nrows, ncols, nodata
-    
+     
     #-------------------------------------------------------------------
     def make_map_mx(self, gridname, proj=None):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
-	#(mi,ma) = gx.get_minmax()
 	try:
-	    map_mx = create_map(gx.get_header(), proj) 
+	    map_mx = create_map(gx, proj) 
 	except:
 	    print "error while create_map"
 	    return None
 	return map_mx
-    
+
     #-------------------------------------------------------------------
     def grid_resize(self, gridname, nrows, ncols):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False
 	return gx.resize(nrows, ncols)
 	
     #-------------------------------------------------------------------
     def get_mx_hist(self, gridname, bins):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	mx = gx.show_hist(b1=bins,flag=1) 
 	return mx
@@ -1377,7 +1337,7 @@ class gisdoc:
     #-------------------------------------------------------------------
     def get_mx_transect(self,gridname,i0,j0,i1,j1):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None, None
 	#gx.show_transect(i0,j0,i1,j1)
 	t,mx = gx.show_transect(i0,j0,i1,j1, flag=1)  
@@ -1386,7 +1346,7 @@ class gisdoc:
     #-------------------------------------------------------------------
     def get_mx_3d(self, gridname, strid):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False, False, False
 	nr, nc = gx.size()
 	mx=gx.show_3d(stride=strid,sub1=False,title='',X='',Y='',flag=1)    
@@ -1395,7 +1355,7 @@ class gisdoc:
     #-------------------------------------------------------------------
     def get_mx_range(self, gridname, mi, ma):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False, False, False
 	nr, nc = gx.size()
 	mx = gx.showr(float(mi), float(ma), flag=1)    
@@ -1404,7 +1364,7 @@ class gisdoc:
     #-------------------------------------------------------------------
     def get_mx_list(self, gridname, li_categories):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return False, False, False
 	nr, nc = gx.size()
 	mx = gx.shows(li_categories, flag=1)    
@@ -1413,7 +1373,7 @@ class gisdoc:
     #-------------------------------------------------------------------
     def get_mx_lut(self, gridname, d_lut):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None, None, None
 	nr, nc = gx.size()
 	if gx.lut(d_lut) == False:
@@ -1425,10 +1385,10 @@ class gisdoc:
     #-------------------------------------------------------------------
     def get_mx_diff(self, gridname, v1):
 	gx = self.d_grids[gridname]
-	if gx == None:
+	if gx is None:
 	    return None
 	g1 = self.d_grids[v1]
-	if g1 == None:
+	if g1 is None:
 	    return None
 	mx = gx.show_diff(g1, flag=1)
 	return mx
@@ -1514,13 +1474,6 @@ class gisdoc:
 	fx = self.d_models_fuz[modelname]
 	ro = fx.get_max_input(i)  
 	return ro 
-    
-    #-------------------------------------------------------------------
-
-    
-    
-    
-    
 
     ####### end ########################################################
     
