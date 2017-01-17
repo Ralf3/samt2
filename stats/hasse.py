@@ -315,7 +315,7 @@ def print_hd(gx,level,title):
     plt.axis('off')
     plt.show()
 
-def read_from_excel(filename, name, args):
+def read_from_excel(filename, table, name, args):
     """ 
     reads from an excel file using column names in args 
     name is the name of the objects
@@ -323,7 +323,7 @@ def read_from_excel(filename, name, args):
     numpy array mw[i,j]: rows=i cols=data vector[j]
     z_namen: object names according to the rows
     """
-    data=pd.read_excel(filename)
+    data=pd.read_excel(filename, table)
     z_namen=data[name]
     mw=np.zeros((len(data),len(args)))
     # fille the mw

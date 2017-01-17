@@ -576,6 +576,9 @@ cdef class grid(object):
         adds to an image made from show a set of point with the
         colors = 'r', 'g', 'b', 'k', 'w'
         and a size the matplotlib size as default: 20
+        t : title
+        X : x-axis
+        Y : y-axis
         """
         cdef int i,j
         cdef double gridmin, gridmax
@@ -1100,17 +1103,21 @@ cdef class grid(object):
                 f.write(s)
             f.close()
             return y,x,z
-    def sample_p(self, int n, p):
+    def sample_p(self, int nr, double p):
         """
-        returns a ndarrays x,y with n coordinates for
+        returns a ndarrays x,y with nr coordinates for
         with mat[i,j]>=p
+        returns:
+        y : ndarray(int) with rows (i)
+        x : ndarray(int) with cols (j)
+        z : ndarray(float32) with vals
         """
         cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
         cdef int i,j
         cdef np.ndarray[ITYPE_t,ndim=1] x=np.array([],dtype=np.int)
         cdef np.ndarray[ITYPE_t,ndim=1] y=np.array([],dtype=np.int)
-        cdef np.ndarray[DOUBLE_t,ndim=1] z=np.array([])
-        if(n<1):
+        cdef np.ndarray[DTYPE_t,ndim=1] z=np.array([],dtype=np.float32)
+        if(nr<1):
             return None
         loc=[]  # list of locations
         for i in xrange(self.nrows):
@@ -1119,12 +1126,12 @@ cdef class grid(object):
                     loc.append((i,j))
         np.random.shuffle(loc)
         # fill the x,y,z
-        for k in xrange(n):
+        for k in xrange(nr):
             i=loc[k][0]
             j=loc[k][1]
             x=np.append(x,j)
             y=np.append(y,i)
-            z=np.append(z,mat[i,j])
+            z=np.append(z,np.float32(mat[i,j]))
         return y,x,z
         
     def sample_det(self, DTYPE_t val):
