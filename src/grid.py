@@ -571,7 +571,7 @@ cdef class grid(object):
         del mx
         return True
 
-    def show_p(self,x,y,color='k',size=None, t='', X='', Y=''):
+    def show_p(self,x,y,color='k',size=None, t='', X='', Y='',flag=0):
         """
         adds to an image made from show a set of point with the
         colors = 'r', 'g', 'b', 'k', 'w'
@@ -579,6 +579,7 @@ cdef class grid(object):
         t : title
         X : x-axis
         Y : y-axis
+        flag : for internal use only 
         """
         cdef int i,j
         cdef double gridmin, gridmax
@@ -593,6 +594,8 @@ cdef class grid(object):
                     gridmin=mx[i,j]
                 if(int(mx[i,j])!=self.nodata and mx[i,j]>gridmax):
                     gridmax=mx[i,j]
+        if(flag!=0):
+            return mx,gridmin,gridmax  # for internal use only
         print('show:', gridmin, gridmax, self.nodata)
         plt.ioff()
         plt.clf()
