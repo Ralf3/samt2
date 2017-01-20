@@ -2464,8 +2464,8 @@ cdef class grid(object):
             d^2V(x,y)/dx^2+d^2V(x,y)/dy^2=-const(x,y)
             uses number of iterations=25
         """
-        cdef np.ndarray[DTYPE_t,ndim=1] x=np.array(x1).astype(np.float32)
-        cdef np.ndarray[DTYPE_t,ndim=1] y=np.array(y1).astype(np.float32)
+        cdef np.ndarray[ITYPE_t,ndim=1] x=np.array(x1).astype(np.int)
+        cdef np.ndarray[ITYPE_t,ndim=1] y=np.array(y1).astype(np.int)
         cdef np.ndarray[DTYPE_t,ndim=1] z=np.array(z1).astype(np.float32)
         cdef np.ndarray[np.double_t, ndim=2] cfd1=np.zeros((
                 self.nrows+2,self.ncols+2))

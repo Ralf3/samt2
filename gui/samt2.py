@@ -47,12 +47,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.ui.setupUi(self)
 	#----------------------
 	global fac_screen  #, fac_screenw
-	self.resize(866*fac_screen, 664*fac_screen) # MainWindow
-	self.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen)) 
-	self.ui.centralwidget.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen))
+	self.resize(866*fac_screen, 664*fac_screen) # MainWindow 
+	self.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen))     #854x646
+	#~ self.ui.centralwidget.setMinimumSize(QtCore.QSize(866*fac_screen, 664*fac_screen))
+	self.ui.centralwidget.setMinimumSize(QtCore.QSize(870*fac_screen, 577*fac_screen))
+
 	self.ui.treeWidget.setMaximumSize(QtCore.QSize(200*fac_screen, 16777215))
-	self.ui.treeWidget.setMinimumSize(QtCore.QSize(200*fac_screen, 551*fac_screen))
-	self.ui.treeWidget.setMaximumSize(QtCore.QSize(200*fac_screen, 16777215))
+	self.ui.treeWidget.setMinimumSize(QtCore.QSize(200*fac_screen, 565*fac_screen))  # 551
 	
 	self.ui.mpl_widget.setMinimumSize(QtCore.QSize(100*fac_screen, 100*fac_screen))
 	#self.ui.mpl_widget.setMinimumSize(QtCore.QSize(652*fac_screen, 565*fac_screen))
@@ -99,6 +100,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	#        entfernt rand
 	self.ui.mpl_widget.canvas.fig.subplots_adjust\
 				(left=0,right=1,top=1,bottom=0)
+
 	self.w_wid_orig = 0    		 
 	self.h_wid_orig = 0
 	self.startPoint = (0,0)
@@ -121,6 +123,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.mname = ''		#  "
 	self.model_kind = ''	#  "
 	self.parent = '' 	#  "
+	self.last_vis_gname = ''	# last visualised grid
 	self.li_popups = []
 	self.li_catego = []
 	self.df = None
@@ -252,10 +255,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.connect(self.ui.actionMajorization, SIGNAL('triggered()'), 
 			self.slotMajorization)
 			
-	self.connect(self.ui.actionSample, SIGNAL('triggered()'), 
+	self.connect(self.ui.actionSample, SIGNAL('triggered()'),
 			self.slotSample)
 	self.connect(self.ui.actionSample_det, SIGNAL('triggered()'), 
 			self.slotSample_det)
+			
+	self.connect(self.ui.actionShow_p, SIGNAL('triggered()'), 
+			self.slotShow_p)
+			
 	self.connect(self.ui.actionExport_R, SIGNAL('triggered()'), 
 			self.slotExport_R)
 						
@@ -358,6 +365,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			self.slotPOINTS_Poisson)
 	self.connect(self.ui.actionDistance, SIGNAL('triggered()'), 
 			self.slotPOINTS_Distance)
+	self.connect(self.ui.actionSample_p, SIGNAL('triggered()'), 
+			self.slotSample_p) 
 	
 	# menuView
 	self.connect(self.ui.actionShow_Black_White,SIGNAL('triggered()'),
@@ -778,6 +787,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    #self.openedModelPath = QString("") 
 	    return
 	self.openedModelPath = name_hdf  
+	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	li_namen_grid = self.gdoc.get_list_grids(str(name_hdf))
 	if li_namen_grid is None:
 	    print "HDF_Open Error"
@@ -790,6 +800,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.treeWidget.addTopLevelItem(it)
 	self.ui.treeWidget.expandItem(self.root_grids) 
 	self.highlight_new_child_only(0)
+	QtGui.QApplication.restoreOverrideCursor() 
 	
     #-------------------------------------------------------------------
     def highlight_new_child_only(self, idx):
@@ -1310,6 +1321,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def slotSample(self):
 	# v1 = nr=100  random points aus grid ---> y,x,z --> popupTable 
 	# ---> save in tree/points 
+	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 	v1 = str(self.ui.ledit_p1.text())
 	if self.is_number(v1) == False:  
 	    v1 = 100
@@ -1332,8 +1344,77 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.d_poi['z'] = liz
 	self.pname = pname_new
 	self.append_new_point(pname_new)
+	QtGui.QApplication.restoreOverrideCursor()
 	self.highlight_new_child(2)  # points  
 	# incl. --> VIS_Start  --> points_table_show
+	
+    #-------------------------------------------------------------------
+    def slotSample_p(self):
+	v1 = str(self.ui.ledit_p1.text())   # Anzahl Koords f. points
+	if self.is_number(v1) == False:  
+	    #print "sample_p error: P1 is not a number"
+	    v1 = 100
+	
+	v2 = str(self.ui.ledit_p2.text())	# z-Schwellwert 
+	if self.is_number(v1) == False:  
+	    print "sample_p error: P2 is not a number"
+	    return
+	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+	
+	a_i,a_j,a_z = self.gdoc.sample_p(self.gname, int(v1), float(v2))
+	
+	# ab hier gleich mit slotSample()
+	QtGui.QApplication.restoreOverrideCursor()
+	if a_i is None:
+	    print "sample_p error"
+	    return
+	lii = a_i.tolist()
+	lij = a_j.tolist() 
+	liz = a_z.tolist() 
+	pname = self.gname
+	art = 'ij'
+	li3,li4,pname_new = self.gdoc.add_points(
+				    self.gname,pname,lii,lij,liz,art) 
+	self.d_poi.clear()
+	self.d_poi['y'] = li3
+	self.d_poi['x'] = li4
+	self.d_poi['i'] = lii
+	self.d_poi['j'] = lij
+	self.d_poi['z'] = liz
+	self.pname = pname_new
+	self.append_new_point(pname_new)
+	QtGui.QApplication.restoreOverrideCursor()
+	self.highlight_new_child(2)  # points  
+	# incl. --> VIS_Start  --> points_table_show
+	
+    #-------------------------------------------------------------------
+    def slotShow_p(self):
+	global fac_screen
+		
+	v1 = str(self.ui.ledit_p1.text())   # gridname
+	v2 = str(self.ui.ledit_p2.text())   # color
+	if v2 not in ['r', 'g', 'b', 'k', 'w']:
+	    v2 = 'k'	# black
+	v3 = str(self.ui.ledit_p3.text())   # point size (Durchmesser) 
+	if self.is_number(v3) == False:  
+	    v3 = 20
+	else:
+	    v3 = int(v3)	    
+	lii = self.d_poi['i']   # for y-Achse
+	lij = self.d_poi['j']	# for x-Achse
+	liz = self.d_poi['z']
+	
+	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+	mx,mi,ma = self.gdoc.get_mx_show_p(v1,v2,v3,self.pname,lij,lii)
+	
+	QtGui.QApplication.restoreOverrideCursor()
+	if mx is None:
+	    return
+	
+	popup = Popup_vis_colorbar(v1,mx,mi,ma,px=lij,py=lii,pcolor=v2,psize=v3)
+	popup.show()
+	self.li_popups.append(popup)
+	#~ self.ui.statusBar.showMessage(self.tr(msg))
 	
     #-------------------------------------------------------------------
     def slotSample_det(self):
@@ -2197,21 +2278,26 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
      
     def slotVIS_Start(self, clear=None):
 	print "******** VIS Start ****************"
-	#print "VIS_Start: self.isZoom = " , self.isZoom 
+	global fac_screen 
+	
 	if self.isZoom is False:
 	    self.w_wid_orig = self.ui.mpl_widget.width()    
 	    self.h_wid_orig = self.ui.mpl_widget.height()   
-	#print "slotVis_Start: self.w_wid_orig, self.h_wid_orig:", self.w_wid_orig,self.h_wid_orig
-
+	    #print "slotVis_Start: self.w_wid_orig, self.h_wid_orig:", self.w_wid_orig,self.h_wid_orig
+	#print "self.ui.centralwidget.width()=" , self.ui.centralwidget.width()
+	
 	itemx = self.ui.treeWidget.currentItem()
 	if itemx != '':
 	    if self.item_is_child(itemx) == False:  
 		return
 	    if self.parent == 'points':
-		self.points_table_show(itemx) 
+		self.points_table_show(itemx) # -> Popup_points_table_show
 		return
 	self.delete_old_line_or_rect()
 	self.flag_mxzoom = False
+	
+	QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+	
 	# self.gname only was saved in slotTREE_Clicked
 	# Sonderfall: self.gname='' wenn nach DELETE_Object kein 
 	# neues treeItem geKlickt, aber focus exist.
@@ -2222,6 +2308,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		    return
 		if self.parent == 'grids':
 		    self.gname = str(itemx.text(0))
+		    #~ if self.last_vis_gname != self.gname:	 # neu
+			#~ self.last_vis_gname = self.gname # neu
+			#~ # widget es muss neu scaliert werden
+		
 	# menu_View auswerten 
 	#--- Show_Range -->  Vis im Haupt-Fenster
 	if self.ui.actionShow_Range.isChecked():
@@ -2262,21 +2352,43 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		w_cols = tup[1] 
 		h_rows = tup[0]    
 		#print "Vis Normal: mi=%s, ma=%s" %  (mi, ma)
-	w_wid = self.w_wid_orig    # self.ui.mpl_widget.width()
-	h_wid = self.h_wid_orig	   # self.ui.mpl_widget.height() 
-	#print "slotVis_Start: w_wid =%s, h_wid =%s :"% (w_wid, h_wid) 
+		print "w_cols=%s, h_rows=%s" % (w_cols, h_rows)
+	
+	# ab 20.1.
+	if self.last_vis_gname != self.gname:
+	    #print "1111"
+	    treeweite = self.ui.treeWidget.width() 
+	    w_wid = self.ui.centralwidget.width()-treeweite
+	    h_wid = self.ui.centralwidget.height()
+	    self.last_vis_gname = self.gname
+	else:
+	    #print "2222"
+	    w_wid = self.w_wid_orig    	   # self.ui.mpl_widget.width()
+	    h_wid = self.h_wid_orig	   # self.ui.mpl_widget.height() 
+	#print "slotVis_Start: w_wid =%s, h_wid =%s, self.last_vis_gname=%s" 
+				#% (w_wid, h_wid,self.last_vis_gname) 
+	# 20.1.
+	#w_wid = self.w_wid_orig   		
+	#h_wid = self.h_wid_orig     
+	#print "slotVis_Start: w_wid =%s, h_wid =%s" % (w_wid, h_wid) 
 	
 	pos = QPoint()   	# the top left position of mpl_widget
 	pos = self.ui.mpl_widget.pos()
 		
 	#### new jan 2017
+	#QtGui.QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+	
 	if float(w_cols)/float(w_wid) > float(h_rows)/float(h_wid):
+	    # senkrechte skalieren
 	    h_scaled = w_wid*h_rows / w_cols
+	    #print "h_scaled = ", h_scaled     
 	    self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
 				    int(w_wid), 
 				    int(h_scaled))
 	elif float(w_cols)/float(w_wid) < float(h_rows)/float(h_wid):
+	    # waagerechte skalieren
 	    w_scaled = h_wid*w_cols / h_rows
+	    #print "w_scaled = ", w_scaled    
 	    self.ui.mpl_widget.setGeometry(pos.x(), pos.y(),
 				    int(w_scaled), 
 				    int(h_wid))
@@ -2365,8 +2477,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# clear P1, P2, P3
 	if clear == 1:
 	    # all fct from Simple_Grid set 1 
-	    self.clear_3lineEdits()  
-
+	    self.clear_3lineEdits() 
+	QtGui.QApplication.restoreOverrideCursor()    
+	     
     #-------------------------------------------------------------------
     def points_table_show(self, itemx):
 	# call from slotVIS_Start after TREE_Clicked into points
@@ -2755,7 +2868,18 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 ########################################################################
 
 class Popup_vis_colorbar(QtGui.QMainWindow):
-    def __init__(self,gridname,mx,mi,ma,diff_grid=None, parent=None):
+    def __init__(self,gridname,mx,mi,ma,diff_grid=None,
+		px=None,py=None,pcolor=None,psize=None,parent=None):
+		
+		#pt=None,pX=None,pY=None,parent=None):
+	'''
+	new jan 2017
+	adds to an image made from show_p a set of point with:
+        pcolor = 'r', 'g', 'b', 'k', 'w'
+        psize (the matplotlib size as default: 20)
+	px,py : points (from sample_p) to scatter along the img
+	'''
+	
 	QtGui.QWidget.__init__(self,  parent=None)
 	self.ui = Ui_plotwin()
 	self.ui.setupUi(self)
@@ -2770,10 +2894,10 @@ class Popup_vis_colorbar(QtGui.QMainWindow):
         vbox.addWidget(self.ui.main_frame.canvas)
 	self.mpl_toolbar=NavigationToolbar(self.ui.main_frame.canvas,\
 						    self.ui.main_frame)
-	self.lbl_z = QtGui.QLabel()
-	self.lbl_z.setObjectName('lbl_z')
-	self.lbl_z.setText('picked z value')
-	self.mpl_toolbar.addWidget(self.lbl_z)						    
+	#~ self.lbl_z = QtGui.QLabel()
+	#~ self.lbl_z.setObjectName('lbl_z')
+	#~ self.lbl_z.setText('picked z value')
+	#~ self.mpl_toolbar.addWidget(self.lbl_z)						    
 	self.chbox_grid = QtGui.QCheckBox()
 	self.chbox_grid.setObjectName('chbox_gridlines')
 	self.chbox_grid.setText('Gridlines')
@@ -2791,8 +2915,8 @@ class Popup_vis_colorbar(QtGui.QMainWindow):
 	    plt.rcParams['font.size'] = int(fontsiz*fac_screen)
 	
 	self.chbox_grid.stateChanged.connect(self.chbox_changed)  
-	self.ui.main_frame.canvas.mpl_connect(
-			     'motion_notify_event', self.on_motion)
+	#self.ui.main_frame.canvas.mpl_connect('motion_notify_event', self.on_motion)
+	
 	self.setWindowTitle('SAMT 2')
 	#self.ui.main_frame.canvas.ax.clear()
 	self.ui.main_frame.canvas.ax.set_xlabel('x')
@@ -2818,14 +2942,28 @@ class Popup_vis_colorbar(QtGui.QMainWindow):
 	img.set_clim(mi, ma)   
 	self.ui.main_frame.canvas.fig.colorbar(img,aspect=20,pad=0.05, \
 				    shrink=1.0, orientation='vertical') 
+	# scatter points
+	if pcolor is not None:
+	    if psize is None:
+		self.ui.main_frame.canvas.ax.scatter(px,py,c=pcolor, alpha=1.0)
+	    else:
+		self.ui.main_frame.canvas.ax.scatter(px,py,c=pcolor, s=psize, alpha=1.0)
 	self.ui.main_frame.canvas.draw() 
     
     #-------------------------------------------------------------------
     def on_motion(self, event):
+	# problem bei brandenburg.h5 mit z-value, wird nicht gefunden in mx
+	
 	if event.xdata is None:
 	    return
 	X = int(event.xdata)   # col
 	Y = int(event.ydata)   # row
+	
+	if X>300 or Y>180:   # new jan 2017
+	    return
+	if X<0 or Y<0:
+	    return
+	
 	if self.show_diff == True:
 	    z = window.get_z_from_picked_mx(self.mx,Y,X)
 	else:
@@ -3153,7 +3291,7 @@ class Popup_points_dataframe(QtGui.QMainWindow):
 	else:
 	    rh = 28
 	
-	# all tablecells are editable and rows deletable
+	# all tablecells are editable and rows are deletable
 	self.ui.lbl_tipp.setText(
 		    'After  z  values  were  edited, click  Refresh')
 	self.ui.btn_ok.setText('Refresh')
@@ -3178,6 +3316,14 @@ class Popup_points_dataframe(QtGui.QMainWindow):
 	self.setWindowTitle(s2)
 	self.tbl_show(rh, fac_screen)  # has header only for col0, col1
 	self.ui.tblwid.setHorizontalHeaderLabels(QString(s).split(","))
+	
+	self.ui.tblwid.resizeColumnToContents(0)
+	self.ui.tblwid.resizeColumnToContents(1)
+	self.ui.tblwid.resizeColumnToContents(2)
+	self.ui.tblwid.resizeColumnToContents(3)
+	self.ui.tblwid.resizeColumnToContents(4)
+	
+	
 
     #-------------------------------------------------------------------
     def tbl_show(self, rh, fac_screen):
@@ -3195,8 +3341,12 @@ class Popup_points_dataframe(QtGui.QMainWindow):
 	    self.ui.tblwid.setRowHeight(r, rh)    #22)
 	    for c in range(ncols):
 		self.ui.tblwid.setColumnWidth(c,110*fac_screen)
-		self.ui.tblwid.setItem(r,c,QtGui.QTableWidgetItem(
-					str(self.df.iget_value(r,c))))
+		#self.ui.tblwid.setItem(r,c,QtGui.QTableWidgetItem(str(self.df.iget_value(r,c))))
+		# depricated with
+		#s = str(self.df.iat[r,c])
+		#print "%s" % s
+		self.ui.tblwid.setItem(r,c,QtGui.QTableWidgetItem(str(self.df.iat[r,c])))
+		
 					
     #-------------------------------------------------------------------
     def tbl_clear(self):

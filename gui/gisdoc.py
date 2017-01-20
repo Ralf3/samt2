@@ -275,10 +275,11 @@ class gisdoc:
 	    out:	name of the new dataset or None
 			dataset_new		str
 	    if dataset_name is already in the dict self.d_points then:
-	    add a 1 to the name to make it unique
+	    add a '1' to the name to make it unique
 	    result: add pointsthema to self.d_points
         """
-	#print "add_points gname=%s  pname=%s" %(gridname,pname)
+	print "add_points gname=%s  pname=%s" %(gridname,pname)
+	
 	gx = self.d_grids[gridname]
 	if gx is None: 
 	    print "error gx"
@@ -591,6 +592,17 @@ class gisdoc:
 	    return None, None, None
 	return gx.sample(nr)   # y,x,z
     
+    #-------------------------------------------------------------------
+    def sample_p(self, gridname, v1, v2):
+	# suche points in map, wo z > v
+	# in:	v1: Anzahl Koordinaten int
+	
+	# 	v2: z-Schwellwert float	
+	gx = self.d_grids[gridname]
+	if gx is None: 
+	    return None, None, None
+	return gx.sample_p(v1, v2)   # y,x,z
+		
     #-------------------------------------------------------------------
     def sample_det(self, gridname, val):
         """ 
@@ -1335,6 +1347,18 @@ class gisdoc:
 	return mx
     
     #-------------------------------------------------------------------
+    def get_mx_show_p(self,gname,color,size,pname,x,y):
+	gx = self.d_grids[gname] 
+	if gx is None:
+	    return False
+	  
+	#title = "Points aus %s" % pname
+	#mx,gridmin,gridmax = gx.show_p(x,y,color='w',size=size,t=title,X='xaxis',Y='yaxis',flag=1) 
+	mx,gridmin,gridmax = gx.show_p(x,y,flag=1) 
+	
+	return mx,gridmin,gridmax
+	
+    #-------------------------------------------------------------------
     def get_mx_transect(self,gridname,i0,j0,i1,j1):
 	gx = self.d_grids[gridname]
 	if gx is None:
@@ -1399,7 +1423,7 @@ class gisdoc:
 	# call from mouse_clicked in self.mxzoom
 	return mx[i,j]
     
-    
+	
     
     #-------------------------------------------------------------------
     #------ 11.2.2016 --------------------------------------------------
