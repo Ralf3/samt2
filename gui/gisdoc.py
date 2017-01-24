@@ -1351,11 +1351,7 @@ class gisdoc:
 	gx = self.d_grids[gname] 
 	if gx is None:
 	    return False
-	  
-	#title = "Points aus %s" % pname
-	#mx,gridmin,gridmax = gx.show_p(x,y,color='w',size=size,t=title,X='xaxis',Y='yaxis',flag=1) 
-	mx,gridmin,gridmax = gx.show_p(x,y,flag=1) 
-	
+	mx,gridmin,gridmax = gx.show_p(y,x,flag=1) 
 	return mx,gridmin,gridmax
 	
     #-------------------------------------------------------------------

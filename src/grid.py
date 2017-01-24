@@ -571,7 +571,7 @@ cdef class grid(object):
         del mx
         return True
 
-    def show_p(self,x,y,color='k',size=None, t='', X='', Y='',flag=0):
+    def show_p(self,y,x,color='k',size=None, t='', X='', Y='',flag=0):
         """
         adds to an image made from show a set of point with the
         colors = 'r', 'g', 'b', 'k', 'w'

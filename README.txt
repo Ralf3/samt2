@@ -33,10 +33,10 @@ gx.get_header()          # returns nrows, ncols, x, y, csize, nodata
 # Show data =================================================================
 gx.show_hist(bins=20)  # shows a hist with bins 
 gx.show(sub=False)     # shows a color picture of mat or sub (subarray)
-gx.show_p(x,y,color,size,t,X,Y)
+gx.show_p(y,x,color,size,t,X,Y)
 		       # color='r','g','b','k','w',y,x = i,j coord
 gx.show_contour(sub=False,title='',X='',Y='',clines=6,flag=0) 
-gx.showbw(sub=False)   # shows a bw picture of mat or sub (subarray)
+gx.show_bw(sub=False)  # shows a bw picture of mat or sub (subarray)
                        # options: title, X, Y label
 gx.show3d(stride=10, sub=False)   
 		       # shows a 3D view of a grid with stride=10
