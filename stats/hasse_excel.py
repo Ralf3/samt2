@@ -4,7 +4,7 @@ import hasse as hd
 
 def main():
     # read from execl
-    mw,z_namen=hd.read_from_excel('HD10.xlsx',
+    mw,z_namen=hd.read_from_excel('HDneu.xlsx',
                                   'Tabelle1','Model',
                                   ['Selectivity','Exactness'])
     hd.pprint(mw,z_namen)

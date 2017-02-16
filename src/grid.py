@@ -978,7 +978,7 @@ cdef class grid(object):
         return x,y,maxval
     def unique(self):
         """ return a dictionary with unic values (only useful for int) """
-        cdef i,j
+        cdef int i,j
         if(self.nrows<=0 or self.ncols<=0):
             return None
         vals={}
