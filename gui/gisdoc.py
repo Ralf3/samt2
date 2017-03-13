@@ -8,6 +8,7 @@ import grid
 sys.path.append(os.environ['SAMT2MASTER']+'/fuzzy/src')
 import Pyfuzzy 
 sys.path.append(os.environ['SAMT2MASTER']+'/svm')
+sys.path.append(os.environ['SAMT2MASTER']+'/osm_map')
 import svm_mod as sx
 import numpy as np
 import pylab as plt
