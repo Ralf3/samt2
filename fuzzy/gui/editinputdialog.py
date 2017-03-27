@@ -10,12 +10,17 @@ from PyQt4.QtCore import *
 from editinputmember_ui import Ui_InputDialog
 
 class EditInputDialog(QtGui.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, fac, parent=None):
 	QtGui.QWidget.__init__(self,parent)  
 	#super(EditInputDialog, self).__init__(parent)  
 	###QtGui.QDialog.__init__(self,parent)  
 	self.ui = Ui_InputDialog()       
 	self.ui.setupUi(self)
+	
+	if fac > 1:
+	    self.resize(450*fac, 250*fac)
+	    self.setMaximumSize(QtCore.QSize(500*fac, 250*fac))
+	    #self.setMinimumSize(QtCore.QSize(850*fac, 663*fac))
 	
 	self.quelle = ""
 	self.old_type = ""
@@ -348,6 +353,19 @@ class EditInputDialog(QtGui.QDialog):
 ########################################################################
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
+    
+    #~ # scale factor for current monitor resolution (QDesktopWidget)
+    #~ screen_resolution = app.desktop().screenGeometry()
+    #~ w, h = screen_resolution.width(), screen_resolution.height()
+    #~ if w <= 1920 and h <= 1200:  # monitor 24'' hat 1920x1200
+	#~ #fac = 1.0
+	#~ fac = 1.2	# f. test an meinem mon, als ob er 28'' hätte
+    #~ else:
+	#~ fac = float(h/1200.0)     # w/1920.0
+	#~ #fac = 1.2
+    #print "Monitor: width=%d, height=%d, fac=%f" % (w, h, fac)
+    #fontsiz = plt.rcParams['font.size']   #12
+    
     dialog = EditInputDialog() 
     dialog.show()
     sys.exit(app.exec_())

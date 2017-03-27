@@ -24,7 +24,6 @@ from matplotlib.backends.backend_qt4agg \
 from form1_ui import *   
 from editinputmember_ui import Ui_InputDialog
 from plotwin_ui import Ui_plotwin
-from tablewin_ui import Ui_tablewin
 from rulesform_ui import Ui_rulesform
 
 sys.path.append(os.environ['SAMT2MASTER']+'/fuzzy/gui')
@@ -46,14 +45,185 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.ui.setupUi(self)
 	
 	env = os.environ['SAMT2MASTER']+'/fuzzy/gui'
-	self.env = env		
+	self.env = env
+	
+	global fac, fontsiz
+	if fac > 1.0:
+ 	    self.resize(873*fac, 693*fac)
+	    self.rh = 28*fac  	# row height for tables
+	    #plt.rcParams['font.size'] = int(fontsiz*fac)  # ???
+	    fo11 = QtGui.QFont()
+	    fo11.setPointSize(11)
+	    
+	    # Input
+	    self.ui.inputCombo.setMinimumSize(QtCore.QSize(175*fac, 30*fac))
+	    self.ui.inputCombo.setFont(fo11)
+	    self.ui.numInSpin.setMinimumSize(QtCore.QSize(50*fac, 30*fac))
+	    self.ui.numInSpin.setMaximumSize(QtCore.QSize(50*fac, 30*fac))
+	    self.ui.numInSpin.setFont(fo11)
+	    
+	    # Output
+	    self.ui.outputTable.setMinimumSize(QtCore.QSize(400*fac, 0))
+	    self.ui.outputLE.setMinimumSize(QtCore.QSize(175*fac, 30*fac))
+	    self.ui.outputLE.setMaximumSize(QtCore.QSize(175*fac, 30*fac))
+	    self.ui.outputLE.setFont(fo11)
+	    
+	    # Tab Rules
+	    self.ui.rulesPB.setMinimumSize(QtCore.QSize(177*fac,32*fac))
+	    self.ui.btn_cf.setMinimumSize(QtCore.QSize(177*fac,32*fac))
+	    self.ui.label_2.setMinimumSize(QtCore.QSize(130*fac, 30*fac))
+	    self.ui.label_2.setMaximumSize(QtCore.QSize(130*fac, 30*fac))
+	    self.ui.mulCombo.setMinimumSize(QtCore.QSize(150*fac,30*fac))
+	    
+	    # Tab Analyse
+	    self.ui.input1Combo.setMinimumSize(QtCore.QSize(100*fac, 30*fac))
+	    self.ui.input1Combo.setMaximumSize(QtCore.QSize(100*fac, 30*fac))
+	    self.ui.input2Combo.setMinimumSize(QtCore.QSize(100*fac, 30*fac))
+	    self.ui.input2Combo.setMaximumSize(QtCore.QSize(100*fac, 30*fac))
+	    self.ui.input3LE.setMinimumSize(QtCore.QSize(100*fac, 30*fac))
+	    self.ui.input3LE.setMaximumSize(QtCore.QSize(100*fac, 30*fac))
+	    self.ui.outnameLE.setMinimumSize(QtCore.QSize(100*fac, 30*fac))
+	    self.ui.outnameLE.setMaximumSize(QtCore.QSize(100*fac, 30*fac))
+	    self.ui.cb_line.setMinimumSize(QtCore.QSize(123*fac, 30*fac))
+	    self.ui.cb_line.setMaximumSize(QtCore.QSize(123*fac, 30*fac))
+	    self.ui.cb_absolut.setMinimumSize(QtCore.QSize(123*fac, 30*fac))
+	    self.ui.cb_absolut.setMaximumSize(QtCore.QSize(123*fac, 30*fac))
+	    
+	    self.ui.in1minLE.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in1minLE.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in2minLE.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in2minLE.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in3LE.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in3LE.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.outminLE.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.outminLE.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.label_6.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.label_7.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    
+	    self.ui.in1maxLE.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in1maxLE.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in2maxLE.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in2maxLE.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in3TextLabel.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in3TextLabel.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.outmaxLE.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.outmaxLE.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.xgridLE.setMinimumSize(QtCore.QSize(60*fac, 30*fac))
+	    self.ui.xgridLE.setMaximumSize(QtCore.QSize(60*fac, 30*fac))
+	    self.ui.ygridLE.setMinimumSize(QtCore.QSize(60*fac, 30*fac))
+	    self.ui.ygridLE.setMaximumSize(QtCore.QSize(60*fac, 30*fac))
+	    self.ui.in2maxLE.setMinimumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.in2maxLE.setMaximumSize(QtCore.QSize(80*fac, 30*fac))
+	    self.ui.cb_contour.setMinimumSize(QtCore.QSize(81*fac, 30*fac))
+	    self.ui.cb_contour.setMaximumSize(QtCore.QSize(81*fac, 30*fac))
+	    self.ui.btn_replot.setMinimumSize(QtCore.QSize(281*fac, 31*fac))
+	    self.ui.btn_replot.setMaximumSize(QtCore.QSize(281*fac, 31*fac))
+	    
+	    # Tab Calc
+	    self.ui.label_9.setMinimumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.label_9.setMaximumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.label_13.setMinimumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.label_13.setMaximumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.includeLE.setMinimumSize(QtCore.QSize(250*fac, 30*fac))
+	    self.ui.includeLE.setMaximumSize(QtCore.QSize(16777215, 30*fac))
+	    self.ui.includeLE.setFont(fo11)
+	    self.ui.headerSpin.setMinimumSize(QtCore.QSize(50*fac, 30*fac))
+	    self.ui.headerSpin.setMaximumSize(QtCore.QSize(50*fac, 30*fac))
+	    self.ui.headerSpin.setFont(fo11)
+	    self.ui.radio_sep.setMinimumSize(QtCore.QSize(120*fac, 30*fac))
+	    self.ui.radio_sep.setMaximumSize(QtCore.QSize(364*fac, 30*fac))
+	    self.ui.radio_same.setMinimumSize(QtCore.QSize(120*fac, 30*fac))
+	    self.ui.radio_same.setMaximumSize(QtCore.QSize(364*fac, 30*fac))
+	    self.ui.resultLE.setMinimumSize(QtCore.QSize(320*fac, 30*fac))
+	    self.ui.resultLE.setMaximumSize(QtCore.QSize(320*fac, 30*fac))
+	    self.ui.resultLE.setFont(fo11)
+	    self.ui.btn_value.setMinimumSize(QtCore.QSize(30*fac, 30*fac))
+	    self.ui.btn_value.setMaximumSize(QtCore.QSize(30*fac, 30*fac))
+	    self.ui.btn_value.setIcon(QtGui.QIcon(env+'/icons/fileopen.png'))
+	    self.ui.btn_value.setIconSize(QtCore.QSize(38,38))
+	    self.ui.btn_path.setMinimumSize(QtCore.QSize(30*fac, 30*fac))
+	    self.ui.btn_path.setMaximumSize(QtCore.QSize(30*fac, 30*fac))
+	    self.ui.btn_path.setIcon(QtGui.QIcon(env+'/icons/fileopen.png'))
+	    self.ui.btn_path.setIconSize(QtCore.QSize(38,38))
+	    self.ui.saveBGB.setMaximumSize(QtCore.QSize(380*fac, 16777215))
+	    self.ui.btn_calc_fuzzy.setMinimumSize(QtCore.QSize(250*fac, 30*fac))
+	    self.ui.btn_calc_fuzzy.setMaximumSize(QtCore.QSize(16777215, 30*fac))
+	    
+	    # Tab Training
+	    # --  oben links
+	    self.ui.groupBox.setMinimumSize(QtCore.QSize(360*fac, 238*fac))
+	    self.ui.groupBox.setMaximumSize(QtCore.QSize(360*fac, 16777215))
+	    self.ui.btn_trainPath.setMinimumSize(QtCore.QSize(90*fac, 35*fac))
+	    self.ui.btn_trainPath.setMaximumSize(QtCore.QSize(90*fac, 35*fac))
+	    self.ui.btn_trainPath.setIcon(QtGui.QIcon(env+'/icons/fileopen.png'))
+	    self.ui.btn_trainPath.setIconSize(QtCore.QSize(38,38))
+	    self.ui.btn_startTraining.setMinimumSize(QtCore.QSize(150*fac, 35*fac))
+	    self.ui.btn_startTraining.setMaximumSize(QtCore.QSize(150*fac, 35*fac))
+	    self.ui.trainPathEdit.setMinimumSize(QtCore.QSize(330*fac, 30*fac))  
+	    self.ui.trainPathEdit.setMaximumSize(QtCore.QSize(330*fac, 30*fac))
+	    self.ui.label_16.setMinimumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.label_16.setMaximumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.trainHeaderSpinBox.setMinimumSize(QtCore.QSize(40*fac, 35*fac))
+	    self.ui.trainHeaderSpinBox.setMaximumSize(QtCore.QSize(40*fac, 35*fac))
+	    self.ui.lbl_sep_train.setMinimumSize(QtCore.QSize(8*fac, 35*fac))
+	    # --- unten links
+	    self.ui.trainResultGB.setMaximumSize(QtCore.QSize(360*fac, 16777215))
+	    self.ui.trainResultGB.setMinimumSize(QtCore.QSize(360*fac, 361*fac))
+	    self.ui.btn_clear.setMinimumSize(QtCore.QSize(150*fac, 30*fac))
+	    self.ui.btn_clear.setMaximumSize(QtCore.QSize(150*fac, 30*fac))
+	    self.ui.btn_restore_orig.setMinimumSize(QtCore.QSize(165*fac, 30*fac))
+	    self.ui.btn_restore_orig.setMaximumSize(QtCore.QSize(150*fac, 30*fac))
+	    self.ui.mse1LE.setMinimumSize(QtCore.QSize(150*fac, 30*fac))
+	    self.ui.mse1LE.setMaximumSize(QtCore.QSize(150*fac, 30*fac))
+	    self.ui.mse2LE.setMinimumSize(QtCore.QSize(150*fac, 30*fac))
+	    self.ui.mse2LE.setMaximumSize(QtCore.QSize(150*fac, 30*fac))
+	    # --- oben rechts
+	    self.ui.groupBox_2.setMinimumSize(QtCore.QSize(16*fac, 235*fac))  # automat. ???
+	    # --- unten rechts
+	    self.ui.groupBox_4.setMinimumSize(QtCore.QSize(458*fac, 361*fac))
+	    self.ui.trainedOutputEdit.setMaximumSize(QtCore.QSize(360*fac, 16777215))
+	    
+	    # Tab Rules Training
+	    self.ui.groupBox_5.setMinimumSize(QtCore.QSize(16*fac, 150*fac))
+	    self.ui.groupBox_5.setMaximumSize(QtCore.QSize(360*fac, 150*fac))
+	    self.ui.rtrainPathEdit.setMinimumSize(QtCore.QSize(340*fac, 30*fac)) 
+	    self.ui.rtrainPathEdit.setMaximumSize(QtCore.QSize(340*fac, 30*fac))
+	    self.ui.btn_rtrainPath.setMinimumSize(QtCore.QSize(90*fac, 35*fac))
+	    self.ui.btn_rtrainPath.setMaximumSize(QtCore.QSize(90*fac, 35*fac))
+	    self.ui.btn_rtrainPath.setIcon(QtGui.QIcon(env+'/icons/fileopen.png'))
+	    self.ui.btn_rtrainPath.setIconSize(QtCore.QSize(38,38))
+	    self.ui.label_19.setMinimumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.label_19.setMaximumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.rtrainHeaderSpinBox.setMinimumSize(QtCore.QSize(40*fac, 35*fac))
+	    self.ui.rtrainHeaderSpinBox.setMaximumSize(QtCore.QSize(40*fac, 35*fac))
+	    self.ui.le_alpha.setMinimumSize(QtCore.QSize(91*fac, 31*fac))
+	    self.ui.le_alpha.setMaximumSize(QtCore.QSize(91*fac, 31*fac))
+	    self.ui.label_3.setMinimumSize(QtCore.QSize(42*fac, 30*fac))  # ? 100
+	    self.ui.label_3.setMaximumSize(QtCore.QSize(42*fac, 30*fac))
+	    self.ui.btn_start_rulesTrain.setMinimumSize(QtCore.QSize(160*fac, 35*fac))
+	    self.ui.btn_start_rulesTrain.setMaximumSize(QtCore.QSize(160*fac, 35*fac))
+	    # -- recht oben
+	    self.ui.groupBox_3.setMinimumSize(QtCore.QSize(16*fac, 150*fac))
+	    self.ui.groupBox_3.setMaximumSize(QtCore.QSize(16777215, 150*fac))
+	    
+	    self.ui.btn_rules_discard.setMinimumSize(QtCore.QSize(150*fac, 35*fac))
+	    self.ui.btn_rules_discard.setMaximumSize(QtCore.QSize(16777215, 35*fac))
+	    self.ui.btn_rules_save.setMinimumSize(QtCore.QSize(150*fac, 35*fac))
+	    self.ui.btn_rules_save.setMaximumSize(QtCore.QSize(16777215, 35*fac))
+
+	    #----------------------------------------------------------
+	    
+	else:
+	    self.rh = 28
+	#print "self.width(), self.height(): ", self.width(), self.height()
+
 	imag = env+'/icons/area.png'
+	self.setWindowIcon(QIcon(env+'/icons/area.png'))
 	self.icon1 = QIcon()
 	self.icon1.addFile(imag, QSize(), QIcon.Normal, QIcon.Off)
 	imag = env+'/icons/spacer.png'
 	self.icon2 = QIcon()
 	self.icon2.addFile(imag, QSize(), QIcon.Normal, QIcon.Off)
-	self.setWindowIcon(QIcon(env+'/icons/area.png'))
 	
 	# path to .fis 
 	self.path_samt2_model = os.environ['SAMT2DATEN'] 
@@ -467,14 +637,22 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		range_ = "%.3f %.3f %.3f %.3f" % (lu,lo,ro,ru)
 	    #print "load_member:: insertMfTable:: table=%s name=%s typ=%s range=%s" % (table,name,typ,range_)
 	    
-	    self.insertMfTable(table, name, typ, range_)
+	    self.insertMfTable(table, name, typ, range_)  # scale rowHeihgt 
 	
 	lae = self.ui.memb1Table.rowCount()
 	self.ui.memb1Table.setVerticalHeaderLabels(["%d" %i for i in range(lae)]) 
+	#~ for i in range(lae):
+	    #~ self.ui.memb1Table.setRowHeight(i,self.rh) 
+	    
 	lae = self.ui.memb2Table.rowCount()
 	self.ui.memb2Table.setVerticalHeaderLabels(["%d" %i for i in range(lae)])
+	#~ for i in range(lae):
+	    #~ self.ui.memb2Table.setRowHeight(i,self.rh) 
+	
 	lae = self.ui.memb3Table.rowCount()
 	self.ui.memb3Table.setVerticalHeaderLabels(["%d" %i for i in range(lae)]) 
+	#~ for i in range(lae):
+	    #~ self.ui.memb3Table.setRowHeight(i,self.rh) 
             
     #-------------------------------------------------------------------
     def setMfGrid(self):
@@ -488,7 +666,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# called from: Button Edit, SLOT cellDoubleClicked in tbl
 	# opens window for editing a membership"
 	
-	self.editInpWin = editinputdialog.EditInputDialog()
+	global fac
+	self.editInpWin = editinputdialog.EditInputDialog(fac)
+	#self.editInpWin = EditInputDialog()
 	self.editInpWin.set_source(QString("Edit"))
 	if len(self.mfTypeList) > 0:
 	    self.editInpWin.setAllTypesInComboBox(self.mfTypeList)
@@ -684,7 +864,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def newMembership(self):
 	#print "newMembership:: mfTypeList=", self.mfTypeList 
 	# window for a new memberhip"
-	self.editInpWin = editinputdialog.EditInputDialog()
+	global fac
+	self.editInpWin = editinputdialog.EditInputDialog(fac) 
+	#self.editInpWin = EditInputDialog()
 	self.editInpWin.set_source(QString("New"))
     	if len(self.mfTypeList) > 0:
 	    self.editInpWin.setTypComboBox(self.mfTypeList)
@@ -877,6 +1059,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def insertMfTable(self, table1, name1, typ1, range1):
 	# call from fileOpen
 	# inserts a name, type and range into the mf-table
+	
 	table = table1   # which table shall be edited
 	name = name1     # name of added membershipfunction
 	typ = typ1       # type of mf
@@ -897,42 +1080,57 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	rangeItem.setTextAlignment(Qt.AlignCenter)
 	rangeItem.setFlags(rangeItem.flags() & ~Qt.ItemIsEditable)
 	sortItem = QtGui.QTableWidgetItem("sort")
-
+	
 	if table == "memb1Table": 
 	    row = self.ui.memb1Table.rowCount()
 	    self.ui.memb1Table.insertRow(row)
+	    self.ui.memb1Table.setRowHeight(row,self.rh) 
 	    self.ui.memb1Table.setItem(row,0,nameItem)
 	    self.ui.memb1Table.setItem(row,1,typItem)
 	    self.ui.memb1Table.setItem(row,2,rangeItem)
 	    sortItem.setText(str(row))  
 	    self.ui.memb1Table.setItem(row,3,sortItem)
-	    self.ui.memb1Table.resizeColumnToContents(2)
+	    #self.ui.memb1Table.resizeColumnToContents(2)
+	    #print self.ui.memb1Table.columnWidth(2)
+	    #self.ui.memb1Table.setColumnWidth(2, self.ui.memb1Table.columnWidth(2)+100)
+	    self.ui.memb1Table.setColumnWidth(0, 250)
+	    self.ui.memb1Table.setColumnWidth(1, 150)
+	    header = self.ui.memb1Table.horizontalHeader()
+	    header.setStretchLastSection(True)
 	    self.ui.membershipStack.setCurrentIndex(0)
   
 	elif table == "memb2Table":
 	    row = self.ui.memb2Table.rowCount()
 	    self.ui.memb2Table.insertRow(row)
+	    self.ui.memb2Table.setRowHeight(row,self.rh) 
 	    self.ui.memb2Table.setItem(row,0,nameItem)
 	    self.ui.memb2Table.setItem(row,1,typItem)
 	    self.ui.memb2Table.setItem(row,2,rangeItem)
 	    sortItem.setText(str(row))
 	    self.ui.memb2Table.setItem(row,3,sortItem)
-	    self.ui.memb2Table.resizeColumnToContents(2)
 	    self.ui.membershipStack.setCurrentIndex(1)
+	    self.ui.memb2Table.setColumnWidth(0, 250)
+	    self.ui.memb2Table.setColumnWidth(1, 150)
+	    header = self.ui.memb2Table.horizontalHeader()
+	    header.setStretchLastSection(True)
 
 	elif table == "memb3Table":
 	    row = self.ui.memb3Table.rowCount()
 	    self.ui.memb3Table.insertRow(row)
+	    self.ui.memb3Table.setRowHeight(row,self.rh) 
 	    self.ui.memb3Table.setItem(row,0,nameItem)
 	    self.ui.memb3Table.setItem(row,1,typItem)
 	    self.ui.memb3Table.setItem(row,2,rangeItem)
 	    sortItem.setText(str(row))
 	    self.ui.memb3Table.setItem(row,3,sortItem)
-	    self.ui.memb3Table.resizeColumnToContents(2)
 	    self.ui.membershipStack.setCurrentIndex(2)
+	    self.ui.memb3Table.setColumnWidth(0, 250)
+	    self.ui.memb3Table.setColumnWidth(1, 150)
+	    header = self.ui.memb3Table.horizontalHeader()
+	    header.setStretchLastSection(True)
 	self.changed = True
-	self.switchInputs()   
-    
+	self.switchInputs()
+	
     #-------------------------------------------------------------------
     def switchInputs(self):
 	# called by: SLOT for inputCombo activated, insertMfTable 
@@ -1257,12 +1455,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 	self.numMf = len(self.mfTypeList)
 	self.numPoints = len(self.xMf)
-
-	#print "getMfVector: mfTypeList: ", self.mfTypeList
-	#print "getMfVector: mfTitleList: ", self.mfTitleList
-	#print "getMfVector: mfRangeList:  ", self.mfRangeList
-	#print "getMfVector: xMf[]: ", self.xMf
-	#print "getMfVector: yMf[]: ", self.yMf
     
     #-------------------------------------------------------------------
     def actualizeMfTable(self):
@@ -1456,8 +1648,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	valItem.setFlags(valItem.flags() & ~Qt.ItemIsEditable)
 	sortItem = QtGui.QTableWidgetItem("sort")
 	
-	self.ui.outputTable.setColumnWidth(0, 100)
-	self.ui.outputTable.setColumnWidth(1, 100)
+	w = self.ui.outputTable.width()
+	self.ui.outputTable.setColumnWidth(0, w*0.5)  #50% 
+	header = self.ui.outputTable.horizontalHeader()
+	header.setStretchLastSection(True)
+	
 	row = self.ui.outputTable.rowCount()
 	self.ui.outputTable.insertRow(row)
 	self.ui.outputTable.setItem(row,0,nameItem)
@@ -1544,7 +1739,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     #-------------------------------------------------------------------
     def newOutput(self):
 	# called by: Button 'New'
-	self.editOutWin = editoutputdialog.EditOutputDialog()
+	global fac
+	self.editOutWin = editoutputdialog.EditOutputDialog(fac)
 	if self.editOutWin.exec_():
 	    # get name and singleton value from editing window
 	    out = self.editOutWin.ui.outLE.text()
@@ -1566,6 +1762,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		sortItem = QTableWidgetItem(QString.number(row))
 		
 		self.ui.outputTable.insertRow(row)
+		self.ui.outputTable.setRowHeight(row, self.rh) 
 		self.ui.outputTable.setItem(row,0,nameItem)
 		self.ui.outputTable.setItem(row,1,valueItem)
 		self.ui.outputTable.setItem(row,2,sortItem)
@@ -1586,7 +1783,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if row == -1:
 	    return
 	# opens window for editing an output"
-	self.editOutWin = editoutputdialog.EditOutputDialog()
+	global fac
+	self.editOutWin = editoutputdialog.EditOutputDialog(fac)
 	anz = self.ui.outputTable.rowCount()
 	if (anz<=0):
 	    return
@@ -1727,14 +1925,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def insertRulesTable(self, outList, tupel):
 	# called by: fileOpen
 	# tupel = (x, (y,) (z,) o, cf)   (inp1, inp2, inp3, out, cf)
-	#print "outList= ", outList 		# ['s', 'ms',....]
-	#print "tupel= ", tupel
-	#print "self.numInput= ", self.numInput
 	
 	# put rules into rulesTable
 	row = self.ui.rulesTable.rowCount()
 	self.ui.rulesTable.insertRow(row)
-	self.ui.rulesTable.setRowHeight(row, 24)
+	self.ui.rulesTable.setRowHeight(row, self.rh)  #24)
 	# create ComboTableItem for output-column in the rulesTable
 	cb = QtGui.QComboBox(self.ui.rulesTable)
 	cb.setObjectName("cbobj")
@@ -1801,7 +1996,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    item.setText(mfX)
 	    item.setTextAlignment(Qt.AlignCenter)
 	    item.setFlags(item.flags() & ~Qt.ItemIsEditable)
-	    self.ui.rulesTable.setItem(row,0,item)		    
+	    self.ui.rulesTable.setItem(row,0,item)	
 	    # input2
 	    y = tupel[1]
 	    mfY = self.getMfName(1,y)
@@ -1830,6 +2025,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.rulesTable.setItem(row, 4, item)
 	    self.ui.rulesTable.showColumn(1)
 	    self.ui.rulesTable.showColumn(2)
+	    
 	self.setRulesTableLabel()
 	    
     #-------------------------------------------------------------------
@@ -1859,7 +2055,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# add rules  (ind=actual input)
 	if self.numInput == 1:  # IF mf1 THEN output
 	    self.ui.rulesTable.insertRow(row)
-	    self.ui.rulesTable.setRowHeight(row, 24)
+	    self.ui.rulesTable.setRowHeight(row, self.rh)   #24)
 	    # input1
 	    item = QTableWidgetItem("input1")
 	    item.setText(name)
@@ -1880,7 +2076,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    if ind == 0:   # rule (IF name AND mf2 THEN output)
 		for nam2 in input2:
 		    self.ui.rulesTable.insertRow(row)
-		    self.ui.rulesTable.setRowHeight(row, 24)
+		    self.ui.rulesTable.setRowHeight(row, self.rh )
 		    # input1
 		    item = QTableWidgetItem("input1")
 		    item.setText(name)
@@ -1907,7 +2103,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		# rule (IF mf1 AND name THEN output)
 		for nam1 in input1:
 		    self.ui.rulesTable.insertRow(row)
-		    self.ui.rulesTable.setRowHeight(row, 24)
+		    self.ui.rulesTable.setRowHeight(row, self.rh)  
 		    # input 1
 		    item = QTableWidgetItem("input1")
 		    item.setText(nam1)
@@ -1938,7 +2134,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		for nam2 in input2:
 		    for nam3 in input3:
 			self.ui.rulesTable.insertRow(row)
-			self.ui.rulesTable.setRowHeight(row, 24)
+			self.ui.rulesTable.setRowHeight(row, self.rh) 
 			# input1
 			item = QTableWidgetItem("input1")
 			item.setText(name)
@@ -1972,7 +2168,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		for nam1 in input1:
 		    for nam3 in input3:
 			self.ui.rulesTable.insertRow(row)
-			self.ui.rulesTable.setRowHeight(row, 24)
+			self.ui.rulesTable.setRowHeight(row, self.rh) 
 			# input 1
 			item = QTableWidgetItem("input1")
 			item.setText(nam1)
@@ -2006,7 +2202,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		for nam1 in input1:
 		    for nam2 in input2:
 			self.ui.rulesTable.insertRow(row)
-			self.ui.rulesTable.setRowHeight(row, 24)
+			self.ui.rulesTable.setRowHeight(row, self.rh)  
 			# input 1
 			item = QTableWidgetItem("input1")
 			item.setText(nam1)
@@ -2067,16 +2263,24 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if self.numInput >= 1:
 	    item1 = self.ui.rulesTable.horizontalHeaderItem(0)
 	    item1.setText(self.ui.inputCombo.itemText(0))
-	    self.ui.rulesTable.resizeColumnToContents(0)
-	    self.ui.rulesTable.resizeColumnToContents(1)
+	    #self.ui.rulesTable.resizeColumnToContents(0)
+	    w = self.ui.rulesTable.width()
+	    self.ui.rulesTable.setColumnWidth(0, w*0.15)  
+	    self.ui.rulesTable.setColumnWidth(1, w*0.15)  
+	    self.ui.rulesTable.setColumnWidth(2, w*0.15)  
+	    self.ui.rulesTable.setColumnWidth(3, w*0.15)  
+	    #self.ui.rulesTable.setColumnWidth(4, w*0.1)  
+
+	    #self.ui.rulesTable.resizeColumnToContents(1)
 	if self.numInput >= 2:
 	    item2 = self.ui.rulesTable.horizontalHeaderItem(1)
 	    item2.setText(self.ui.inputCombo.itemText(1))
-	    self.ui.rulesTable.resizeColumnToContents(2)
+	    #self.ui.rulesTable.resizeColumnToContents(2)
   	if self.numInput == 3:
 	    item3 = self.ui.rulesTable.horizontalHeaderItem(2)
 	    item3.setText(self.ui.inputCombo.itemText(2))
-	    self.ui.rulesTable.resizeColumnToContents(3)
+	    #self.ui.rulesTable.resizeColumnToContents(3)
+	
 	outputItem = self.ui.rulesTable.horizontalHeaderItem(3)
 	outputItem.setText(self.ui.outputLE.text())
 	cfItem = self.ui.rulesTable.horizontalHeaderItem(4)
@@ -2164,7 +2368,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		for i in range(len(input1)):
 		    val1.append(input1[i])
 		    self.ui.rulesTable.insertRow(row)
-		    self.ui.rulesTable.setRowHeight(row, 24)
+		    self.ui.rulesTable.setRowHeight(row, self.rh)   #24)
 		    inputItem = QTableWidgetItem("input1")
 		    inputItem.setText(val1[i])
 		    inputItem.setTextAlignment(Qt.AlignCenter)
@@ -2191,7 +2395,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			#iterator2
 			val2.append(input2[j])
 			self.ui.rulesTable.insertRow(row)
-			self.ui.rulesTable.setRowHeight(row, 24)
+			self.ui.rulesTable.setRowHeight(row, self.rh)  #24)
 			input1Item = QTableWidgetItem("input1")
 			input1Item.setText(val1[i])
 			input1Item.setTextAlignment(Qt.AlignCenter)
@@ -2227,7 +2431,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 			    #iterator3
 			    val3.append(input3[k])
 			    self.ui.rulesTable.insertRow(row)
-			    self.ui.rulesTable.setRowHeight(row, 24)
+			    self.ui.rulesTable.setRowHeight(row, self.rh)  #24)
 			    # input1
 			    input1Item = QTableWidgetItem("input1")
 			    input1Item.setText(val1[i])
@@ -2434,7 +2638,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def fileSave(self):
 	# called by: menu, action, okToSave, fileSaveAs
 	fname = self.openedModelPath
-	if QString(fname).isEmpty():    # == None or fname == '':	
+	if QString(fname).isEmpty():    
 	    self.fileSaveAs()
 	    return		
 	    
@@ -2854,7 +3058,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		    # norm = mpl.colors.Normalize(ymin,max(mx)) 
 		    norm = mpl.colors.Normalize(int(ymin),int(self.yma))
 		# make a colorbar
-		if self.cbar == None:
+		if self.cbar is None:
 		    cmmapable = mpl.cm.ScalarMappable(norm, cmap)
 		    
 		    if self.ui.cb_absolut.isChecked():
@@ -2951,6 +3155,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# called from: on_release 
 	# prepare plot transect
 	# self.li_X and self.li_Y were filled in on_release
+	
+	global fac
 	i0 = self.startPointC[1]	# wrote in on_releaseEv
 	j0 = self.startPointC[0]
 	i1 = self.endPointC[1]
@@ -2959,19 +3165,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	t = None
 	mx, t = self.work.get_mx_transect(i0,j0,i1,j1)
 	oname = self.ui.outnameLE.text()
-	if mx==None or t==None:
+	if mx is None or t is None:
 	    print "Error: while draw_line_end"
 	    return
 	if self.ui.cb_absolut.isChecked() == True:
 	    absolut = True
 	    max_out = float(self.ui.outmaxLE.text())
 	    min_out = float(self.ui.outminLE.text())
-	    popup = Popup_transect( t, mx, self.li_X, self.li_Y,
+	    popup = Popup_transect( fac,t, mx, self.li_X, self.li_Y,
 				    oname, absolut,
 				    max_out, min_out)
 	else:
 	    absolut = False
-	    popup = Popup_transect( t, mx, self.li_X, self.li_Y,
+	    popup = Popup_transect( fac, t, mx, self.li_X, self.li_Y,
 				    oname, absolut)
 	popup.show()
 	self.li_popups.append(popup)
@@ -3023,13 +3229,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	self.index0 = item1  # x axis input, self.index0 wrote in init
 
 	mi = self.work.get_min_inp(self.index0)
-	if mi == None:
+	if mi is None:
 	    return
 	mi = "%.3f" % mi
 	self.ui.in1minLE.setText(str(mi))       	
 	
 	ma = self.work.get_max_inp(self.index0)
-	if ma == None:
+	if ma is None:
 	    return
 	ma = "%.3f" % ma
  	self.ui.in1maxLE.setText(str(ma))
@@ -3049,12 +3255,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 				self.ui.inputCombo.itemText(1-item1))
 	    # set range for y axis input
 	    mi = self.work.get_min_inp(1-item1)
-	    if mi == None:
+	    if mi is None:
 		return
 	    mi = "%.3f" % mi
 	    self.ui.in2minLE.setText(str(mi))
 	    ma = self.work.get_max_inp(1-item1)
-	    if ma == None:
+	    if ma is None:
 		return
 	    ma = "%.3f" % ma
 	    self.ui.in2maxLE.setText(str(ma))
@@ -3071,11 +3277,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.input2Combo.setItemText(0,self.ui.inputCombo.itemText(self.index1))
 	    self.ui.input2Combo.setItemText(1,self.ui.inputCombo.itemText(self.index2))
 	    mi = self.work.get_min_inp(2)
-	    if mi == None:
+	    if mi is None:
 		return
 	    mi = "%.2f" % mi
 	    ma = self.work.get_max_inp(2)
-	    if ma == None:
+	    if ma is None:
 		return
 	    ma = "%.2f" % ma
 	    self.ui.in3TextLabel.setText(QString("[%1;%2]").arg(mi).arg(ma))
@@ -3087,20 +3293,20 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		self.ui.input3LE.setText(self.ui.inputCombo.itemText(self.index2))
 
 		mi = self.work.get_min_inp(self.index1)
-		if mi == None:
+		if mi is None:
 		    return
 		mi1 = "%.3f" % mi
 		ma = self.work.get_max_inp(self.index1)
-		if ma == None:
+		if ma is None:
 		    return
 		ma1 = "%.3f" % ma
 		
 		mi = self.work.get_min_inp(self.index2)
-		if mi == None:
+		if mi is None:
 		    return
 		mi2 = "%.3f" % mi
 		ma = self.work.get_max_inp(self.index2)
-		if ma == None:
+		if ma is None:
 		    return
 		ma2 = "%.3f" % ma
 		self.ui.in3TextLabel.setText(QString("[%1;%2]").arg(mi2).arg(ma2))
@@ -3122,19 +3328,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 		    self.index2 = h
 		# set y axis range
 		mi = self.work.get_min_inp(self.index1)
-		if mi == None:
+		if mi is None:
 		    return
 		mi1 = "%.3f" % mi
 		ma = self.work.get_max_inp(self.index1)
-		if ma == None:
+		if ma is None:
 		    return
 		ma1 = "%.3f" % ma
 		mi = self.work.get_min_inp(self.index2)
-		if mi == None:
+		if mi is None:
 		    return
 		mi2 = "%.3f" % mi
 		ma = self.work.get_max_inp(self.index2)
-		if ma == None:
+		if ma is None:
 		    return
 		ma2 = "%.3f" % ma
 		
@@ -3183,11 +3389,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	val = round(float(self.ui.in1minLE.text()), 3)
 	sval = "%.3f" % val
 	mi = self.work.get_min_inp(self.index0) # float
-	if mi == None:
+	if mi is None:
 	    return
 	s1 = "%.3f" % round(mi,3)
 	ma = self.work.get_max_inp(self.index0)	
-	if ma == None:
+	if ma is None:
 	    return
 	s2 = "%.3f" % round(ma,3)
 
@@ -3208,11 +3414,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	val = round(float(self.ui.in1maxLE.text()) ,3)
 	sval = "%.3f" % val
 	mi = self.work.get_min_inp(self.index0)	# float
-	if mi == None:
+	if mi is None:
 	    return
 	s1 = "%.3f" % round(mi,3)
 	ma = self.work.get_max_inp(self.index0)	
-	if ma == None:
+	if ma is None:
 	    return
 	s2 = "%.3f" % round(ma,3)
 	if val < mi: 
@@ -3234,11 +3440,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	val = round(float(self.ui.in2minLE.text()), 3)
     	sval = "%.3f" % val
 	mi = self.work.get_min_inp(self.index1)	# float
-	if mi == None:
+	if mi is None:
 	    return
 	s1 = "%.3f" % round(mi,3)
 	ma = self.work.get_max_inp(self.index1)	
-	if ma == None:
+	if ma is None:
 	    return
 	s2 = "%.3f" % round(ma,3)
 	if val < mi: 
@@ -3258,11 +3464,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	val = round(float(self.ui.in2maxLE.text()), 3)
     	sval = "%.3f" % val
 	mi = self.work.get_min_inp(self.index1)	# float
-	if mi == None:
+	if mi is None:
 	    return
 	s1 = "%.3f" % round(mi,3)
 	ma = self.work.get_max_inp(self.index1)	
-	if ma == None:
+	if ma is None:
 	    return
 	s2 = "%.3f" % round(ma,3)
 	if val < mi:
@@ -3283,11 +3489,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	val = round(float(self.ui.in3LE.text()), 3)
     	sval = "%.3f" % val
 	mi = self.work.get_min_inp(self.index2)	# float
-	if mi == None:
+	if mi is None:
 	    return
 	s1 = "%.3f" % round(mi,3)
 	ma = self.work.get_max_inp(self.index2)	
-	if ma == None:
+	if ma is None:
 	    return
 	s2 = "%.3f" % round(ma,3)
 	if val < mi:
@@ -3346,7 +3552,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if self.ui.tabwid.currentIndex() == 3:  # only in Analyse
 	    X = event.xdata   # float   col or j
 	    Y = event.ydata   # float   row or i
-	    if X==None or Y==None:
+	    if X is None or Y is None:
 		# pressed out of border - Abort"
 		return
 	    #print "on press: X val=%.3f, Y val=%.3f" % (X,Y) 
@@ -3402,7 +3608,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	if self.dragging:   
 	    X = event.xdata    	
 	    Y = event.ydata
-	    if X==None or Y==None:
+	    if X is None or Y is None:
 		return
 	    row, col = self.scale_picked_point(X,Y)   
 	    
@@ -3440,7 +3646,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	in3const = 0.0
 	X = event.xdata   
 	Y = event.ydata 
-	if X==None or Y==None:
+	if X is None or Y is None:
 	    # oder if self.check_nodata(Y,X)==True:
 	    return
 
@@ -3508,7 +3714,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    li_col_header.append('Entire Output')
 	    
 	    # opens window with active_rules
-	    popup = Popup_active_rules(X,Y, su1,ruleList, 
+	    global fac
+	    popup = Popup_active_rules(fac, X,Y, su1,ruleList, 
 				    muList,outputList, ifthenList,
 				    li_col_header, anz_inp, in3const)
 	    popup.show()
@@ -3601,7 +3808,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    # search the separator
 	    self.ui.includeLE.setText(fname)
 	    sep = self.get_separator(fname, self.ui.headerSpin.value()) 
-	    if sep == None:
+	    if sep is None:
 		self.ui.statusbar.showMessage("Separator missed!",5000)
 		self.ui.calcTextEdit.clear()
 		self.ui.lbl_sep_calc.setText('')
@@ -3836,7 +4043,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.trainPathEdit.setText(fname)
 	    # search the separator
 	    sep = self.get_separator(fname,self.ui.trainHeaderSpinBox.value()) 
-	    if sep == None:
+	    if sep is None:
 		self.ui.statusbar.showMessage("Separator missed!",5000)
 		self.ui.trainDataEdit.clear()
 		self.ui.lbl_sep_train.setText('')
@@ -4037,7 +4244,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    # search the separator
 	    sep = self.get_separator(fname,
 				    self.ui.rtrainHeaderSpinBox.value()) 
-	    if sep == None:
+	    if sep is None:
 		self.ui.statusbar.showMessage("Separator missed!",5000)
 		self.ui.rtrainDataEdit.clear()
 		self.ui.lbl_sep_rtrain.setText('')
@@ -4249,7 +4456,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# get Rules from fx obj. and fill it into table in Rules Page
 	row = self.ui.rulesTable.rowCount()
 	self.ui.rulesTable.insertRow(row)
-	self.ui.rulesTable.setRowHeight(row,24)
+	self.ui.rulesTable.setRowHeight(row,self.rh)  #24)
 	
 	# create ComboTableItem for output column in the rulesTable
 	cb = QtGui.QComboBox(self.ui.rulesTable)
@@ -4432,12 +4639,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 ########################################################################
 class Popup_active_rules(QtGui.QWidget):
-    def __init__(self, X, Y, su1,ruleList,muList,outputList,ifthenList,
+    def __init__(self, fac, X, Y, su1,ruleList,muList,outputList,ifthenList,
 		    li_col_header,n,in3const=0.0,parent=None):
 	# called by: mouse on_release in analyse
 	QtGui.QWidget.__init__(self,  parent=None)
 	self.ui = Ui_rulesform()
 	self.ui.setupUi(self)
+	
+	if fac > 1:
+	    self.resize(829*fac, 242*fac)
+	
 	self.setWindowTitle('SAMT2 - Fuzzy ----- Active Rules')
 	self.ui.table.setColumnWidth(0, 40)
 	self.ui.table.setColumnWidth(2, 60)
@@ -4541,13 +4752,17 @@ class Popup_active_rules(QtGui.QWidget):
 ########################################################################
 
 class Popup_transect(QtGui.QMainWindow):
-    def __init__(self,t,mx,liX, liY,oname,flag_absolut,
+    def __init__(self,fac,t,mx,liX, liY,oname,flag_absolut,
 		max_out=0,min_out=0,
 		parent=None):
 	QtGui.QWidget.__init__(self,  parent=None)
 	self.ui = Ui_plotwin()
 	self.ui.setupUi(self)
+    
 	# Layout
+	if fac > 1:
+	    self.resize(661*fac, 485*fac)
+	    	
 	vbox = QVBoxLayout()
         vbox.addWidget(self.ui.main_frame.canvas)
 	self.ui.main_frame.setLayout(vbox)
@@ -4572,12 +4787,24 @@ class Popup_transect(QtGui.QMainWindow):
 	pax.get_xaxis().set_major_formatter(majorFormatter)
 	pax.plot(t, mx, color='blue')
 	self.ui.main_frame.canvas.draw()
-	 
+
+
     
 ########################################################################
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     locale.setlocale(locale.LC_NUMERIC, "C")    # decimal_point
+    
+    # scale factor for current monitor resolution (QDesktopWidget)
+    screen_resolution = app.desktop().screenGeometry()
+    w, h = screen_resolution.width(), screen_resolution.height()
+    if w <= 1920 and h <= 1200:  # 24'': 1920x1200
+	fac = 1.0  
+    else:			 # 28'': 3840 x 2160
+	fac = float(h/1200.0)    # or (w/1920.0)  =1.8 
+    print "Monitor: width=%d, height=%d, fac=%f" % (w, h, fac)
+    
+    fontsiz = plt.rcParams['font.size']   #12
     window = MyForm() 
     window.show()
     sys.exit(app.exec_())

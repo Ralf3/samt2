@@ -10,8 +10,8 @@ import Pyfuzzy as fuzz
 # and a speparator sep from a fuzzy system
 
 def gen(n,sep=" "):
-    # f=fuzz.read_model('hab_schreiadler.fis') # please adapt this
-    f=fuzz.read_model('circle.fis') # please adapt this
+    f=fuzz.read_model('hab_schreiadler.fis') # please adapt this
+    # f=fuzz.read_model('circle.fis') # please adapt this
     m=f.get_number_of_inputs()
     inputs={}
     # sample the min and max for each input

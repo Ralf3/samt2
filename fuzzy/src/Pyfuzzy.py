@@ -399,7 +399,7 @@ class fuzzy:
         cdef float tmu=0.0
         cdef int i
         # define the self.res
-        if(self.res==None):
+        if(self.res is None):
             self.res=np.zeros(len(self.outputs))
         self.inputs[0].calc(x)   # calc the membership of input 1
         for i in range(len(self.rules)): # calc the membership of all rules
@@ -475,7 +475,7 @@ class fuzzy:
         cdef float tmu=0.0
         cdef int i
         # define the self.res
-        if(self.res==None):
+        if(self.res is None):
             self.res=np.zeros(len(self.outputs))
         self.inputs[0].calc(x1)   # calc the membership of input 1
         self.inputs[1].calc(x2)   # calc the membership of input 2
@@ -552,7 +552,7 @@ class fuzzy:
         self.inputs[1].calc(x2)   # calc the membership of input 2
         self.inputs[2].calc(x3)   # calc the membership of input 3
         # define the self.res
-        if(self.res==None):
+        if(self.res is None):
             self.res=np.zeros(len(self.outputs))
 
         for i in range(len(self.rules)): # calc the membership of all rules
@@ -725,7 +725,7 @@ class fuzzy:
         """
         cdef int i
         cdef float y, error=0.0, rsme=0.0, reg=0.0
-        if(self.X==None or self.Y==None):
+        if(self.X is None or self.Y is None):
             print('error in get_rsme: X or Y are not defined')
             return -9999.0
         # evaluate the fuzzy model using training data
@@ -745,7 +745,7 @@ class fuzzy:
         """
         cdef int i
         cdef float y, error=0.0, mae=0.0, reg=0.0
-        if(self.X==None or self.Y==None):
+        if(self.X is None or self.Y is None):
             print('error in get_rsme: X or Y are not defined')
             return -9999.0
         # evaluate the fuzzy model using training data

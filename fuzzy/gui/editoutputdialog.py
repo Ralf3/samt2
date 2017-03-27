@@ -10,12 +10,14 @@ from PyQt4.QtCore import *
 from editoutputmember_ui import Ui_outputDialog
 
 class EditOutputDialog(QtGui.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, fac, parent=None):
 	QtGui.QWidget.__init__(self,parent)  
-	#super(EditOutputDialog, self).__init__(parent)  
-	###QtGui.QDialog.__init__(self,parent)  
 	self.ui = Ui_outputDialog()       
 	self.ui.setupUi(self)
+
+	if fac > 1:
+	    self.resize(310*fac, 150*fac)
+	    self.setMaximumSize(QtCore.QSize(310*fac, 150*fac))
 
 	self.ui.valueLE.setValidator(QtGui.QDoubleValidator(self))
 	
@@ -24,7 +26,6 @@ class EditOutputDialog(QtGui.QDialog):
 	self.connect(self.ui.okButton, SIGNAL('clicked()'),
 			    self.okButton_clicked)		    
 			    
-  
     #-------------------------------------------------------------------
     def okButton_clicked(self):
 	# SLOT, called by: okButton   alt: controllInputs()
