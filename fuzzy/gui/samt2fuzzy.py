@@ -50,6 +50,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	global fac, fontsiz
 	if fac > 1.0:
  	    self.resize(873*fac, 693*fac)
+	    self.setMinimumSize(QtCore.QSize(873*fac, 693*fac))  #(850*fac, 663*fac))
 	    self.rh = 28*fac  	# row height for tables
 	    #plt.rcParams['font.size'] = int(fontsiz*fac)  # ???
 	    fo11 = QtGui.QFont()
@@ -150,7 +151,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.btn_calc_fuzzy.setMaximumSize(QtCore.QSize(16777215, 30*fac))
 	    
 	    # Tab Training
-	    # --  oben links
+	    ##  oben links
 	    self.ui.groupBox.setMinimumSize(QtCore.QSize(360*fac, 238*fac))
 	    self.ui.groupBox.setMaximumSize(QtCore.QSize(360*fac, 16777215))
 	    self.ui.btn_trainPath.setMinimumSize(QtCore.QSize(90*fac, 35*fac))
@@ -166,9 +167,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.trainHeaderSpinBox.setMinimumSize(QtCore.QSize(40*fac, 35*fac))
 	    self.ui.trainHeaderSpinBox.setMaximumSize(QtCore.QSize(40*fac, 35*fac))
 	    self.ui.lbl_sep_train.setMinimumSize(QtCore.QSize(8*fac, 35*fac))
-	    # --- unten links
-	    self.ui.trainResultGB.setMaximumSize(QtCore.QSize(360*fac, 16777215))
+	    ##  unten links
 	    self.ui.trainResultGB.setMinimumSize(QtCore.QSize(360*fac, 361*fac))
+	    self.ui.trainResultGB.setMaximumSize(QtCore.QSize(360*fac, 16777215))
 	    self.ui.btn_clear.setMinimumSize(QtCore.QSize(150*fac, 30*fac))
 	    self.ui.btn_clear.setMaximumSize(QtCore.QSize(150*fac, 30*fac))
 	    self.ui.btn_restore_orig.setMinimumSize(QtCore.QSize(165*fac, 30*fac))
@@ -177,10 +178,15 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.mse1LE.setMaximumSize(QtCore.QSize(150*fac, 30*fac))
 	    self.ui.mse2LE.setMinimumSize(QtCore.QSize(150*fac, 30*fac))
 	    self.ui.mse2LE.setMaximumSize(QtCore.QSize(150*fac, 30*fac))
-	    # --- oben rechts
+	    self.ui.label_17.setMinimumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.label_17.setMaximumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.label_18.setMinimumSize(QtCore.QSize(180*fac, 30*fac))
+	    self.ui.label_18.setMaximumSize(QtCore.QSize(180*fac, 30*fac))	    
+	    
+	    ## oben rechts
 	    self.ui.groupBox_2.setMinimumSize(QtCore.QSize(16*fac, 235*fac))  # automat. ???
-	    # --- unten rechts
-	    self.ui.groupBox_4.setMinimumSize(QtCore.QSize(458*fac, 361*fac))
+	    ## unten rechts
+	    self.ui.groupBox_4.setMinimumSize(QtCore.QSize(16*fac, 361*fac)) #458*
 	    self.ui.trainedOutputEdit.setMaximumSize(QtCore.QSize(360*fac, 16777215))
 	    
 	    # Tab Rules Training
@@ -202,7 +208,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.ui.label_3.setMaximumSize(QtCore.QSize(42*fac, 30*fac))
 	    self.ui.btn_start_rulesTrain.setMinimumSize(QtCore.QSize(160*fac, 35*fac))
 	    self.ui.btn_start_rulesTrain.setMaximumSize(QtCore.QSize(160*fac, 35*fac))
-	    # -- recht oben
+	    ## recht oben
 	    self.ui.groupBox_3.setMinimumSize(QtCore.QSize(16*fac, 150*fac))
 	    self.ui.groupBox_3.setMaximumSize(QtCore.QSize(16777215, 150*fac))
 	    
@@ -4322,7 +4328,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# put rules from current fuzzy object into trainedRulesTbl
 	row = self.ui.trainedRulesTbl.rowCount()
 	self.ui.trainedRulesTbl.insertRow(row)
-	self.ui.trainedRulesTbl.setRowHeight(row, 24)
+	self.ui.trainedRulesTbl.setRowHeight(row, self.rh)   #24)
+	self.ui.rulesTable.setRowHeight(row, self.rh)
 
 	if self.numInput == 1: 
 	    item = QtGui.QTableWidgetItem('input1')
@@ -4421,28 +4428,36 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	# sets the horizontal header of the trainedRulesTbl
 	self.ui.trainedRulesTbl.resizeColumnToContents(2)
 	self.ui.trainedRulesTbl.resizeColumnToContents(3)
+	
+	w = self.ui.trainedRulesTbl.width()
+	self.ui.trainedRulesTbl.setColumnWidth(0, w*0.15)  
+	self.ui.trainedRulesTbl.setColumnWidth(1, w*0.15)  
+	self.ui.trainedRulesTbl.setColumnWidth(2, w*0.15)  
+	self.ui.trainedRulesTbl.setColumnWidth(3, w*0.15) 
+	self.ui.trainedRulesTbl.setColumnWidth(4, w*0.15)
+	
 	if self.numInput >= 1:
 	    item = self.ui.trainedRulesTbl.horizontalHeaderItem(0)
 	    if q == 1:
 		item.setText(self.ui.inputCombo.itemText(0)) 
 	    else:
 		item.setText('Input1')
-	    self.ui.trainedRulesTbl.resizeColumnToContents(0)
-	    self.ui.trainedRulesTbl.resizeColumnToContents(1)
+	    #self.ui.trainedRulesTbl.resizeColumnToContents(0)
+	    #self.ui.trainedRulesTbl.resizeColumnToContents(1)
 	if self.numInput >= 2:
 	    item = self.ui.trainedRulesTbl.horizontalHeaderItem(1)
 	    if q == 1:
 		item.setText(self.ui.inputCombo.itemText(1))
 	    else:
 		item.setText('Input2')
-	    self.ui.trainedRulesTbl.resizeColumnToContents(2)
+	    #self.ui.trainedRulesTbl.resizeColumnToContents(2)
   	if self.numInput == 3:
 	    item = self.ui.trainedRulesTbl.horizontalHeaderItem(2)
 	    if q == 1:
 		item.setText(self.ui.inputCombo.itemText(2))
 	    else:
 		item.setText('Input3')
-	    self.ui.trainedRulesTbl.resizeColumnToContents(3)
+	    #self.ui.trainedRulesTbl.resizeColumnToContents(3)
 	outputItem = self.ui.trainedRulesTbl.horizontalHeaderItem(3)
 	if q == 1:
 	    outputItem.setText(self.ui.outputLE.text())
@@ -4799,7 +4814,7 @@ if __name__ == "__main__":
     screen_resolution = app.desktop().screenGeometry()
     w, h = screen_resolution.width(), screen_resolution.height()
     if w <= 1920 and h <= 1200:  # 24'': 1920x1200
-	fac = 1.0  
+	fac = 1.0
     else:			 # 28'': 3840 x 2160
 	fac = float(h/1200.0)    # or (w/1920.0)  =1.8 
     print "Monitor: width=%d, height=%d, fac=%f" % (w, h, fac)
