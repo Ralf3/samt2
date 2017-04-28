@@ -195,9 +195,7 @@ class hassetree():
                 i.add_eq(sitp)
                 sitp.add_eq(i)
                 self.eq[sitp.get_name()]=i.get_name()
-                eq_flag=True
-        if(eq_flag==True):
-            return
+            	return
         for i in self.liste:    # insert sitp and add all succ, pred, nc
             x=self.compare(sitp,i)
             if(x==LT):
@@ -212,15 +210,15 @@ class hassetree():
         self.liste.append(sitp) # insert sitp itself
     def clean_edge(self):
         """
-        help function for cleaning 
+        help function for cleaning: transitifity  
         """
         for i1 in self.liste:
             xlist=[]
             for i2 in i1.get_succ():
                 zwsp=i2
                 for i3 in i1.get_succ():
-                    x=self.compare(zwsp,i3) # find the smallest sit over i1
-                    if(x==GT):
+                    # find the smallest sit over i1
+                    if(self.compare(zwsp,i3)==GT): 
                         zwsp=i3
                 xlist.append(zwsp)
             i1.clear_succ()
