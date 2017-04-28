@@ -4,6 +4,7 @@ import hasse as hd
 
 def main():
     #read data from file
+    # mw,z_namen=hd.read_data('test.csv')
     mw,z_namen=hd.read_data('data2.txt')
     for i in range(len(mw)):
 	print z_namen[i],
@@ -19,7 +20,7 @@ def main():
     hasse1.print_eq()
     gx,level=hasse1.make_graph()
     # print HD
-    hd.print_hd(gx,level,'data2.txt')
+    hd.print_hd(gx,level,'test')
 
 if __name__ == "__main__":
     main()

@@ -32,7 +32,8 @@ LT=-1
 NC=2
 OK=0
 NN=1
-DELTA=0.001  # to distinguage between two values
+DELTA=0.000001  # to distinguage between two values
+
 class sit():
     """
     class sit implements a data structure to store nodes and their
@@ -135,17 +136,105 @@ class sit():
                           self.feld[i]*p/100.0*(0.5-np.random.triangular(
                               left,mode,right))
    
+def hasse_comp(s1,s2):
+    """ defines the normally used hasse compare function
+        used by the generic hasse.compare(sit1,sit2,fx=hasse_comp)
+        returns NC, GT, LT, EQ
+    """
+    feld1=s1.get_feld()
+    feld2=s2.get_feld()
+    if(len(feld1)!=len(feld2)):
+        return NC
+    l=len(feld1)
+    gt=0
+    lt=0
+    for i,j in zip(feld1,feld2):
+        if(i>=j):
+            gt+=1
+        if(i<=j):
+            lt+=1
+    # print s1.name,s2.name,gt,lt
+    if(gt==lt and lt==3):
+        return EQ
+    if(gt==l):
+        return GT
+    if(lt==l):
+        return LT
+    return NC
 
+def majo_comp(s1,s2):
+    """ defines a compare function wich it gt if more than half was gt
+        used by the generic hasse.compare(sit1,sit2,fx=hasse_comp)
+        returns NC, GT, LT, EQ
+    """
+    feld1=s1.get_feld()
+    feld2=s2.get_feld()
+    if(len(feld1)!=len(feld2)):
+        return NC
+    l=len(feld1)
+    gt=0
+    lt=0
+    for i,j in zip(feld1,feld2):
+        if(i>=j):
+            gt+=1
+        if(i<=j):
+            lt+=1
+    # print s1.name,s2.name,gt,lt
+    if(gt==lt and lt==3):
+        return EQ
+    if(gt>lt):
+        return GT
+    if(lt>gt):
+        return LT
+    return NC
+
+def majoriziation_comp(s1,s2):
+    """ defines the compare function uses majorization
+        normalizes the rows to sum=1.0 and sortes the felds
+        before applying the compare
+    """
+    feld1=np.copy(s1.get_feld())  # use a copy 
+    feld2=np.copy(s2.get_feld())
+    if(len(feld1)!=len(feld2)):
+        return NC
+    f1=feld1/np.sum(feld1)   # normalize it
+    f2=feld2/np.sum(feld2)   # normalize it
+    f1=np.sort(f1)[::-1]     # sort it in decending order
+    f2=np.sort(f2)[::-1]     # sort it in decending order
+    f1=np.cumsum(f1)         # calc the cumsum
+    f2=np.cumsum(f2)         # calc the cumsum
+    print f1
+    print f2
+    l=len(f1)
+    gt=0
+    lt=0
+    for i,j in zip(f1,f2):
+        if(i>=j):
+            gt+=1
+        if(i<=j):
+            lt+=1
+    print s1.name,s2.name, lt,gt
+    if(gt==lt and gt==3):
+        return EQ
+    if(gt==l):
+        return GT
+    if(lt==l):
+        return LT
+    return NC
+    
 class hassetree():
     """
     the class hassetree uses elements of the class sit to build a partial 
     ordered set
     """
-    def __init__(self):
-        """ init the hassetree with empty elements
+    def __init__(self,fx=hasse_comp):
+        """ 
+        init the hassetree with empty elements
+        and the compare function byx default hasse_comp
         """ 
         self.liste=[]   # list of all sits
         self.eq={}      # equivalence class
+        self.fx=fx
     def print_eq(self):
         """ 
         help function to print equivalent nodes
@@ -157,29 +246,10 @@ class hassetree():
         """ 
         help function to compare two nodes
         """
-        feld1=sit1.get_feld()
-        feld2=sit2.get_feld()
-        if(len(feld1)!=len(feld2)):
-            return NC
-        val,valk,valg=0,0,0
-        for i in range(len(feld1)):
-            if(math.fabs(feld1[i]-feld2[i])>DELTA):
-                val=1
-                if(feld1[i]<feld2[i]): 
-                    valk=1
-                if(feld1[i]>feld2[i]): 
-                    valg=1;
-        if(val==0):
-            if(sit1.get_name()!=sit2.get_name()):
-                print 'eq:',sit1.get_name(),sit2.get_name()
-            return EQ
-        if(valk==1 and valg==1): 
-            return NC  # not comparable
-        if(valk==0 and valg==1): 
-            return GT  # return GT
-        if(valk==1 and valg==0):
-            return LT  # return LT
-        return NC      # default return not comparable
+        res=self.fx(sit1,sit2)
+        print sit1.name, sit2.name, res
+        return res
+    
     def insert(self,sitp):
         """ 
         most important function to insert a new node sitp
