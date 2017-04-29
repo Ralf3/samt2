@@ -203,8 +203,8 @@ def majoriziation_comp(s1,s2):
     f2=np.sort(f2)[::-1]     # sort it in decending order
     f1=np.cumsum(f1)         # calc the cumsum
     f2=np.cumsum(f2)         # calc the cumsum
-    print f1
-    print f2
+    print s1.name,f1
+    print s2.name,f2
     l=len(f1)
     gt=0
     lt=0
@@ -213,7 +213,7 @@ def majoriziation_comp(s1,s2):
             gt+=1
         if(i<=j):
             lt+=1
-    print s1.name,s2.name, lt,gt
+    # print s1.name,s2.name, lt,gt
     if(gt==lt and gt==3):
         return EQ
     if(gt==l):
@@ -234,20 +234,24 @@ class hassetree():
         """ 
         self.liste=[]   # list of all sits
         self.eq={}      # equivalence class
-        self.fx=fx
+        self.fx=fx      # compare function can be provided by user
+        self.norm=False # indicates the col_norm
     def print_eq(self):
         """ 
         help function to print equivalent nodes
         """
         for i in self.liste:
-            if(i.get_eq()!=[]):
-                print i.get_name(),':',i.get_eq()
+            print i.get_name(), ':',
+            if i.get_eq()!=[] :
+                for j in i.get_eq():
+                    print j.name,
+            print
     def compare(self,sit1,sit2):
         """ 
         help function to compare two nodes
         """
         res=self.fx(sit1,sit2)
-        print sit1.name, sit2.name, res
+        #print sit1.name, sit2.name, res
         return res
     
     def insert(self,sitp):
@@ -294,6 +298,23 @@ class hassetree():
             i1.clear_succ()
             for xi in xlist:
                 i1.add_succ(xi)
+    def col_norm(self):
+        """
+        help function which normalizes the columns between 0..1
+        set the variable self.norm=True
+        returns True if norm was made else False
+        """
+        if(self.norm==False):
+            self.norm=True
+            print self.liste[0].name, self.liste[0].feld
+            div=np.zeros(len(self.liste[0].feld))
+            for sitp in self.liste:
+                div+=sitp.feld
+            for sitp in self.liste:
+                sitp.feld/=div
+            return True
+        return False
+    
     def make_graph(self):
         """
         make_graph based on networkx and uses Digraphs
