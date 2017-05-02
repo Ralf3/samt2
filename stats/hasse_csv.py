@@ -4,8 +4,8 @@ import hasse as hd
 
 def main():
     #read data from file
-    # mw,z_namen=hd.read_data('test.csv')
-    mw,z_namen=hd.read_data('data2.txt')
+    mw,z_namen=hd.read_data('test.csv')
+    # mw,z_namen=hd.read_data('data2.txt')
     for i in range(len(mw)):
 	print z_namen[i],
         for j in range(len(mw[i])):
@@ -13,6 +13,8 @@ def main():
         print
     # define a hassetree
     hasse1=hd.hassetree()
+    # hasse1=hd.hassetree(hd.majorization_comp)
+    # hasse1=hd.hassetree(hd.majo_comp)
     # fill it from mw
     for i in range(len(mw)):
         sitp=hd.sit(z_namen[i],mw[i])

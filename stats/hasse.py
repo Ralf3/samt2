@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import networkx as nx
 import copy
+from inspect import getargspec
 import math
 import sys
 import numpy as np
@@ -188,7 +189,7 @@ def majo_comp(s1,s2):
         return LT
     return NC
 
-def majoriziation_comp(s1,s2):
+def majorization_comp(s1,s2):
     """ defines the compare function uses majorization
         normalizes the rows to sum=1.0 and sortes the felds
         before applying the compare
@@ -197,14 +198,14 @@ def majoriziation_comp(s1,s2):
     feld2=np.copy(s2.get_feld())
     if(len(feld1)!=len(feld2)):
         return NC
-    f1=feld1/np.sum(feld1)   # normalize it
-    f2=feld2/np.sum(feld2)   # normalize it
+    f1=feld1
+    f2=feld2
     f1=np.sort(f1)[::-1]     # sort it in decending order
     f2=np.sort(f2)[::-1]     # sort it in decending order
     f1=np.cumsum(f1)         # calc the cumsum
     f2=np.cumsum(f2)         # calc the cumsum
-    print s1.name,f1
-    print s2.name,f2
+    #print s1.name,f1
+    #print s2.name,f2
     l=len(f1)
     gt=0
     lt=0
@@ -236,6 +237,7 @@ class hassetree():
         self.eq={}      # equivalence class
         self.fx=fx      # compare function can be provided by user
         self.norm=False # indicates the col_norm
+         
     def print_eq(self):
         """ 
         help function to print equivalent nodes
@@ -251,7 +253,6 @@ class hassetree():
         help function to compare two nodes
         """
         res=self.fx(sit1,sit2)
-        #print sit1.name, sit2.name, res
         return res
     
     def insert(self,sitp):
@@ -314,7 +315,7 @@ class hassetree():
                 sitp.feld/=div
             return True
         return False
-    
+
     def make_graph(self):
         """
         make_graph based on networkx and uses Digraphs
