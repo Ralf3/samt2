@@ -33,6 +33,7 @@ LT=-1
 NC=2
 OK=0
 NN=1
+RP=True    # switch report on or off
 DELTA=0.000001  # to distinguage between two values
 
 class sit():
@@ -259,34 +260,43 @@ class hassetree():
         """ 
         most important function to insert a new node sitp
         it takes care for ordering the node in the eq,nc,succ or pred
+        -------------------------------------------------------------
+        The new version is splitted in a simple append to the 
+        of each sitp to self.liste.
+        After all sitps are included a general run to sort the 
+        elements of the self.list accroding to the used compare has to be made. 
         """
-        if(len(self.liste)==0): # add sitp as first element
-            self.liste.append(sitp)
-            return
+        self.liste.append(sitp)
+        return True
+    def insert1(self):
+        """
+        most important second part of the insert procedure
+        it takes care for ordering the node in the eq,nc,succ or pred
+        """
         eq_flag=False
-        for i in self.liste  :  # sort out all sit which are alredy in 
-            x=self.compare(i,sitp)
-            if(x==EQ):
-                i.add_eq(sitp)
-                sitp.add_eq(i)
-                self.eq[sitp.get_name()]=i.get_name()
-            	return
-        for i in self.liste:    # insert sitp and add all succ, pred, nc
-            x=self.compare(sitp,i)
-            if(x==LT):
-                i.add_pred(sitp)
-                sitp.add_succ(i)
-            if(x==GT):
-                sitp.add_pred(i)
-                i.add_succ(sitp)
-            if(x==NC):
-                i.add_nc(sitp)
-                sitp.add_nc(i)
-        self.liste.append(sitp) # insert sitp itself
+        for i in range(len(self.liste)): 
+            for j in range(i+1,len(self.liste)):
+                x=self.compare(self.liste[j],self.liste[i])
+                # print i,j,x
+                if(x==EQ):
+                    self.liste[i].add_eq(self.liste[j])
+                    self.liste[j].add_eq(self.liste[i])
+                if(x==LT):
+                    self.liste[i].add_pred(self.liste[j])
+                    self.liste[j].add_succ(self.liste[i])
+                if(x==GT):
+                    self.liste[j].add_pred(self.liste[i])
+                    self.liste[i].add_succ(self.liste[j])
+                if(x==NC):
+                    self.liste[i].add_nc(self.liste[j])
+                    self.liste[j].add_nc(self.liste[i])
+        return True
     def clean_edge(self):
         """
+        calls self.insert1 firstly
         help function for cleaning: transitifity  
         """
+        self.insert1()
         for i1 in self.liste:
             xlist=[]
             for i2 in i1.get_succ():
@@ -316,6 +326,43 @@ class hassetree():
             return True
         return False
 
+    def gen_report(self):
+        """ writes all sits of self.liste according to EQ, NC, GT and LT
+        """
+        f=open('report.txt','w')
+        for i in range(len(self.liste)):
+            s=str(self.liste[i].name)+"\n"
+            f.write(s)
+            s='Pred:'
+            for j in self.liste[i].pred:
+                s+=str(j.name)
+                s+=" "
+            s+="\n"
+            f.write(s)
+            s='Succ:'
+            for j in self.liste[i].succ:
+                s+=str(j.name)
+                s+=" "
+            s+="\n"
+            f.write(s)
+            s='EQ:'
+            for j in self.liste[i].eq:
+                s+=str(j.name)
+                s+=" "
+            s+="\n"
+            f.write(s)
+            s='NC:'
+            for j in self.liste[i].nc:
+                s+=str(j.name)
+                s+=" "
+            s+="\n"
+            f.write(s)
+            s=70*'_'
+            s+="\n"
+            f.write(s)
+        f.close()
+        return
+    
     def make_graph(self):
         """
         make_graph based on networkx and uses Digraphs
@@ -323,6 +370,9 @@ class hassetree():
         all values in hassetree and stored sits will be destroid
         """
         self.clean_edge()                # make the succ minimal
+        if(RP==True):
+            self.gen_report()            # prints a large rport
+        
         G=nx.DiGraph()                   # define a digraph
         for sitp in self.liste:
             G.add_node(sitp.get_name())  # add all sits to graph as nodes
