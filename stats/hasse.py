@@ -150,13 +150,16 @@ def hasse_comp(s1,s2):
     l=len(feld1)
     gt=0
     lt=0
+    eq=0
     for i,j in zip(feld1,feld2):
-        if(i>=j):
+        if(i>j):
             gt+=1
-        if(i<=j):
+        if(i<j):
             lt+=1
+        if(i==j):
+            eq+=1
     # print s1.name,s2.name,gt,lt
-    if(gt==lt and lt==3):
+    if(eq==l):
         return EQ
     if(gt==l):
         return GT
@@ -176,13 +179,47 @@ def majo_comp(s1,s2):
     l=len(feld1)
     gt=0
     lt=0
+    eq=0
     for i,j in zip(feld1,feld2):
-        if(i>=j):
+        if(i>j):
             gt+=1
-        if(i<=j):
+        if(i<j):
             lt+=1
+        if(i==j):
+            eq+=1
     # print s1.name,s2.name,gt,lt
-    if(gt==lt and lt==3):
+    if(eq==l):
+        return eq
+    if(gt>lt):
+        return GT
+    if(lt>gt):
+        return LT
+    return NC
+
+def m2_comp(s1,s2):
+    """ defines a compare which simplyfies to a two dimensional vector: 
+        v=[min(q1,q2,...,qn), max(q1,q2,...,qn)]
+        returns NC,GT,LT,EQ
+    """
+    feld1=s1.get_feld()
+    feld2=s2.get_feld()
+    if(len(feld1)!=len(feld2)):
+        return NC
+    l=2
+    gt=0
+    lt=0
+    eq=0
+    vs1=[np.min(feld1),np.max(feld1)]
+    vs2=[np.min(feld2),np.max(feld2)]
+    for i,j in zip(vs1,vs2):
+        if(i>j):
+            gt+=1
+        if(i<j):
+            lt+=1
+        if(i==j):
+            eq+=1
+    # print s1.name,s2.name,gt,lt
+    if(eq==l):
         return EQ
     if(gt>lt):
         return GT
@@ -190,6 +227,7 @@ def majo_comp(s1,s2):
         return LT
     return NC
 
+    
 def majorization_comp(s1,s2):
     """ defines the compare function uses majorization
         normalizes the rows to sum=1.0 and sortes the felds
@@ -215,12 +253,12 @@ def majorization_comp(s1,s2):
             gt+=1
         if(i<=j):
             lt+=1
-    # print s1.name,s2.name, lt,gt
-    if(gt==lt and gt==3):
+    #print s1.name,s2.name, lt,gt
+    if(gt==lt):
         return EQ
-    if(gt==l):
+    if(gt>lt):
         return GT
-    if(lt==l):
+    if(lt>gt):
         return LT
     return NC
     
@@ -276,17 +314,17 @@ class hassetree():
         eq_flag=False
         for i in range(len(self.liste)): 
             for j in range(i+1,len(self.liste)):
-                x=self.compare(self.liste[j],self.liste[i])
-                # print i,j,x
+                x=self.compare(self.liste[i],self.liste[j])
+                # print self.liste[i].name,self.liste[j].name,x
                 if(x==EQ):
                     self.liste[i].add_eq(self.liste[j])
                     self.liste[j].add_eq(self.liste[i])
                 if(x==LT):
-                    self.liste[i].add_pred(self.liste[j])
-                    self.liste[j].add_succ(self.liste[i])
-                if(x==GT):
                     self.liste[j].add_pred(self.liste[i])
                     self.liste[i].add_succ(self.liste[j])
+                if(x==GT):
+                    self.liste[i].add_pred(self.liste[j])
+                    self.liste[j].add_succ(self.liste[i])
                 if(x==NC):
                     self.liste[i].add_nc(self.liste[j])
                     self.liste[j].add_nc(self.liste[i])
@@ -295,20 +333,54 @@ class hassetree():
         """
         calls self.insert1 firstly
         help function for cleaning: transitifity  
+        an x in succ if x==LT or x==NC for all other potiential succ
         """
         self.insert1()
-        for i1 in self.liste:
+        # print succ
+        #for i in self.liste:
+        #    print i.name, ':',
+        #    for j in i.succ:
+        #        print j.name,
+        #    print
+        print 'succ:', 60*'*'
+        for i1 in self.liste:  
             xlist=[]
             for i2 in i1.get_succ():
                 zwsp=i2
                 for i3 in i1.get_succ():
                     # find the smallest sit over i1
-                    if(self.compare(zwsp,i3)==GT): 
+                    res=self.compare(zwsp,i3)
+                    if(res==GT): 
                         zwsp=i3
-                xlist.append(zwsp)
-            i1.clear_succ()
-            for xi in xlist:
-                i1.add_succ(xi)
+                if(zwsp not in xlist):
+                    xlist.append(zwsp)
+            i1.succ=xlist
+        # print succ
+        for i in self.liste:
+            print i.name, ':',
+            for j in i.succ:
+                print j.name,
+            print
+        # clean the pred
+        for i1 in self.liste:  
+            xlist=[]
+            for i2 in i1.get_pred():
+                zwsp=i2
+                for i3 in i1.get_pred():
+                    # find the largest sit over i1
+                    res=self.compare(zwsp,i3)
+                    if(res==LT): 
+                        zwsp=i3
+                if(zwsp not in xlist):
+                    xlist.append(zwsp)
+            i1.pred=xlist
+        # print pred
+        print 'pred:',60*'*'
+        for i in self.liste:
+            print i.name, ':',
+            for j in i.pred:
+                print j.name,
+            print
     def col_norm(self):
         """
         help function which normalizes the columns between 0..1
@@ -317,7 +389,7 @@ class hassetree():
         """
         if(self.norm==False):
             self.norm=True
-            print self.liste[0].name, self.liste[0].feld
+            # print self.liste[0].name, self.liste[0].feld
             div=np.zeros(len(self.liste[0].feld))
             for sitp in self.liste:
                 div+=sitp.feld
@@ -375,27 +447,41 @@ class hassetree():
         
         G=nx.DiGraph()                   # define a digraph
         for sitp in self.liste:
-            G.add_node(sitp.get_name())  # add all sits to graph as nodes
+            G.add_node(sitp.name)  # add all sits to graph as nodes
         level=0
 	alevel={}
+        lold=len(self.liste)
         while(len(self.liste)!=0):
+            
             xlist=[]
 	    llevel=[]
+            # print 'remove:',
             for i in self.liste:         # find all sitp with empty pred 
-                if(len(i.get_pred())==0):
+                if(len(i.pred)==0):
+                    # print i.name,
                     xlist.append(i)
+            # print
             for i in xlist:              # remove sitp from listp
                 self.liste.remove(i)
             for i in self.liste:         # remove all pred in liste
                 for j in xlist:          # which are in xlist
                     i.erase_pred(j)
-    
+            # print liste
+            #print 'liste:', 60*'*'
+            #for i in self.liste:
+            #    print i.name,
+            #print
             for i in xlist:
-		llevel.append(i.get_name())
+		llevel.append(i.name)
                 for j in i.get_succ():
-                    G.add_edge(i.get_name(),j.get_name())
+                    # print 'add:', i.name,j.name
+                    G.add_edge(i.name,j.name)
 	    alevel[level]=llevel
 	    level+=1
+            if(lold==len(self.liste)):
+               print 'error in  make_graph ===> exit'
+               sys.exit(1)
+            lold=len(self.liste)
         return G, alevel
     
 def print_hd(gx,level,title):
