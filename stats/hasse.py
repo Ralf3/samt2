@@ -143,6 +143,8 @@ def hasse_comp(s1,s2):
         used by the generic hasse.compare(sit1,sit2,fx=hasse_comp)
         returns NC, GT, LT, EQ
     """
+    if(s1.name==s2.name):
+        return EQ
     feld1=s1.get_feld()
     feld2=s2.get_feld()
     if(len(feld1)!=len(feld2)):
@@ -152,13 +154,13 @@ def hasse_comp(s1,s2):
     lt=0
     eq=0
     for i,j in zip(feld1,feld2):
-        if(i>j):
+        if(i>=j):
             gt+=1
-        if(i<j):
+        if(i<=j):
             lt+=1
         if(i==j):
             eq+=1
-    # print s1.name,s2.name,gt,lt
+    # print s1.name,s2.name,gt,lt,eq
     if(eq==l):
         return EQ
     if(gt==l):
@@ -336,12 +338,6 @@ class hassetree():
         an x in succ if x==LT or x==NC for all other potiential succ
         """
         self.insert1()
-        # print succ
-        #for i in self.liste:
-        #    print i.name, ':',
-        #    for j in i.succ:
-        #        print j.name,
-        #    print
         print 'succ:', 60*'*'
         for i1 in self.liste:  
             xlist=[]
@@ -365,14 +361,14 @@ class hassetree():
         for i1 in self.liste:  
             xlist=[]
             for i2 in i1.get_pred():
-                zwsp=i2
-                for i3 in i1.get_pred():
-                    # find the largest sit over i1
-                    res=self.compare(zwsp,i3)
-                    if(res==LT): 
-                        zwsp=i3
-                if(zwsp not in xlist):
-                    xlist.append(zwsp)
+                 zwsp=i2
+                 for i3 in i1.get_pred():
+                     # find the largest sit over i1
+                     res=self.compare(zwsp,i3)
+                     if(res==LT): 
+                         zwsp=i3
+                 if(zwsp not in xlist):
+                     xlist.append(zwsp)
             i1.pred=xlist
         # print pred
         print 'pred:',60*'*'
@@ -452,29 +448,19 @@ class hassetree():
 	alevel={}
         lold=len(self.liste)
         while(len(self.liste)!=0):
-            
             xlist=[]
 	    llevel=[]
-            # print 'remove:',
             for i in self.liste:         # find all sitp with empty pred 
                 if(len(i.pred)==0):
-                    # print i.name,
                     xlist.append(i)
-            # print
             for i in xlist:              # remove sitp from listp
                 self.liste.remove(i)
             for i in self.liste:         # remove all pred in liste
                 for j in xlist:          # which are in xlist
                     i.erase_pred(j)
-            # print liste
-            #print 'liste:', 60*'*'
-            #for i in self.liste:
-            #    print i.name,
-            #print
             for i in xlist:
 		llevel.append(i.name)
                 for j in i.get_succ():
-                    # print 'add:', i.name,j.name
                     G.add_edge(i.name,j.name)
 	    alevel[level]=llevel
 	    level+=1
