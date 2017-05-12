@@ -430,7 +430,32 @@ class hassetree():
             f.write(s)
         f.close()
         return
-    
+
+    def draw_simple(self,title):
+        """ draws a simple graph without levels for an overview """
+        self.clean_edge()                # make the succ minimal
+        G=nx.DiGraph()                      # define a digraph
+        for i in self.liste:
+            G.add_node(i.name)  # add all sits to graph as nodes
+        for i in self.liste:
+            for j in i.succ:
+                G.add_edge(i.name,j.name)
+        print
+        # fill the labels with default values
+        labels={}
+        for l in G.nodes():
+            labels[l]=str(l)
+        # pos=nx.spring_layout(G)
+        # pos=nx.spectral_layout(G)
+        # pos=nx.random_layout(G)
+        pos=nx.shell_layout(G)
+        nx.draw_networkx_nodes(G,pos,node_color='g')
+        nx.draw_networkx_edges(G,pos)
+        nx.draw_networkx_labels(G,pos)
+        plt.title('SIMPLE: '+title)
+        plt.axis('on')
+        plt.show()
+        
     def make_graph(self):
         """
         make_graph based on networkx and uses Digraphs
@@ -524,7 +549,7 @@ def print_hd(gx,level,title):
     nx.draw_networkx_edges(gx,pos)
     nx.draw_networkx_labels(gx,pos,labels)
     plt.title('HD: '+title)
-    plt.axis('off')
+    plt.axis('on')
     plt.show()
 
 def read_from_excel(filename, table, name, args):
