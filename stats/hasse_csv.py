@@ -12,9 +12,10 @@ def main():
 	    print mw[i,j],
         print
     # define a hassetree
-    hasse1=hd.hassetree()
+    # hasse1=hd.hassetree()
     # hasse1=hd.hassetree(hd.majorization_comp)
     # hasse1=hd.hassetree(hd.majo_comp)
+    hasse1=hd.hassetree(hd.m2_comp)
     # fill it from mw
     for i in range(len(mw)):
         sitp=hd.sit(z_namen[i],mw[i])

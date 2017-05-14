@@ -158,7 +158,7 @@ def hasse_comp(s1,s2):
             gt+=1
         if(i<=j):
             lt+=1
-        if(i==j):
+        if(np.fabs(i-j)<DELTA):
             eq+=1
     # print s1.name,s2.name,gt,lt,eq
     if(eq==l):
@@ -338,6 +338,15 @@ class hassetree():
         an x in succ if x==LT or x==NC for all other potiential succ
         """
         self.insert1()
+        print 'not eq', 60*'*'
+        xlist=[]  # stores the sites without EQ
+        for i in self.liste:
+            if(i not in i.eq):
+                xlist.append(i)
+        self.liste=xlist
+        for i in self.liste:
+            print i.name,
+        print
         print 'succ:', 60*'*'
         for i1 in self.liste:  
             xlist=[]
