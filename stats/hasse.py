@@ -34,7 +34,7 @@ NC=2
 OK=0
 NN=1
 RP=True    # switch report on or off
-DELTA=0.000001  # to distinguage between two values
+DELTA=0.001  # to distinguage between two values
 
 class sit():
     """
@@ -187,7 +187,7 @@ def majo_comp(s1,s2):
             gt+=1
         if(i<j):
             lt+=1
-        if(i==j):
+        if(np.fabs(i-j)<DELTA):
             eq+=1
     # print s1.name,s2.name,gt,lt
     if(eq==l):
@@ -218,7 +218,7 @@ def m2_comp(s1,s2):
             gt+=1
         if(i<j):
             lt+=1
-        if(i==j):
+        if(np.fabs(i-j)<DELTA):
             eq+=1
     # print s1.name,s2.name,gt,lt
     if(eq==l):
@@ -250,13 +250,16 @@ def majorization_comp(s1,s2):
     l=len(f1)
     gt=0
     lt=0
+    eq=0
     for i,j in zip(f1,f2):
         if(i>=j):
             gt+=1
         if(i<=j):
             lt+=1
+        if(np.fabs(i-j)<DELTA):
+            eq+=1
     #print s1.name,s2.name, lt,gt
-    if(gt==lt):
+    if(eq==l):
         return EQ
     if(gt>lt):
         return GT
@@ -340,9 +343,14 @@ class hassetree():
         self.insert1()
         print 'not eq', 60*'*'
         xlist=[]  # stores the sites without EQ
+        ylist=copy.copy(self.liste)
         for i in self.liste:
-            if(i not in i.eq):
+            if(i not in xlist and i in ylist):
                 xlist.append(i)
+            for j in i.eq:
+                if(j in ylist):
+                    ylist.remove(j)
+                    
         self.liste=xlist
         for i in self.liste:
             print i.name,
@@ -351,14 +359,16 @@ class hassetree():
         for i1 in self.liste:  
             xlist=[]
             for i2 in i1.get_succ():
-                zwsp=i2
-                for i3 in i1.get_succ():
-                    # find the smallest sit over i1
-                    res=self.compare(zwsp,i3)
-                    if(res==GT): 
-                        zwsp=i3
-                if(zwsp not in xlist):
-                    xlist.append(zwsp)
+                if(i2 in self.liste):
+                    zwsp=i2
+                    for i3 in i1.get_succ():
+                        # find the smallest sit over i1
+                        if(i3 in self.liste):
+                            res=self.compare(zwsp,i3)
+                            if(res==GT): 
+                                zwsp=i3
+                    if(zwsp not in xlist):
+                        xlist.append(zwsp)
             i1.succ=xlist
         # print succ
         for i in self.liste:
@@ -370,14 +380,16 @@ class hassetree():
         for i1 in self.liste:  
             xlist=[]
             for i2 in i1.get_pred():
-                 zwsp=i2
-                 for i3 in i1.get_pred():
-                     # find the largest sit over i1
-                     res=self.compare(zwsp,i3)
-                     if(res==LT): 
-                         zwsp=i3
-                 if(zwsp not in xlist):
-                     xlist.append(zwsp)
+                if(i2 in self.liste):
+                    zwsp=i2
+                    for i3 in i1.get_pred():
+                        if(i3 in self.liste):
+                            # find the largest sit over i1
+                            res=self.compare(zwsp,i3)
+                            if(res==LT): 
+                                zwsp=i3
+                    if(zwsp not in xlist):
+                        xlist.append(zwsp)
             i1.pred=xlist
         # print pred
         print 'pred:',60*'*'
