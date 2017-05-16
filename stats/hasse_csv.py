@@ -15,6 +15,12 @@ def main():
                         choices=['hasse','simple'],
                         help='select a visualisation method: hasse/simple'
                         )
+    parser.add_argument('-dir', default='succ', choices=['succ','pred'],
+                        help='uses succ or pred to build the DH'
+                        )
+    parser.add_argument('-delta', default=0.0, type=float,
+                        help='set the delta in % for the EQ'
+                        )
     args = parser.parse_args()
     #read data from file
     
@@ -22,7 +28,9 @@ def main():
     #mw,z_namen=hd.read_data('data2.txt')
     #mw,z_namen=hd.read_data('Bawue1.txt')
     #mw,z_namen=hd.read_data('BawueRheinks.txt')
-    filename=args.f
+    filename=args.f       # the filename of the structure
+    hd.DELTA=args.delta   # the delta for EQ fabs(i,j)<delta
+     
     mw,z_namen=hd.read_data(filename)
     for i in range(len(mw)):
 	print z_namen[i],
@@ -51,7 +59,10 @@ def main():
         hasse1.insert(sitp)
     hasse1.col_norm()
     if(args.d=='hasse'):
-        gx,level=hasse1.make_graph()
+        if(args.dir=='succ'):
+            gx,level=hasse1.make_graphs()
+        else:
+            gx,level=hasse1.make_graph()
         hd.print_hd(gx,level,args.m)
     if(args.d=='simple'):
        hasse1.draw_simple(args.m)

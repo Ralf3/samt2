@@ -34,7 +34,7 @@ NC=2
 OK=0
 NN=1
 RP=True    # switch report on or off
-DELTA=0.001  # to distinguage between two values
+DELTA=0.0  # to distinguage between two values
 
 class sit():
     """
@@ -398,6 +398,14 @@ class hassetree():
             for j in i.pred:
                 print j.name,
             print
+             # print pred
+        print 'nc:',60*'*'
+        for i in self.liste:
+            print i.name, ':',
+            for j in i.nc:
+                print j.name,
+            print
+        
     def col_norm(self):
         """
         help function which normalizes the columns between 0..1
@@ -480,7 +488,8 @@ class hassetree():
     def make_graph(self):
         """
         make_graph based on networkx and uses Digraphs
-        it fills and returns the data structure for a graph
+        it fills fills beginning from succ==0 and returns the data 
+        structure for a graph;
         all values in hassetree and stored sits will be destroid
         """
         self.clean_edge()                # make the succ minimal
@@ -515,7 +524,46 @@ class hassetree():
                sys.exit(1)
             lold=len(self.liste)
         return G, alevel
-    
+
+    def make_graphs(self):
+        """
+        make_graph based on networkx and uses Digraphs
+        it fills beginning from succ==0 and returns the data structure 
+        for a graph; all values in hassetree and stored sits will be destroid
+        """
+        self.clean_edge()                # make the succ minimal
+        if(RP==True):
+            self.gen_report()            # prints a large rport
+        
+        G=nx.DiGraph()                   # define a digraph
+        for sitp in self.liste:
+            G.add_node(sitp.name)  # add all sits to graph as nodes
+        level=0
+	alevel={}
+        lold=len(self.liste)
+        while(len(self.liste)!=0):
+            xlist=[]
+	    llevel=[]
+            for i in self.liste:         # find all sitp with empty succ
+                if(len(i.succ)==0):
+                    xlist.append(i)
+            for i in xlist:              # remove sitp from listp
+                self.liste.remove(i)
+            for i in self.liste:         # remove all succ in liste
+                for j in xlist:          # which are in xlist
+                    i.erase_succ(j)
+            for i in xlist:
+		llevel.append(i.name)
+                for j in i.get_pred():
+                    G.add_edge(j.name,i.name)
+	    alevel[level]=llevel
+	    level+=1
+            if(lold==len(self.liste)):
+               print 'error in  make_graph ===> exit'
+               sys.exit(1)
+            lold=len(self.liste)
+        return G, alevel
+        
 def print_hd(gx,level,title):
     """
     function for drawing a Hasse diagram with:
