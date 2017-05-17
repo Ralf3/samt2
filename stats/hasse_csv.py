@@ -61,9 +61,10 @@ def main():
     if(args.d=='hasse'):
         if(args.dir=='succ'):
             gx,level=hasse1.make_graphs()
+            hd.print_hd(gx,level,args.m,'succ')
         else:
             gx,level=hasse1.make_graph()
-        hd.print_hd(gx,level,args.m)
+            hd.print_hd(gx,level,args.m,'pred')
     if(args.d=='simple'):
        hasse1.draw_simple(args.m)
        

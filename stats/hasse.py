@@ -564,7 +564,7 @@ class hassetree():
             lold=len(self.liste)
         return G, alevel
         
-def print_hd(gx,level,title):
+def print_hd(gx,level,title,dir):
     """
     function for drawing a Hasse diagram with:
     gx=networkX structure which was returned by hassetree.make_graph()
@@ -590,7 +590,11 @@ def print_hd(gx,level,title):
     # generate the pos of the HD from level 
     pos={}
     ilevel=0
-    for l in level.values():
+    if(dir=='succ'):
+        lll=level.values()[::-1]
+    else:
+        lll=level.values()
+    for l in lll:
         dx=1.0/(len(l)+1)
         x=dx
         for node in l:
