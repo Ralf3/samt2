@@ -198,6 +198,35 @@ def majo_comp(s1,s2):
         return LT
     return NC
 
+def majo1_comp(s1,s2):
+    """ defines a compare function wich it gt if maximum one is smaller
+        used by the generic hasse.compare(sit1,sit2,fx=hasse_comp)
+        returns NC, GT, LT, EQ
+    """
+    feld1=s1.get_feld()
+    feld2=s2.get_feld()
+    if(len(feld1)!=len(feld2)):
+        return NC
+    l=len(feld1)
+    gt=0
+    lt=0
+    eq=0
+    for i,j in zip(feld1,feld2):
+        if(i>j):
+            gt+=1
+        if(i<j):
+            lt+=1
+        if(np.fabs(i-j)<DELTA):
+            eq+=1
+    # print s1.name,s2.name,gt,lt
+    if(eq==l):
+        return EQ
+    if(gt+1==l):
+        return GT
+    if(lt+1==l):
+        return LT
+    return NC
+
 def m2_comp(s1,s2):
     """ defines a compare which simplyfies to a two dimensional vector: 
         v=[min(q1,q2,...,qn), max(q1,q2,...,qn)]

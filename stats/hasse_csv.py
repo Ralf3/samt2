@@ -9,7 +9,8 @@ def main():
     parser = argparse.ArgumentParser(description='HASSE')
     parser.add_argument('-f', help='csv-data filename',required=True)
     parser.add_argument('-m', default='hasse',
-                        choices=['hasse', 'majorization', 'm2', 'majo'],
+                        choices=['hasse', 'majorization',
+                                 'm2', 'majo', 'majo1'],
                         help='select a comparison method')
     parser.add_argument('-d', default='hasse',
                         choices=['hasse','simple'],
@@ -51,6 +52,8 @@ def main():
         hasse1=hd.hassetree(hd.majorization_comp)
     if(args.m=='majo'):
         hasse1=hd.hassetree(hd.majo_comp)
+    if(args.m=='majo1'):
+        hasse1=hd.hassetree(hd.majo1_comp)  
     if(args.m=='m2'):
         hasse1=hd.hassetree(hd.m2_comp)
     # fill it from mw
