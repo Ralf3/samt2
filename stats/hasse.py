@@ -160,7 +160,7 @@ def hasse_comp(s1,s2):
             lt+=1
         if(np.fabs(i-j)<DELTA):
             eq+=1
-    # print s1.name,s2.name,gt,lt,eq
+    
     if(eq==l):
         return EQ
     if(gt==l):
@@ -191,7 +191,7 @@ def majo_comp(s1,s2):
             eq+=1
     # print s1.name,s2.name,gt,lt
     if(eq==l):
-        return eq
+        return EQ
     if(gt>lt):
         return GT
     if(lt>gt):
@@ -341,7 +341,7 @@ class hassetree():
         an x in succ if x==LT or x==NC for all other potiential succ
         """
         self.insert1()
-        print 'not eq', 60*'*'
+        print 'eq: ', 60*'*'
         xlist=[]  # stores the sites without EQ
         ylist=copy.copy(self.liste)
         for i in self.liste:
@@ -353,8 +353,10 @@ class hassetree():
                     
         self.liste=xlist
         for i in self.liste:
-            print i.name,
-        print
+            print i.name, ':',
+            for j in i.eq:
+                print j.name,
+            print
         print 'succ:', 60*'*'
         for i1 in self.liste:  
             xlist=[]

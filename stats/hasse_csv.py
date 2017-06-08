@@ -29,7 +29,7 @@ def main():
     #mw,z_namen=hd.read_data('Bawue1.txt')
     #mw,z_namen=hd.read_data('BawueRheinks.txt')
     filename=args.f       # the filename of the structure
-    hd.DELTA=args.delta   # the delta for EQ fabs(i,j)<delta
+    hd.DELTA=args.delta/100.0   # the delta for EQ fabs(i,j)<delta
      
     mw,z_namen=hd.read_data(filename)
     for i in range(len(mw)):
@@ -57,7 +57,7 @@ def main():
     for i in range(len(mw)):
         sitp=hd.sit(z_namen[i],mw[i])
         hasse1.insert(sitp)
-    hasse1.col_norm()
+    #hasse1.col_norm()
     if(args.d=='hasse'):
         if(args.dir=='succ'):
             gx,level=hasse1.make_graphs()
