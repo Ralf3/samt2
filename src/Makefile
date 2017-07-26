@@ -6,6 +6,6 @@ grid.so:	grid.py
 clean:		
 		rm grid.so
 		rm grid.c
-		rm grid.pxy
+		rm grid.pyx
 		rm *~
 

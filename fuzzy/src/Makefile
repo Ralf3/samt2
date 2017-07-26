@@ -6,5 +6,4 @@ Pyfuzzy.so:	Pyfuzzy.py
 clean:		
 		rm *.so
 		rm *.c
-		rm *~
-
+		rm Pyfuzzy.pyx
