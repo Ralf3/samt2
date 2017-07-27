@@ -221,9 +221,9 @@ def majo1_comp(s1,s2):
     # print s1.name,s2.name,gt,lt
     if(eq==l):
         return EQ
-    if(gt+1==l or gt==l):
+    if(gt>=l-1):
         return GT
-    if(lt+1==l or lt==l):
+    if(lt>=l-1):
         return LT
     return NC
 
@@ -274,25 +274,23 @@ def majorization_comp(s1,s2):
     f2=np.sort(f2)[::-1]     # sort it in decending order
     f1=np.cumsum(f1)         # calc the cumsum
     f2=np.cumsum(f2)         # calc the cumsum
-    #print s1.name,f1
-    #print s2.name,f2
     l=len(f1)
     gt=0
     lt=0
     eq=0
     for i,j in zip(f1,f2):
-        if(i>=j):
+        if(i>j):
             gt+=1
-        if(i<=j):
+        if(i<j):
             lt+=1
         if(np.fabs(i-j)<DELTA):
             eq+=1
     #print s1.name,s2.name, lt,gt
     if(eq==l):
         return EQ
-    if(gt>lt):
+    if(gt==l-1):
         return GT
-    if(lt>gt):
+    if(lt==l-1):
         return LT
     return NC
     
@@ -370,7 +368,6 @@ class hassetree():
         an x in succ if x==LT or x==NC for all other potiential succ
         """
         self.insert1()
-        print self.liste
         print 'eq: ', 60*'*'
         xlist=[]  # stores the sites without EQ
         ylist=copy.copy(self.liste)
