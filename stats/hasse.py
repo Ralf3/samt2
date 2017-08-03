@@ -264,6 +264,8 @@ def majorization_comp(s1,s2):
         normalizes the rows to sum=1.0 and sortes the felds
         before applying the compare
     """
+    if(s1==s2):
+        return EQ
     feld1=np.copy(s1.get_feld())  # use a copy 
     feld2=np.copy(s2.get_feld())
     if(len(feld1)!=len(feld2)):
@@ -279,18 +281,21 @@ def majorization_comp(s1,s2):
     lt=0
     eq=0
     for i,j in zip(f1,f2):
-        if(i>j):
+        if(i>=j):
             gt+=1
         if(i<j):
             lt+=1
         if(np.fabs(i-j)<DELTA):
             eq+=1
-    #print s1.name,s2.name, lt,gt
+    #if(s1.name=='4'):
+    #    print s1.name,s2.name, lt,gt, len(f1),len(f2)
+    #    print f1
+    #    print f2
     if(eq==l):
         return EQ
-    if(gt==l-1):
+    if(gt==l):
         return GT
-    if(lt==l-1):
+    if(lt==l):
         return LT
     return NC
     
@@ -593,7 +598,7 @@ class hassetree():
             lold=len(self.liste)
         return G, alevel
         
-def print_hd(gx,level,title,dir):
+def print_hd(gx,level,title,dir,color=True):
     """
     function for drawing a Hasse diagram with:
     gx=networkX structure which was returned by hassetree.make_graph()
@@ -631,22 +636,39 @@ def print_hd(gx,level,title,dir):
             x+=dx
         ilevel+=1
     # draw it
-    for l in range(len(level)):
-        if l==0:
-            nx.draw_networkx_nodes(gx,pos,
-                                   nodelist=gruen,
-                                   node_color='g',
-                                   node_size=500)
-            nx.draw_networkx_nodes(gx,pos,
-                                   nodelist=rot,
-                                   node_color='r',
-                                   node_size=500)
-        else:
-            nx.draw_networkx_nodes(gx,pos,
-                                   nodelist=level[l],
-                                   node_color='g',
-                                   alpha=1.0-0.8*l/len(level),
-                                   node_size=500)
+    if(color==False):
+        for l in range(len(level)):
+            if l==0:
+                nx.draw_networkx_nodes(gx,pos,
+                                       nodelist=gruen,
+                                       node_color='w',
+                                       node_size=800)
+                nx.draw_networkx_nodes(gx,pos,
+                                       nodelist=rot,
+                                       node_color='w',
+                                       node_size=800)
+            else:
+                nx.draw_networkx_nodes(gx,pos,
+                                       nodelist=level[l],
+                                       node_color='w',
+                                       node_size=800)
+    else:
+        for l in range(len(level)):
+            if l==0:
+                nx.draw_networkx_nodes(gx,pos,
+                                       nodelist=gruen,
+                                       node_color='g',
+                                       node_size=800)
+                nx.draw_networkx_nodes(gx,pos,
+                                       nodelist=rot,
+                                       node_color='r',
+                                       node_size=800)
+            else:
+                nx.draw_networkx_nodes(gx,pos,
+                                       nodelist=level[l],
+                                       node_color='g',
+                                       alpha=1.0-0.8*l/len(level),
+                                       node_size=800)
   
     nx.draw_networkx_edges(gx,pos)
     nx.draw_networkx_labels(gx,pos,labels)
