@@ -22,6 +22,9 @@ def main():
     parser.add_argument('-delta', default=0.0, type=float,
                         help='set the delta in % for the EQ'
                         )
+    parser.add_argument('-color', default='True', choices=['True','False'],
+                        help='select color or black and white graph'
+                        )
     args = parser.parse_args()
     #read data from file
     
@@ -64,12 +67,12 @@ def main():
     if(args.d=='hasse'):
         if(args.dir=='succ'):
             gx,level=hasse1.make_graphs()
-            hd.print_hd(gx,level,args.m,'succ')
+            hd.print_hd(gx,level,args.m,'succ',eval(args.color))
         else:
             gx,level=hasse1.make_graph()
-            hd.print_hd(gx,level,args.m,'pred')
+            hd.print_hd(gx,level,args.m,'pred',eval(args.color))
     if(args.d=='simple'):
-       hasse1.draw_simple(args.m)
+       hasse1.draw_simple(args.m,eval(args.color))
        
 if __name__ == "__main__":
     main()

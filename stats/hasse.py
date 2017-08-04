@@ -276,26 +276,26 @@ def majorization_comp(s1,s2):
     f2=np.sort(f2)[::-1]     # sort it in decending order
     f1=np.cumsum(f1)         # calc the cumsum
     f2=np.cumsum(f2)         # calc the cumsum
+    f1/=f1[-1]
+    f2/=f2[-1]
     l=len(f1)
     gt=0
     lt=0
     eq=0
     for i,j in zip(f1,f2):
-        if(i>=j):
+        if(i>j):
             gt+=1
         if(i<j):
             lt+=1
-        if(np.fabs(i-j)<DELTA):
+        if(np.fabs(i-j)<=DELTA):
             eq+=1
-    #if(s1.name=='4'):
-    #    print s1.name,s2.name, lt,gt, len(f1),len(f2)
-    #    print f1
-    #    print f2
+    #rint s1.name, f1,gt,lt,eq
+    #rint s2.name, f2,gt,lt,eq
     if(eq==l):
         return EQ
-    if(gt==l):
+    if(gt+eq==l):
         return GT
-    if(lt==l):
+    if(lt+eq==l):
         return LT
     return NC
     
@@ -494,7 +494,7 @@ class hassetree():
         f.close()
         return
 
-    def draw_simple(self,title):
+    def draw_simple(self,title,color):
         """ draws a simple graph without levels for an overview """
         self.clean_edge()                # make the succ minimal
         G=nx.DiGraph()                      # define a digraph
@@ -512,7 +512,10 @@ class hassetree():
         # pos=nx.spectral_layout(G)
         # pos=nx.random_layout(G)
         pos=nx.shell_layout(G)
-        nx.draw_networkx_nodes(G,pos,node_color='g')
+        if(args.color==True):
+            nx.draw_networkx_nodes(G,pos,node_color='g')
+        else:
+            nx.draw_networkx_nodes(G,pos,node_color='w')
         nx.draw_networkx_edges(G,pos)
         nx.draw_networkx_labels(G,pos)
         plt.title('SIMPLE: '+title)
