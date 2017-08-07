@@ -512,10 +512,10 @@ class hassetree():
         # pos=nx.spectral_layout(G)
         # pos=nx.random_layout(G)
         pos=nx.shell_layout(G)
-        if(args.color==True):
-            nx.draw_networkx_nodes(G,pos,node_color='g')
+        if(color==True):
+            nx.draw_networkx_nodes(G,pos,node_color='g',node_size=800)
         else:
-            nx.draw_networkx_nodes(G,pos,node_color='w')
+            nx.draw_networkx_nodes(G,pos,node_color='w',node_size=800)
         nx.draw_networkx_edges(G,pos)
         nx.draw_networkx_labels(G,pos)
         plt.title('SIMPLE: '+title)
