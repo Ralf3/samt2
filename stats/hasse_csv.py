@@ -10,7 +10,7 @@ def main():
     parser.add_argument('-f', help='csv-data filename',required=True)
     parser.add_argument('-m', default='hasse',
                         choices=['hasse', 'majorization',
-                                 'm2', 'majo', 'majo1'],
+                                 'm2', 'majo', 'majo1', 'ms'],
                         help='select a comparison method')
     parser.add_argument('-d', default='hasse',
                         choices=['hasse','simple'],
@@ -28,10 +28,6 @@ def main():
     args = parser.parse_args()
     #read data from file
     
-    #mw,z_namen=hd.read_data('test.csv')
-    #mw,z_namen=hd.read_data('data2.txt')
-    #mw,z_namen=hd.read_data('Bawue1.txt')
-    #mw,z_namen=hd.read_data('BawueRheinks.txt')
     filename=args.f       # the filename of the structure
     hd.DELTA=args.delta/100.0   # the delta for EQ fabs(i,j)<delta
      
@@ -59,6 +55,8 @@ def main():
         hasse1=hd.hassetree(hd.majo1_comp)  
     if(args.m=='m2'):
         hasse1=hd.hassetree(hd.m2_comp)
+    if(args.m=='ms'):
+        hasse1=hd.hassetree(hd.ms_comp)
     # fill it from mw
     for i in range(len(mw)):
         sitp=hd.sit(z_namen[i],mw[i])

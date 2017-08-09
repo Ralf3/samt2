@@ -258,6 +258,33 @@ def m2_comp(s1,s2):
         return LT
     return NC
 
+def ms_comp(s1,s2):
+    """ uses the mean and the std for compare """
+    feld1=s1.get_feld()
+    feld2=s2.get_feld()
+    if(len(feld1)!=len(feld2)):
+        return NC
+    vs1=[np.mean(feld1),np.std(feld1)]
+    vs2=[np.mean(feld2),np.std(feld2)]
+    gt=0
+    lt=0
+    eq=0
+    l=2
+    for i,j in zip(vs1,vs2):
+        if(i>j):
+            gt+=1
+        if(i<j):
+            lt+=1
+        if(np.fabs(i-j)<DELTA):
+            eq+=1
+    if(eq==l):
+        return EQ
+    if(gt==l):
+        return GT
+    if(lt==l):
+        return LT
+    return NC
+
     
 def majorization_comp(s1,s2):
     """ defines the compare function uses majorization
