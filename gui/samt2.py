@@ -26,7 +26,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 import pandas as pd
-from pandas_datareader import data, wb #replaced 'import pandas.io.data'
+#from pandas_datareader import data, wb #replaced 'import pandas.io.data'
 from pandas import Series, DataFrame
 from form1_ui import Ui_MainWindow
 from plotwin_ui import Ui_plotwin
@@ -39,6 +39,8 @@ sys.path.append(os.environ['SAMT2MASTER']+"/gui")
 import gisdoc 
 
 ########################################################################
+
+### ab 4. okt 2017 Fehlerbehebung #######
 
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):

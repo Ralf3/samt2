@@ -3673,48 +3673,51 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	msg =self.tr(s)
 	self.ui.statusbar.showMessage(msg)
 	
-	#print "on_relea: startPoint=", self.startPoint
 	self.endPoint = [col,row]    #[X,Y]
-	#print "on_relea: endPoint  =", self.endPoint
 	
 	if self.startPoint[0] == col and self.startPoint[1] == row:  
 	    # prepaire Popup_active_rules window
 	    anz_inp = self.ui.inputCombo.count()
-	    self.get_input_names() 	# writes li_input_names
 	    li_col_header = ['Nr.','Rule','Mu']
 	    li_outval = []
-	    
+	    li_nam = []
 	    if anz_inp == 1:
 		s = "x1=%s" % self.ui.input1Combo.currentText()
 		li_col_header.append(s)
 		li_col_header.append("inp2 dummy")
 		li_col_header.append("inp3 dummy")
+		li_nam.append(self.ui.input1Combo.currentText())
 		su1,ruleList,muList,outputList = self.work.get_calct1(X)
-		ifthenList = self.fill_ifthenList(ruleList,1)
+		ifthenList = self.fill_ifthenList(ruleList,1,li_nam)
 	    
 	    elif anz_inp == 2:
 		s = "x1=%s" % self.ui.input1Combo.currentText()
 		li_col_header.append(s)
+		li_nam.append(self.ui.input1Combo.currentText())
 		s = "x2=%s" % self.ui.input2Combo.currentText()
 		li_col_header.append(s)
+		li_nam.append(self.ui.input2Combo.currentText())
 		li_col_header.append("inp3 dummy")
 		su1,ruleList,muList,outputList = self.work.get_calct2(X,Y)
 		# fill ifthenList for Popup_active_rules
-		ifthenList = self.fill_ifthenList(ruleList,2)
+		ifthenList = self.fill_ifthenList(ruleList,2,li_nam)
 	    
 	    elif anz_inp == 3:
 		s = "x1=%s" % self.ui.input1Combo.currentText()
 		li_col_header.append(s)
+		li_nam.append(self.ui.input1Combo.currentText())
 		s = "x2=%s" % self.ui.input2Combo.currentText()
 		li_col_header.append(s)
+		li_nam.append(self.ui.input2Combo.currentText())
 		s = "x3=%s" % str(self.ui.input3LE.text())
 		li_col_header.append(s)
+		li_nam.append(self.ui.input3LE.text())
 		if self.ui.in3LE.text().isEmpty():
 		    in3const = 0.0   # ?
 		else:
 		    in3const = float(str(self.ui.in3LE.text()))
 		su1, ruleList,muList,outputList = self.work.get_calct3(X,Y,in3const)
-		ifthenList = self.fill_ifthenList(ruleList,3)
+		ifthenList = self.fill_ifthenList(ruleList,3,li_nam)
 
 	    li_col_header.append(str(self.ui.outnameLE.text()))
 	    li_col_header.append('Entire Output')
@@ -3746,21 +3749,24 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    self.draw_line_end()  # --> opens window with transect
 	    
     #-------------------------------------------------------------------
-    def fill_ifthenList(self, ruleList, anz_inp):
+    def fill_ifthenList(self, ruleList, anz_inp, li_nam):
 	li = []
 	for nr in ruleList:
 	    ifthen = QString("IF ")
-	    in1 = self.ui.rulesTable.item(nr,0).text()
+	    colidx = self.get_value_from_col(li_nam[0])
+	    in1 = self.ui.rulesTable.item(nr,colidx).text()
 	    ss = "<strong>x1=<font color='mediumblue'>%s</font></strong>" % in1
 	    ifthen.append(ss)   #(in1)
 	    if anz_inp >= 2:
 		ifthen.append(" AND ")
-		in2 = self.ui.rulesTable.item(nr,1).text()
+		colidx = self.get_value_from_col(li_nam[1])
+		in2 = self.ui.rulesTable.item(nr,colidx).text()
 		ss = "<strong>x2=<font color='mediumblue'>%s</font></strong>" % in2
 		ifthen.append(ss)
 		if anz_inp == 3:
 		    ifthen.append(" AND ")
-		    in3 = self.ui.rulesTable.item(nr,2).text()
+		    colidx = self.get_value_from_col(li_nam[2])
+		    in3 = self.ui.rulesTable.item(nr,colidx).text()
 		    ss = "<strong>x3=<font color='mediumblue'>%s</font></strong>" % in3
 		    ifthen.append(ss)
 	    ifthen.append(" THEN ")
@@ -3775,17 +3781,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 	    ifthen.append(")")
 	    li.append(ifthen)
 	return li
+	
     #-------------------------------------------------------------------
-	    
-    def get_input_names(self):
-	# called by: on_release (mouse) 
-	# list for Popup_active_rules  (colHeader in table)
-	del self.li_input_names[:]
-	for idx in range(self.ui.inputCombo.count()):
-	    item = self.ui.inputCombo.itemText(idx)
-	    self.li_input_names.append(item)
-	return self.li_input_names
-
+    def get_value_from_col(self, colname):
+	idx = 0
+	model = self.ui.rulesTable.horizontalHeader().model()
+	for colidx in range(model.columnCount()):
+	    if model.headerData(colidx, QtCore.Qt.Horizontal)==colname:
+		idx = colidx
+	return idx
+    
     ############### end mouse events ##################################
  
 
@@ -4666,6 +4671,7 @@ class Popup_active_rules(QtGui.QWidget):
 	
 	self.setWindowTitle('SAMT2 - Fuzzy ----- Active Rules')
 	self.ui.table.setColumnWidth(0, 40)
+	self.ui.table.setColumnWidth(1, 300)
 	self.ui.table.setColumnWidth(2, 60)
 	self.ui.table.setColumnWidth(6, 60)
 	anz_inp = n
@@ -4681,7 +4687,7 @@ class Popup_active_rules(QtGui.QWidget):
 	    s = str(ruleList[i])
 	    item.setText(s)
 	    item.setTextAlignment(Qt.AlignCenter)
-	    item.setFlags(item.flags() & ~Qt.ItemIsEditable) # is ReadOnly
+	    item.setFlags(item.flags() & ~Qt.ItemIsEditable) #isReadOnly
 	    self.ui.table.setItem(i,0,item) 
 	    
 	    item = QtGui.QTableWidgetItem("rule")
@@ -4703,7 +4709,7 @@ class Popup_active_rules(QtGui.QWidget):
 	    s = "%.3f" % muList[i]
 	    item.setText(s)
 	    item.setTextAlignment(Qt.AlignCenter)
-	    item.setFlags(item.flags() & ~Qt.ItemIsEditable) # is ReadOnly
+	    item.setFlags(item.flags() & ~Qt.ItemIsEditable) #isReadOnly
 	    self.ui.table.setItem(i,2,item)
 	
 	    item = QtGui.QTableWidgetItem("in1")
@@ -4761,8 +4767,6 @@ class Popup_active_rules(QtGui.QWidget):
 	    item.setTextAlignment(Qt.AlignCenter)
 	    item.setFlags(item.flags() & ~Qt.ItemIsEditable) 
 	    self.ui.table.setItem(i,7,item)
-
-	    self.ui.table.setColumnWidth(1, 300)
 
 ########################################################################
 
