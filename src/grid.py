@@ -1109,7 +1109,7 @@ cdef class grid(object):
     def sample_p(self, int nr, double p):
         """
         returns a ndarrays x,y with nr coordinates for
-        with mat[i,j]>=p
+        with mat[i,j]>p
         returns:
         y : ndarray(int) with rows (i)
         x : ndarray(int) with cols (j)
@@ -1126,6 +1126,37 @@ cdef class grid(object):
         for i in xrange(self.nrows):
             for j in xrange(self.ncols):
                 if(mat[i,j]>p):
+                    loc.append((i,j))
+        np.random.shuffle(loc)
+        # fill the x,y,z
+        for k in xrange(nr):
+            i=loc[k][0]
+            j=loc[k][1]
+            x=np.append(x,j)
+            y=np.append(y,i)
+            z=np.append(z,np.float32(mat[i,j]))
+        return y,x,z
+
+    def sample_n(self, int nr, double p):
+        """
+        returns a ndarrays x,y with nr coordinates for
+        with mat[i,j]<=p
+        returns:
+        y : ndarray(int) with rows (i)
+        x : ndarray(int) with cols (j)
+        z : ndarray(float32) with vals
+        """
+        cdef np.ndarray[DTYPE_t,ndim=2] mat=self.mat
+        cdef int i,j
+        cdef np.ndarray[ITYPE_t,ndim=1] x=np.array([],dtype=np.int)
+        cdef np.ndarray[ITYPE_t,ndim=1] y=np.array([],dtype=np.int)
+        cdef np.ndarray[DTYPE_t,ndim=1] z=np.array([],dtype=np.float32)
+        if(nr<1):
+            return None
+        loc=[]  # list of locations
+        for i in xrange(self.nrows):
+            for j in xrange(self.ncols):
+                if(mat[i,j]<=p):
                     loc.append((i,j))
         np.random.shuffle(loc)
         # fill the x,y,z

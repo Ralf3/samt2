@@ -59,6 +59,7 @@ gx.corr(gx)            # calculates the corrcoef between two arrays
 gx.sample(nr=100,ix=10)# generates x,y,z as sample from gx without
   		       # nodata and without duplication in x,y
 gx.sample_p(n,p)       # samples x,y,z with mat>p
+gx.sample_n(n,p)       # samples x,y,z with mat<=p
 gx.sample_det(val)     # returns the coord. with mat==val
 gx.sample_neg(i,j,dist,n) # samples random [i,j] with a dist from
 			  # the list i,j, returns an nd.array 
