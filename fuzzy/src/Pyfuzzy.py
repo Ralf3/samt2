@@ -5,8 +5,9 @@ sys.path.append(os.environ["SAMT2MASTER"]+"/src")
 import grid as samt2
 import numpy as np
 cimport numpy as np
-import nlopt
+# import nlopt
 import pylab as plt
+from scipy.optimize import minimize
 
 DTYPE = np.float32
 D1TYPE = np.float64
@@ -760,7 +761,7 @@ class fuzzy:
         mae=error/self.X.shape[0]
         return mae
     # help function for output adaptation
-    def myfunc(self,x,grad):
+    def myfunc(self,x):
         """ this is the fit function for opimization
             it consists of the RSME part for accuracy of training
             and the regularization part to avoid overlapping of yi
@@ -1089,7 +1090,6 @@ class fuzzy:
 def start_training(f):
     """ define the training parameters
     """
-    opt=nlopt.opt(nlopt.GN_DIRECT_L,f.get_len_output())
     # build the boundaries
     minout=[]
     maxout=[]
@@ -1105,15 +1105,13 @@ def start_training(f):
     print('minout:',minout)
     print('maxout:',maxout)
     print('start:', startout)
-    opt.set_lower_bounds(np.array(minout))
-    opt.set_upper_bounds(np.array(maxout))
-    opt.set_initial_step((f.get_output(1)-f.get_output(0))/500.)
-    opt.set_min_objective(f.myfunc)
-    opt.set_ftol_rel((f.get_output(1)-f.get_output(0))/100000.)
-    opt.set_maxtime(80)  # 120 s
-    xopt=opt.optimize(np.array(startout))
-    opt_val=opt.last_optimum_value()
-    result=opt.last_optimize_result()
+    x0=startout
+    bounds=[]
+    for i in range(len(minout)):
+        bounds.append((minout[i],maxout[i]))
+    result = minimize(f.myfunc,x0,method='SLSQP',bounds=bounds)
+    xopt=result['x']
+    opt_val=result['fun']
     print(' *************Result of Optimization*****************')
     print('max:', opt_val)
     print('parameter:', xopt)

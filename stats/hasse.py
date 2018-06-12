@@ -628,13 +628,14 @@ class hassetree():
             lold=len(self.liste)
         return G, alevel
         
-def print_hd(gx,level,title,dir,color=True):
+def print_hd(gx,level,title,dir='succ',color=True):
     """
     function for drawing a Hasse diagram with:
     gx=networkX structure which was returned by hassetree.make_graph()
     level=list of level which was returned by hassetree.make_graph()
     title=string title of the chart
     """
+    nodes=1200 # size of the nodes
     gruen=[]
     rot=[]
     #print level
@@ -672,33 +673,33 @@ def print_hd(gx,level,title,dir,color=True):
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=gruen,
                                        node_color='w',
-                                       node_size=800)
+                                       node_size=nodes)
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=rot,
                                        node_color='w',
-                                       node_size=800)
+                                       node_size=nodes)
             else:
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=level[l],
                                        node_color='w',
-                                       node_size=800)
+                                       node_size=nodes)
     else:
         for l in range(len(level)):
             if l==0:
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=gruen,
                                        node_color='g',
-                                       node_size=800)
+                                       node_size=nodes)
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=rot,
                                        node_color='r',
-                                       node_size=800)
+                                       node_size=nodes)
             else:
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=level[l],
                                        node_color='g',
                                        alpha=1.0-0.8*l/len(level),
-                                       node_size=800)
+                                       node_size=nodes)
   
     nx.draw_networkx_edges(gx,pos)
     nx.draw_networkx_labels(gx,pos,labels)
