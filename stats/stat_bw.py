@@ -705,6 +705,20 @@ def fivenum(v):
     whisker = 1.5*iqd
     return np.min(v), md-whisker, md, md+whisker, np.max(v)
 
+def sevennum(v):
+    """ help function often useful
+        read a list of objects and calculates some precentiles
+    """
+    return(
+            [np.min(v),
+             np.percentile(v, 10, interpolation='midpoint'),
+             np.percentile(v, 25, interpolation='midpoint'),
+             np.median(v),
+             np.percentile(v, 75, interpolation='midpoint'),
+             np.percentile(v, 90, interpolation='midpoint'),
+             np.max(v)]
+            )
+
 def sensitivity(TP,FN):
     """ also called TPR = TruePositives/(TruePositives+FalseNegatives)
     """

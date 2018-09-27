@@ -1,7 +1,7 @@
 grid.so:	grid.py
 		cp grid.py grid.pyx
-		python setup.py build
-		cp build/lib.linux-x86_64-2.7/grid.so ./grid.so
+		python3 setup.py build
+		cp build/lib.linux-x86_64-3.6/grid.cpython-36m-x86_64-linux-gnu.so grid.so
 
 clean:		
 		rm grid.so

@@ -1113,7 +1113,7 @@ def start_training(f):
     xopt=result['x']
     opt_val=result['fun']
     print(' *************Result of Optimization*****************')
-    print('max:', opt_val)
+    print('best:', opt_val)
     print('parameter:', xopt)
     # set the best values
     for i in range(f.get_len_output()):

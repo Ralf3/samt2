@@ -216,14 +216,14 @@ def majo1_comp(s1,s2):
             gt+=1
         if(i<j):
             lt+=1
-        if(np.fabs(i-j)<DELTA):
+        if(np.fabs(i-j)<=DELTA):
             eq+=1
     # print s1.name,s2.name,gt,lt
     if(eq==l):
         return EQ
-    if(gt>=l-1):
+    if(gt>=l-1)or (eq==l-1 and gt==1):
         return GT
-    if(lt>=l-1):
+    if(lt>=l-1 or (eq==l-1 and lt==1)):
         return LT
     return NC
 
