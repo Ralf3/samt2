@@ -33,16 +33,16 @@ def main():
      
     mw,z_namen=hd.read_data(filename)
     for i in range(len(mw)):
-        print(z_namen[i],end='')
+        print(z_namen[i],end=' ')
         for j in range(len(mw[i])):
-            print(mw[i,j],end='')
+            print(mw[i,j],end=' ')
         print()
     
     
     for i in range(len(mw)):
-        print(z_namen[i],end='')
+        print(z_namen[i],end=' ')
         for j in range(len(mw[i])):
-            print(mw[i,j],end='')
+            print(mw[i,j],end=' ')
         print()
         
     if(args.m=='hasse'):

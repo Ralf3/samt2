@@ -343,10 +343,10 @@ class hassetree():
         help function to print equivalent nodes
         """
         for i in self.liste:
-            print(i.get_name(), ':', end='')
+            print(i.get_name(), ':', end=' ')
             if i.get_eq()!=[] :
                 for j in i.get_eq():
-                    print(j.name,end='')
+                    print(j.name,end=' ')
                 print()
     def compare(self,sit1,sit2):
         """ 
@@ -408,9 +408,9 @@ class hassetree():
                     
         self.liste=xlist
         for i in self.liste:
-            print(i.name, ':',end='')
+            print(i.name, ':',end=' ')
             for j in i.eq:
-                print(j.name,end='')
+                print(j.name,end=' ')
             print()
         print('succ:', 60*'*')
         for i1 in self.liste:  
@@ -429,9 +429,9 @@ class hassetree():
             i1.succ=xlist
         # print succ
         for i in self.liste:
-            print(i.name, ':', end='')
+            print(i.name, ':', end=' ')
             for j in i.succ:
-                print(j.name,end='')
+                print(j.name,end=' ')
             print()
         # clean the pred
         for i1 in self.liste:  
@@ -451,16 +451,16 @@ class hassetree():
         # print pred
         print('pred:',60*'*')
         for i in self.liste:
-            print(i.name, ':',end='')
+            print(i.name, ':',end=' ')
             for j in i.pred:
-                print(j.name,end='')
+                print(j.name,end=' ')
             print()
              # print pred
         print('nc:',60*'*')
         for i in self.liste:
-            print(i.name, ':',end='')
+            print(i.name, ':',end=' ')
             for j in i.nc:
-                print(j.name,end='')
+                print(j.name,end=' ')
             print()
         
     def col_norm(self):

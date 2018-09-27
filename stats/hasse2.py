@@ -154,11 +154,11 @@ def hasse_comp(s1,s2):
     lt=0
     eq=0
     for i,j in zip(feld1,feld2):
-        if(i>=j):
+        if(i>j):
             gt+=1
         if(i<=j):
             lt+=1
-        if(np.fabs(i-j)<DELTA):
+        if(np.fabs(i-j)<=DELTA):
             eq+=1
     
     if(eq==l):
@@ -187,7 +187,7 @@ def majo_comp(s1,s2):
             gt+=1
         if(i<j):
             lt+=1
-        if(np.fabs(i-j)<DELTA):
+        if(np.fabs(i-j)<=DELTA):
             eq+=1
     # print s1.name,s2.name,gt,lt
     if(eq==l):
@@ -275,7 +275,7 @@ def ms_comp(s1,s2):
             gt+=1
         if(i<j):
             lt+=1
-        if(np.fabs(i-j)<DELTA):
+        if(np.fabs(i-j)<=DELTA):
             eq+=1
     if(eq==l):
         return EQ
