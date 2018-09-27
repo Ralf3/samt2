@@ -4,8 +4,8 @@ import hasse2 as hd
 
 def main():
     # read from execl
-    mw,z_namen=hd.read_from_excel('HDneu.xlsx',
-                                  'Tabelle1','Model',
+    mw,z_namen=hd.read_from_excel('Hasse_Selectivity_Exactness.xlsx',
+                                  'Tabelle2','Modell',
                                   ['Selectivity','Exactness'])
     hd.pprint(mw,z_namen)
     hasse1=hd.hassetree()
