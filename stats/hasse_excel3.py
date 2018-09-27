@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import hasse2 as hd
+import hasse3 as hd
 
 def main():
     # read from execl

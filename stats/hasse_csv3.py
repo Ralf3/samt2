@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import hasse2 as hd
+import hasse3 as hd
 import argparse
 
 """ new user friendly version based on argparse """
@@ -33,18 +33,18 @@ def main():
      
     mw,z_namen=hd.read_data(filename)
     for i in range(len(mw)):
-	print z_namen[i],
+        print(z_namen[i],end='')
         for j in range(len(mw[i])):
-	    print mw[i,j],
-        print
+            print(mw[i,j],end='')
+        print()
     
     
     for i in range(len(mw)):
-	print z_namen[i],
+        print(z_namen[i],end='')
         for j in range(len(mw[i])):
-	    print mw[i,j],
-        print
-    # define a hassetree
+            print(mw[i,j],end='')
+        print()
+        
     if(args.m=='hasse'):
         hasse1=hd.hassetree(hd.hasse_comp)
     if(args.m=='majorization'):
@@ -70,7 +70,7 @@ def main():
             gx,level=hasse1.make_graph()
             hd.print_hd(gx,level,args.m,'pred',eval(args.color))
     if(args.d=='simple'):
-       hasse1.draw_simple(args.m,eval(args.color))
+        hasse1.draw_simple(args.m,eval(args.color))
        
 if __name__ == "__main__":
     main()
