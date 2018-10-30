@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import networkx as nx
 import copy
-from inspect import getargspec
+# from inspect import getargspec
 import math
+from collections import defaultdict
 import sys
 import numpy as np
 import pandas as pd
@@ -52,6 +53,7 @@ class sit():
         self.succ=[]    # set of succsessors
         self.nc=[]      # set of not comparable sits
         self.eq=[]      # set of equal nodes
+        self.level=[]   # set the level of the node 
     def add_succ(self,sitname):
         """
         add a node with the sitname as a succsessor
@@ -154,7 +156,7 @@ def hasse_comp(s1,s2):
     lt=0
     eq=0
     for i,j in zip(feld1,feld2):
-        if(i>j):
+        if(i>=j):
             gt+=1
         if(i<=j):
             lt+=1
@@ -245,7 +247,7 @@ def m2_comp(s1,s2):
             gt+=1
         if(i<j):
             lt+=1
-        if(np.fabs(i-j)<=DELTA):
+        if(np.fabs(i-j)<DELTA):
             eq+=1
     if(eq==l):
         return EQ
@@ -337,17 +339,46 @@ class hassetree():
         self.eq={}      # equivalence class
         self.fx=fx      # compare function can be provided by user
         self.norm=False # indicates the col_norm
-         
+        self.matrix = None  # Adjacent matrix to store the GT:1 NC:0 LT:-1
+        self.levels=defaultdict()  # dict of all levels
+        self.eqs=[]     # list of euq pairs
+        
     def print_eq(self):
         """ 
         help function to print equivalent nodes
         """
+        for i in self.eqs:
+            print(i[0].get_name(), ': ', i[1].get_name())
+    
+    def print_succ(self):
         for i in self.liste:
-            print(i.get_name(), ':', end=' ')
-            if i.get_eq()!=[] :
-                for j in i.get_eq():
-                    print(j.name,end=' ')
-                print()
+            print(i.get_name(), ': ', end='')
+            for j in i.succ:
+                print(j.get_name(),' ',end='')
+            print()
+
+    def print_pred(self):
+        for i in self.liste:
+            print(i.get_name(), ': ', end='')
+            for j in i.pred:
+                print(j.get_name(),' ',end='')
+            print()        
+            
+            
+    def print_nc(self):
+        for i in self.liste:
+            print(i.get_name(), ': ', end='')
+            for j in i.nc:
+                print(j.get_name(),' ',end='')
+            print()   
+            
+    def print_levels(self):
+        for key in self.levels.keys():
+            print(key,': ',end='')
+            for j in self.levels[key]:
+                print(j,' ',end='')
+            print() 
+            
     def compare(self,sit1,sit2):
         """ 
         help function to compare two nodes
@@ -365,104 +396,109 @@ class hassetree():
         After all sitps are included a general run to sort the 
         elements of the self.list accroding to the used compare has to be made. 
         """
+        for i in range(len(self.liste)): 
+            x=self.compare(self.liste[i],sitp)
+            if(x==EQ):
+                self.eqs.append((self.liste[i], sitp))
+                return False
         self.liste.append(sitp)
         return True
+    
     def insert1(self):
         """
         most important second part of the insert procedure
         it takes care for ordering the node in the eq,nc,succ or pred
         """
-        eq_flag=False
+        self.matrix=np.zeros((len(self.liste),len(self.liste))) # define the adjacent matrix
         for i in range(len(self.liste)): 
-            for j in range(i+1,len(self.liste)):
+            for j in range(len(self.liste)):
+                if(i==j):
+                    continue
                 x=self.compare(self.liste[i],self.liste[j])
-                if(x==EQ):
-                    self.liste[i].add_eq(self.liste[j])
-                    self.liste[j].add_eq(self.liste[i])
                 if(x==LT):
-                    self.liste[j].add_pred(self.liste[i])
-                    self.liste[i].add_succ(self.liste[j])
+                    self.matrix[i,j]=-1
                 if(x==GT):
-                    self.liste[i].add_pred(self.liste[j])
-                    self.liste[j].add_succ(self.liste[i])
+                    self.matrix[i,j]=1
                 if(x==NC):
-                    self.liste[i].add_nc(self.liste[j])
-                    self.liste[j].add_nc(self.liste[i])
+                    self.matrix[i,j]=0 # is not necessary to set 
         return True
+    
+#    def clean_edge(self):
+#        self.insert1()
+#        """ fill the sitp with values from the adjacent matrix """
+#        for i in range(len(self.liste)): 
+#            self.levels[np.sum(self.matrix[i,:])]=[] # define the lists in self.level
+#            
+#        for i in range(len(self.liste)):
+#            """ set the level for the sitp and for the self.level """
+#            self.liste[i].level=np.sum(self.matrix[i,:])
+#            self.levels[np.sum(self.matrix[i,:])].append(i)    
+#            
+#        """ fill the sitp accroding to the level """  
+#        klist=list(self.levels.keys())
+#        for k in range(len(klist)-1):
+#            for i in self.levels[klist[k]]:
+#                for j in self.levels[klist[k+1]]:
+#                    if(i==j):
+#                        continue
+#                    # print(k,i,j)
+#                    if(self.matrix[i,j]==0):
+#                        self.liste[i].nc.append(self.liste[j])
+#                    if(self.matrix[i,j]==-1):
+#                        self.liste[i].succ.append(self.liste[j])
+#                    if(self.matrix[i,j]==1) :
+#                        self.liste[i].pred.append(self.liste[j])
+#
+#        # save the object into the level dict
+#        
+#        return True
+    
     def clean_edge(self):
-        """
-        calls self.insert1 firstly
-        help function for cleaning: transitifity  
-        an x in succ if x==LT or x==NC for all other potiential succ
-        """
         self.insert1()
-        print('eq: ', 60*'*')
-        xlist=[]  # stores the sites without EQ
-        ylist=copy.copy(self.liste)
-        for i in self.liste:
-            if(i not in xlist and i in ylist):
-                xlist.append(i)
-            for j in i.eq:
-                if(j in ylist):
-                    ylist.remove(j)
-                    
-        self.liste=xlist
-        for i in self.liste:
-            print(i.name, ':',end=' ')
-            for j in i.eq:
-                print(j.name,end=' ')
-            print()
-        print('succ:', 60*'*')
-        for i1 in self.liste:  
-            xlist=[]
-            for i2 in i1.get_succ():
-                if(i2 in self.liste):
-                    zwsp=i2
-                    for i3 in i1.get_succ():
-                        # find the smallest sit over i1
-                        if(i3 in self.liste):
-                            res=self.compare(zwsp,i3)
-                            if(res==GT): 
-                                zwsp=i3
-                    if(zwsp not in xlist):
-                        xlist.append(zwsp)
-            i1.succ=xlist
-        # print succ
-        for i in self.liste:
-            print(i.name, ':', end=' ')
-            for j in i.succ:
-                print(j.name,end=' ')
-            print()
-        # clean the pred
-        for i1 in self.liste:  
-            xlist=[]
-            for i2 in i1.get_pred():
-                if(i2 in self.liste):
-                    zwsp=i2
-                    for i3 in i1.get_pred():
-                        if(i3 in self.liste):
-                            # find the largest sit over i1
-                            res=self.compare(zwsp,i3)
-                            if(res==LT): 
-                                zwsp=i3
-                    if(zwsp not in xlist):
-                        xlist.append(zwsp)
-            i1.pred=xlist
-        # print pred
-        print('pred:',60*'*')
-        for i in self.liste:
-            print(i.name, ':',end=' ')
-            for j in i.pred:
-                print(j.name,end=' ')
-            print()
-             # print pred
-        print('nc:',60*'*')
-        for i in self.liste:
-            print(i.name, ':',end=' ')
-            for j in i.nc:
-                print(j.name,end=' ')
-            print()
+        """ fill the sitp with values from the adjacent matrix """
+        for i in range(len(self.liste)): 
+            self.levels[np.sum(self.matrix[i,:])]=[] # define the lists in self.level
+            
+        for i in range(len(self.liste)):
+            """ set the level for the sitp and for the self.level """
+            self.liste[i].level=np.sum(self.matrix[i,:])
+            self.levels[np.sum(self.matrix[i,:])].append(i)    
+            
+        """ collect all nc from the matrix
+        """
+        for i in range(self.matrix.shape[0]):
+            for j in range(self.matrix.shape[1]):
+                if(self.matrix[i,j]==0):
+                    self.liste[i].nc.append(self.liste[j])
+        """
+        A set is used to remove the transitivity - a great idea after Massimo Santini
+        We have used the matrix as the basic data structure.
+        """
+        E=set()
+        for i in range(len(self.liste)):
+            for j in range(len(self.liste)):
+                if(i==j):
+                    continue
+                if(self.matrix[i,j]==1):
+                    E.add((i,j))
+        """
+        now we have all edges we have to remove the transitiv in E2
+        """
+        E2=set()
+        for e0 in E:
+            for e1 in E:
+                if e0[1] == e1[0]:
+                    E2.add((e0[0], e1[1]))
+        E=E-E2 # this is great!
+        """
+        now we use the edges E to fill the sitp in liste
+        """
+        for e0 in E:
+            self.liste[e0[0]].pred.append(self.liste[e0[1]])
+            self.liste[e0[1]].succ.append(self.liste[e0[0]])
         
+        
+        return True
     def col_norm(self):
         """
         help function which normalizes the columns between 0..1
@@ -534,6 +570,7 @@ class hassetree():
         # pos=nx.spectral_layout(G)
         # pos=nx.random_layout(G)
         pos=nx.shell_layout(G)
+
         if(color==True):
             nx.draw_networkx_nodes(G,pos,node_color='g',node_size=800)
         else:
@@ -547,41 +584,26 @@ class hassetree():
     def make_graph(self):
         """
         make_graph based on networkx and uses Digraphs
-        it fills fills beginning from succ==0 and returns the data 
+        it fills beginning from succ==0 and returns the data 
         structure for a graph;
         all values in hassetree and stored sits will be destroid
         """
-        self.clean_edge()                # make the succ minimal
-        if(RP==True):
-            self.gen_report()            # prints a large rport
-        
-        G=nx.DiGraph()                   # define a digraph
-        for sitp in self.liste:
-            G.add_node(sitp.name)  # add all sits to graph as nodes
-        level=0
+        G=nx.DiGraph()                      # define a digraph
+        for i in self.liste:
+            G.add_node(i.name)  # add all sits to graph as nodes
+        for i in self.liste:
+            for j in i.succ:
+                G.add_edge(i.name,j.name)
+        print()
+        # fill the labels with default values
+        labels={}
+        for l in G.nodes():
+            labels[l]=str(l)
         alevel={}
-        lold=len(self.liste)
-        while(len(self.liste)!=0):
-            xlist=[]
-            llevel=[]
-            for i in self.liste:         # find all sitp with empty pred 
-                if(len(i.pred)==0):
-                    xlist.append(i)
-            for i in xlist:              # remove sitp from listp
-                self.liste.remove(i)
-            for i in self.liste:         # remove all pred in liste
-                for j in xlist:          # which are in xlist
-                    i.erase_pred(j)
-            for i in xlist:
-                llevel.append(i.name)
-                for j in i.get_succ():
-                    G.add_edge(i.name,j.name)
-            alevel[level]=llevel
-            level+=1
-            if(lold==len(self.liste)):
-                print('error in  make_graph ===> exit')
-                sys.exit(1)
-            lold=len(self.liste)
+        k=0
+        for key in self.levels.keys():
+            alevel[k]=[self.liste[i].get_name() for i in self.levels[key]]
+            k+=1
         return G, alevel
 
     def make_graphs(self):
@@ -661,7 +683,9 @@ def print_hd(gx,level,title,dir='succ',color=True):
             pos[node]=(x,ilevel)
             x+=dx
         ilevel+=1
+    # print(pos)
     # draw it
+    # print(level)
     if(color==False):
         for l in range(len(level)):
             if l==0:
@@ -772,3 +796,28 @@ def pprint(m,z_namen):
                 print("%3.2f" % (m[i,j]),end='')
         print(z_namen[i])
 
+
+
+#""" simple tests to check the program """
+#path='/datadisk/samt2/stats1/'
+#testcase='adrian.csv'
+#mw,z_namen=read_data(path+testcase)
+#hasse1=hassetree(hasse_comp)
+#for i in range(len(mw)):
+#    sitp=sit(z_namen[i],mw[i])
+#    hasse1.insert(sitp)
+#    
+#hasse1.clean_edge()
+#hasse1.print_eq() 
+#hasse1.print_succ()
+#hasse1.print_pred()
+#hasse1.print_nc()
+#hasse1.print_levels()
+#hasse1.draw_simple('Test',True)
+#G,alevel=hasse1.make_graph()
+#print_hd(G,alevel,'xhasse')  
+
+"""
+{'1': (0.5, 0), '2': (0.25, 1), '3': (0.5, 1), '4': (0.75, 1), '6': (0.25, 2), '7': (0.5, 2), '8': (0.75, 2), '9': (0.5, 3)}
+{0: ['9'], 1: ['6', '7', '8'], 2: ['2', '3', '4'], 3: ['1']}
+"""

@@ -16,9 +16,6 @@ def main():
                         choices=['hasse','simple'],
                         help='select a visualisation method: hasse/simple'
                         )
-    parser.add_argument('-dir', default='succ', choices=['succ','pred'],
-                        help='uses succ or pred to build the DH'
-                        )
     parser.add_argument('-delta', default=0.0, type=float,
                         help='set the delta in % for the EQ'
                         )
@@ -63,12 +60,8 @@ def main():
         hasse1.insert(sitp)
     #hasse1.col_norm()
     if(args.d=='hasse'):
-        if(args.dir=='succ'):
-            gx,level=hasse1.make_graphs()
-            hd.print_hd(gx,level,args.m,'succ',eval(args.color))
-        else:
-            gx,level=hasse1.make_graph()
-            hd.print_hd(gx,level,args.m,'pred',eval(args.color))
+        gx,level=hasse1.make_graphs()
+        hd.print_hd(gx,level,args.m,'succ',eval(args.color))
     if(args.d=='simple'):
         hasse1.draw_simple(args.m,eval(args.color))
        
