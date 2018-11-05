@@ -691,16 +691,16 @@ def print_hd(gx,level,title,dir='succ',color=True):
             if l==0:
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=gruen,
-                                       node_color='w',
+                                       node_color='lightgray',
                                        node_size=nodes)
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=rot,
-                                       node_color='w',
+                                       node_color='lightgray',
                                        node_size=nodes)
             else:
                 nx.draw_networkx_nodes(gx,pos,
                                        nodelist=level[l],
-                                       node_color='w',
+                                       node_color='lightgray',
                                        node_size=nodes)
     else:
         for l in range(len(level)):
