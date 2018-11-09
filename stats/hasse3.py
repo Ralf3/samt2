@@ -409,7 +409,8 @@ class hassetree():
         most important second part of the insert procedure
         it takes care for ordering the node in the eq,nc,succ or pred
         """
-        self.matrix=np.zeros((len(self.liste),len(self.liste))) # define the adjacent matrix
+        self.matrix=np.zeros((len(self.liste),len(self.liste)))
+        # define the adjacent matrix
         for i in range(len(self.liste)): 
             for j in range(len(self.liste)):
                 if(i==j):
@@ -423,35 +424,6 @@ class hassetree():
                     self.matrix[i,j]=0 # is not necessary to set 
         return True
     
-#    def clean_edge(self):
-#        self.insert1()
-#        """ fill the sitp with values from the adjacent matrix """
-#        for i in range(len(self.liste)): 
-#            self.levels[np.sum(self.matrix[i,:])]=[] # define the lists in self.level
-#            
-#        for i in range(len(self.liste)):
-#            """ set the level for the sitp and for the self.level """
-#            self.liste[i].level=np.sum(self.matrix[i,:])
-#            self.levels[np.sum(self.matrix[i,:])].append(i)    
-#            
-#        """ fill the sitp accroding to the level """  
-#        klist=list(self.levels.keys())
-#        for k in range(len(klist)-1):
-#            for i in self.levels[klist[k]]:
-#                for j in self.levels[klist[k+1]]:
-#                    if(i==j):
-#                        continue
-#                    # print(k,i,j)
-#                    if(self.matrix[i,j]==0):
-#                        self.liste[i].nc.append(self.liste[j])
-#                    if(self.matrix[i,j]==-1):
-#                        self.liste[i].succ.append(self.liste[j])
-#                    if(self.matrix[i,j]==1) :
-#                        self.liste[i].pred.append(self.liste[j])
-#
-#        # save the object into the level dict
-#        
-#        return True
     
     def clean_edge(self):
         self.insert1()
@@ -555,6 +527,7 @@ class hassetree():
     def draw_simple(self,title,color):
         """ draws a simple graph without levels for an overview """
         self.clean_edge()                # make the succ minimal
+        print(self.matrix)
         G=nx.DiGraph()                      # define a digraph
         for i in self.liste:
             G.add_node(i.name)  # add all sits to graph as nodes
@@ -574,60 +547,42 @@ class hassetree():
         if(color==True):
             nx.draw_networkx_nodes(G,pos,node_color='g',node_size=800)
         else:
-            nx.draw_networkx_nodes(G,pos,node_color='w',node_size=800)
+            nx.draw_networkx_nodes(G,pos,node_color='lightgray',node_size=800)
         nx.draw_networkx_edges(G,pos)
         nx.draw_networkx_labels(G,pos)
         plt.title('SIMPLE: '+title)
         plt.axis('on')
         plt.show()
         
-    def make_graph(self):
-        """
-        make_graph based on networkx and uses Digraphs
-        it fills beginning from succ==0 and returns the data 
-        structure for a graph;
-        all values in hassetree and stored sits will be destroid
-        """
-        G=nx.DiGraph()                      # define a digraph
-        for i in self.liste:
-            G.add_node(i.name)  # add all sits to graph as nodes
-        for i in self.liste:
-            for j in i.succ:
-                G.add_edge(i.name,j.name)
-        print()
-        # fill the labels with default values
-        labels={}
-        for l in G.nodes():
-            labels[l]=str(l)
-        alevel={}
-        k=0
-        for key in self.levels.keys():
-            alevel[k]=[self.liste[i].get_name() for i in self.levels[key]]
-            k+=1
-        return G, alevel
 
     def make_graphs(self):
-        """
-        make_graph based on networkx and uses Digraphs
-        it fills beginning from succ==0 and returns the data structure 
-        for a graph; all values in hassetree and stored sits will be destroid
-        """
         self.clean_edge()                # make the succ minimal
         if(RP==True):
             self.gen_report()            # prints a large rport
         
-        G=nx.DiGraph()                   # define a digraph
+        print(self.matrix) 
+        G=nx.DiGraph()      
         for sitp in self.liste:
-            G.add_node(sitp.name)  # add all sits to graph as nodes
+            G.add_node(sitp.name)        # add all sits to graph as nodes
+        for i in self.liste:
+            for j in self.liste:
+                if(i==j):
+                    continue
+                if(i in j.succ):
+                    G.add_edge(j.name,i.name) # add a connection
+        
         level=0
         alevel={}
-        lold=len(self.liste)
         while(len(self.liste)!=0):
-            xlist=[]
+            xlist=[]    
             llevel=[]
+            # print(len(self.liste))
             for i in self.liste:         # find all sitp with empty succ
-                if(len(i.succ)==0):
+                if(i.succ==[]):
                     xlist.append(i)
+            print(xlist)
+            if(len(xlist)==0):
+                return G, alevel
             for i in xlist:              # remove sitp from listp
                 self.liste.remove(i)
             for i in self.liste:         # remove all succ in liste
@@ -635,17 +590,13 @@ class hassetree():
                     i.erase_succ(j)
             for i in xlist:
                 llevel.append(i.name)
-                for j in i.get_pred():
-                    G.add_edge(j.name,i.name)
             alevel[level]=llevel
+            print(level,llevel, len(self.liste))
             level+=1
-            if(lold==len(self.liste)):
-               print('error in  make_graph ===> exit')
-               sys.exit(1)
-            lold=len(self.liste)
         return G, alevel
+         
         
-def print_hd(gx,level,title,dir='succ',color=True):
+def print_hd(gx,level,title,dir='succ',color=True,shift=False):
     """
     function for drawing a Hasse diagram with:
     gx=networkX structure which was returned by hassetree.make_graph()
@@ -676,16 +627,21 @@ def print_hd(gx,level,title,dir='succ',color=True):
         lll=list(level.values())[::-1]
     else:
         lll=level.values()
+    k=2 # level shift
     for l in lll:
         dx=1.0/(len(l)+1)
         x=dx
+        if(shift==True):
+            if(k%2==0):
+                x=dx*1.2
+            else:
+                x=dx*0.8
+        k+=1
+        # print('level: ',k,x,dx,len(l))
         for node in l:
             pos[node]=(x,ilevel)
             x+=dx
         ilevel+=1
-    # print(pos)
-    # draw it
-    # print(level)
     if(color==False):
         for l in range(len(level)):
             if l==0:

@@ -22,7 +22,11 @@ def main():
     parser.add_argument('-color', default='True', choices=['True','False'],
                         help='select color or black and white graph'
                         )
+    parser.add_argument('-shift', default='False', choices=['True','False'],
+                        help='if shift is True: the draw is shifted about 0.8 for better view'
+                        )
     args = parser.parse_args()
+    print(args)
     #read data from file
     
     filename=args.f       # the filename of the structure
@@ -61,7 +65,7 @@ def main():
     #hasse1.col_norm()
     if(args.d=='hasse'):
         gx,level=hasse1.make_graphs()
-        hd.print_hd(gx,level,args.m,'succ',eval(args.color))
+        hd.print_hd(gx,level,args.m,'succ',eval(args.color),eval(args.shift))
     if(args.d=='simple'):
         hasse1.draw_simple(args.m,eval(args.color))
        
