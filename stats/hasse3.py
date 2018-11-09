@@ -627,17 +627,17 @@ def print_hd(gx,level,title,dir='succ',color=True,shift=False):
         lll=list(level.values())[::-1]
     else:
         lll=level.values()
-    k=2 # level shift
+    k=1 # level shift
     for l in lll:
         dx=1.0/(len(l)+1)
         x=dx
-        if(shift==True):
+        if(shift==True and len(l)>1):
             if(k%2==0):
                 x=dx*1.2
             else:
                 x=dx*0.8
         k+=1
-        # print('level: ',k,x,dx,len(l))
+        print('level: ',k,x,dx,len(l))
         for node in l:
             pos[node]=(x,ilevel)
             x+=dx
