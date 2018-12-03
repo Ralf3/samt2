@@ -260,6 +260,7 @@ cdef class grid(object):
         """ generates a random N(0,1) array """
         self.mat=np.float32(np.random.randn(self.nrows,self.ncols))
         return True
+    # resize and scale
     def resize(self,int nrows, int ncols):
         """ resizes a grid to the new nrows and ncols using a
             spline interpolation
@@ -281,6 +282,25 @@ cdef class grid(object):
         self.ncols=ncols
         self.mat=mx
         return True
+    
+    def scale(self,int factor):
+        """ enlarge the grid by a factor 2,3,4,... """
+        if(factor<=0):
+            return False
+        cdef np.ndarray[DTYPE_t,ndim=2] mx=self.mat
+        cdef np.ndarray[DTYPE_t,ndim=2] mx1=np.float32(
+            np.zeros((factor*self.nrows,factor*self.ncols)))
+        cdef int i,j
+        self.nrows*=factor
+        self.ncols*=factor
+        self.csize/=factor
+        for i in range(self.nrows):
+            for j in range(self.ncols):
+                mx1[i,j]=mx[i/factor,j/factor]
+        del mx
+        self.mat=mx1
+        return True
+                
     # access to a grid for print or as copy ================================
     def print_mat(self, int i0=0, int i1=0, int j0=0, int j1=0):
         """ print a selected part of the matrix """

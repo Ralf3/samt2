@@ -13,6 +13,9 @@ gx.write_hdf(name,set,model,author) # writes a new hdf or appends an existing
 # Create random grids ========================================================
 gx.randfloat()         # fills an empty grid with random values
 gx.randint(min,max)    # fills an empty grid with random int values [min,max)
+gx.randn()	       # generates a random N(0,1) array
+gx.resize(nrows,ncols) # resizes a grid using spline interpolation
+gx.scale(factor)       # scales a grid by changing the resolution by an int
 
 # Access to the grid =========================================================
 gx.print_mat(i0,i1,j0,j1)# print the region mat[i0:i1,j0:j1]
@@ -123,6 +126,7 @@ gx.min_grid(g1)          # gx.mat=min(gx.mat,g1.mat)
 gx.max_grid(g1)          # gx.mat=max(gx.mat,g1.mat)
 gx.and_grid(g1)		 # includes nodata from both grids
 gx.or_grid(g1)           # replaces nodata in gx.mat with gx.mat1
+
 
 # Point algorithms  x=int y=int z=float =====================================
 gx.transform_to_ij(y,x)  # takes a list [np.ndarray] in geo to ij
