@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # simple test for different interpolation methods
 
 import numpy as np
