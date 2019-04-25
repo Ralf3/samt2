@@ -41,7 +41,7 @@ gx.show_p(y,x,color,size,t,X,Y)
 gx.show_contour(sub=False,title='',X='',Y='',clines=6,flag=0) 
 gx.show_bw(sub=False)  # shows a bw picture of mat or sub (subarray)
                        # options: title, X, Y label
-gx.show3d(stride=10, sub=False)   
+gx.show_3d(stride=10, sub=False)   
 		       # shows a 3D view of a grid with stride=10
 gx.showi()             # draws a plot interactive using ion() no nodata!
 gx.shows(array)        # selects, shows all int in grid which are in array
