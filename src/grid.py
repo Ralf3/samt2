@@ -466,14 +466,14 @@ cdef class grid(object):
         """ returns a pointer to the matrix
         """
         return self.mat
-    def set_mat(self,np.ndarray[DTYPE_t,ndim=2] mat1):
+    def set_mat(self, mat1):
         """ replace the matrix of a grid with an external one
         """
         cdef int nr,nc
-        (nr,nc)=np.shape(mat1)
+        (nr,nc)=mat1.shape
         if(self.nrows!=nr or self.ncols!=nc):
             return False
-        self.mat=mat1
+        self.mat=mat1.astype(np.float32)
         return True
     def set_nan(self):
         """ help function replaces the nodata value with np.nan """
