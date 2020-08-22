@@ -13,7 +13,7 @@ def main():
         sitp=hd.sit(z_namen[i],mw[i])
         hasse1.insert(sitp)
     hasse1.print_eq()
-    gx,level=hasse1.make_graph()
+    gx,level=hasse1.make_graphs()
     # print HD
     hd.print_hd(gx,level,'test1.xlsx')
     
