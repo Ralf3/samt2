@@ -580,7 +580,7 @@ class hassetree():
             for i in self.liste:         # find all sitp with empty succ
                 if(i.succ==[]):
                     xlist.append(i)
-            print(xlist)
+            # print(xlist)
             if(len(xlist)==0):
                 return G, alevel
             for i in xlist:              # remove sitp from listp
@@ -591,7 +591,7 @@ class hassetree():
             for i in xlist:
                 llevel.append(i.name)
             alevel[level]=llevel
-            print(level,llevel, len(self.liste))
+            # print(level,llevel, len(self.liste))
             level+=1
         return G, alevel
          
@@ -699,44 +699,17 @@ def read_from_excel(filename, table, name, args):
             mw[i,j]=data[item][i]
     return mw,z_namen
 
-def read_data(filename):
-    """
-    reads a csv-file of the following structure:
-    header: Name col1name col2name col3name
-    rows:   rowname col1_value col1_value col1_value
+def read_data(filename,sep):
+    """ 
+    reads from a csv file using column names in args 
+    name is the name of the objects
     returns:
     numpy array mw[i,j]: rows=i cols=data vector[j]
     z_namen: object names according to the rows
-    
     """
-    f=open(filename) 
-    zeilen=len(f.readlines())
-    f.seek(1)    # go back to the beginning
-    spalten=len(f.readline().split())
-    zeilen-=1    # do not count the header
-    spalten-=1   # do not count the id
-    mw=np.zeros((zeilen,spalten))
-    f.seek(1)
-    sp_namen=f.readline().split()  # select the names from header
-    print('zeilen:', zeilen, 'spalten:', spalten)
-    zeile=[]
-    z_namen=[]
-    nr=0        # row counter
-    for line in f.readlines():
-        zeile=line.split()
-        z_namen.append(zeile[0])
-        for i in range(spalten):
-            mw[nr,i]=float(zeile[i+1])
-        nr+=1
-    f.close()
-    # generate a simple statistics the check the read in
-    print('col-names:')
-    print(sp_namen)
-    print('row-names:')
-    print(z_namen)
-    print("min\tmean\tmax")
-    for i in range(spalten):
-        print(np.min(mw[:,i]),'\t',np.mean(mw[:,i]),'\t',np.max(mw[:,i]))
+    data=pd.read_csv(filename, sep) # read with sep
+    mw=data.values                  # get the numpy array
+    z_namen=np.arange(len(data))    # the row names are simply numbers
     return mw,z_namen
 
 # pretty print of a matrix
