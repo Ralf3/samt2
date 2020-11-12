@@ -1,19 +1,42 @@
-The SAMTFUZZY part need now nlopt for parameteroptimization.
-Please install nlopt from:
+The compilation of fuzzy as well as samt needs to following packages:
 
-http://ab-initio.mit.edu/wiki/index.php/NLopt
+python3.8.X
+matplotlib
+numpy
+scipy
+h5py
+pywavelts
+cython
 
-Take care that you have installed the Python language bindings. 
-(./configure --enable-shared  --with-gnu-ld) worked in my environment.
-After "sudo make install" and "sudo ldconfig" the nlopt can be used inside
-of Python (import nlopt).
+I use Anaconda to install samt or fuzzy on a Linux Computer. MS is not
+supported. When using Anaconda a virtual environment is a good idea before
+you use fuzzy or samt.
 
-The Pyfuzzy.py should be compiled using "make" Please adapt the  
-"sys.path.append(...)" according your needs. To use Pyfuzzy you must compile
-SAMT2 too. Please compile SAMT2 typing "make" in the directory ../samt2
+conda create --name FUZZY python=3.8
+conda activate FUZZY
 
-To compile everything you have to install Cython, "Python dev", numpy,
-matplotlib etc. firstly. But this should be clear for a Python programmer.
+install:
+
+conda install -c conda-forge h5py
+conda install -c conda-forge pywavelets
+conda install -c conda-forge scipy
+conda install -c conda-forge cython
+conda install -c conda-forge matplotlib
+conda install -c conda-forge ipython # I like it
+
+before you start compilation:
+make
+
+Please put in your .bashrc
+export SAMT2MASTER=/path to your SAMT/
+
+using SAMT:
+
+import sys
+import os
+sys.path.append(os.environ['SAMT2MASTER']+'/fuzzy/src')
+import Pyfuzzy as fuzzy
+
 
 Happy hacking,
 
