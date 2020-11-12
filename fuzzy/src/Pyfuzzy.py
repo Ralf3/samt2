@@ -401,6 +401,14 @@ class fuzzy:
                 rule.set_cf(val)
                 count+=1
         return count
+    def print_outputs(self):
+        """ 
+        prints a table with name of the output, value of the output
+        """
+        for i in self.outputs:
+            s='%s : %f' % (i.get_name(),i.getv())
+            print(s)
+        return True
     def calc1(self,float x):
         cdef float su1=0.0
         cdef float tmu=0.0
@@ -941,7 +949,7 @@ class fuzzy:
     def show_input(self,i):
         """ 
         visualizes the membershipfunctions of a selected input """
-        if len(self.inputs)<i:
+        if len(self.inputs)<=i:
             return None
         self.inputs[i].show()
 
@@ -1118,7 +1126,7 @@ class fuzzy:
             plt.show()
             return True
 
-# an external function for output adaptation based on nlopt
+# an external function for output adaptation based on scipy
 def start_training(f):
     """ define the training parameters
     """

@@ -46,7 +46,8 @@ fx.show_model(tag1=2,default1=-9999)  # shows a fuzzy model for one, two or
 # the default input. I default1!=-9999 then it will be used otherwise
 # mean of the range is used as default value for the input==tag1 
 # Fuzzy show membership of a selected input
-fx.show_input(i)
+fx.show_input(i)   # plots a table with membership functions
+fx.print_outpus()  # prints a table name : value 
 # FUZZY rule training =====================================================
 fx.read_training_data(filename, header=0,sep=' ') # read a table x1,x2,x3,y
 				                  # and returns pat, tar 
