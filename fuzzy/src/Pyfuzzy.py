@@ -41,6 +41,8 @@ cdef class member:
     cdef float ru
     cdef int   flag
     cdef str name
+    # some getter
+ 
     def __init__(self,name, flag1, para):
         self.name=name
         if(flag1==LEFT):
@@ -164,6 +166,29 @@ class input:
         return self.member[i]
     def get_n(self):
         return self.name
+    def show(self):
+        for m in self.member:
+            if m.get_flag()==LEFT:
+                plt.plot([m.get_ro()-(m.get_ru()-m.get_ro()),
+                                      m.get_ro(),m.get_ru()],
+                          [1,1,0],label=m.get_name())
+            if m.get_flag()==TRAPEZ:
+                plt.plot([m.get_lu(),m.get_lo(),
+                          m.get_ro(),m.get_ru()],
+                         [0,1,1,0],label=m.get_name())
+            if m.get_flag()==DREIECK:
+                plt.plot([m.get_lu(),m.get_lo(),m.get_ru()],
+                         [0,1,0],label=m.get_name())
+            if m.get_flag()==RIGHT:
+                plt.plot([m.get_lu(),m.get_lo(),
+                          m.get_lo()+(m.get_lo()-m.get_lu())],
+                         [0,1,1],label=m.get_name())
+        plt.title(self.name)
+        plt.xlabel('universe')
+        plt.ylabel('membership')
+        plt.grid(True)
+        plt.legend()
+        plt.show()
  
 cdef class output:
     """ Collects the output which are singletons
@@ -912,7 +937,14 @@ class fuzzy:
                 rule.seto(selector)
 
         return True
-    
+
+    def show_input(self,i):
+        """ 
+        visualizes the membershipfunctions of a selected input """
+        if len(self.inputs)<i:
+            return None
+        self.inputs[i].show()
+
     def show_model(self, tag1=2, default1=-9999):
         """ visualize a fuzzy model up to three inputs
             - for a one dimensional model it uses the range of the input
