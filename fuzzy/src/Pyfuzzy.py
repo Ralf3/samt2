@@ -406,7 +406,7 @@ class fuzzy:
         prints a table with name of the output, value of the output
         """
         for i in self.outputs:
-            s='%s : %f' % (i.get_name(),i.getv())
+            s='%s\t:\t%f' % (i.get_name(),i.getv())
             print(s)
         return True
     def calc1(self,float x):
