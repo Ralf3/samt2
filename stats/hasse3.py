@@ -682,22 +682,22 @@ def print_hd(gx,level,title,dir='succ',color=True,shift=False):
     plt.axis('on')
     plt.show()
 
-def read_from_excel(filename, table, name, args):
+def read_from_excel(filename, table, sel):
     """ 
-    reads from an excel file using column names in args 
+    reads from an excel file using column names in sel
     name is the name of the objects
     returns:
     numpy array mw[i,j]: rows=i cols=data vector[j]
     z_namen: object names according to the rows
     """
     data=pd.read_excel(filename, table, engine='openpyxl')
-    z_namen=data[name]
-    mw=np.zeros((len(data),len(args)))
+    # z_namen=data[name]
+    mw=np.zeros((len(data),len(sel)))
     # fille the mw
     for i in range(len(data)):
-        for j,item in enumerate(args):
-            mw[i,j]=data[item][i]
-    return mw,z_namen
+        for j,item in enumerate(sel):
+            mw[i,j]=data[item].iloc[i]
+    return mw
 
 def read_data(filename,sep):
     """ 
