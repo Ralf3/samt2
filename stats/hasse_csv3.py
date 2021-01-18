@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import hasse3 as hd
+import numpy as np
 import argparse
 
 """ new user friendly version based on argparse """
@@ -35,6 +36,7 @@ def main():
     hd.DELTA=args.delta/100.0   # the delta for EQ fabs(i,j)<delta
      
     mw,z_namen=hd.read_data(filename,sep)
+    # z_namen=np.arange(mw.shape[0])
     for i in range(len(mw)):
         print(z_namen[i],end=' ')
         for j in range(len(mw[i])):

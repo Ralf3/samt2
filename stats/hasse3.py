@@ -691,13 +691,13 @@ def read_from_excel(filename, table, sel):
     z_namen: object names according to the rows
     """
     data=pd.read_excel(filename, table, engine='openpyxl')
-    # z_namen=data[name]
+    z_namen=np.arange(len(data))
     mw=np.zeros((len(data),len(sel)))
     # fille the mw
     for i in range(len(data)):
         for j,item in enumerate(sel):
             mw[i,j]=data[item].iloc[i]
-    return mw
+    return mw,z_namen
 
 def read_data(filename,sep):
     """ 

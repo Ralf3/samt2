@@ -5,10 +5,10 @@ import numpy as np
 
 def main():
     # read from execl
-    mw=hd.read_from_excel('test1.xlsx',
-                          'test1',
-                          ['A','B','C','D'])
-    z_namen=np.arange(mw.shape[0])
+    mw,z_namen=hd.read_from_excel('test1.xlsx',
+                                  'test1',
+                                  ['A','B','C','D'])
+    # z_namen=np.arange(mw.shape[0])
     hd.pprint(mw,z_namen)
     hasse1=hd.hassetree()
     for i in range(len(mw)):
