@@ -690,7 +690,7 @@ def read_from_excel(filename, table, name, args):
     numpy array mw[i,j]: rows=i cols=data vector[j]
     z_namen: object names according to the rows
     """
-    data=pd.read_excel(filename, table)
+    data=pd.read_excel(filename, table, engine='openpyxl')
     z_namen=data[name]
     mw=np.zeros((len(data),len(args)))
     # fille the mw
