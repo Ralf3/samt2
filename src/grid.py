@@ -504,7 +504,7 @@ cdef class grid(object):
         plt.clf()
         plt.subplot(111)
         plt.grid(True)
-        plt.hist(img,b1,normed=False,color = 'r')
+        plt.hist(img,b1,color = 'r')
         plt.xlabel('data')
         plt.ylabel('frequency')
         plt.title('Histogram')
