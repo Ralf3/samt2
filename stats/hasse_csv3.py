@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import hasse3 as hd
-import numpy as np
 import argparse
 
 """ new user friendly version based on argparse """
@@ -9,7 +8,6 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description='HASSE')
     parser.add_argument('-f', help='csv-data filename',required=True)
-    parser.add_argument('-sep', help='seperator [, ; \t ...]', required=True)
     parser.add_argument('-m', default='hasse',
                         choices=['hasse', 'majorization',
                                  'm2', 'majo', 'majo1', 'ms'],
@@ -30,13 +28,18 @@ def main():
     args = parser.parse_args()
     print(args)
     #read data from file
- 
+    
     filename=args.f       # the filename of the structure
-    sep=args.sep
     hd.DELTA=args.delta/100.0   # the delta for EQ fabs(i,j)<delta
      
-    mw,z_namen=hd.read_data(filename,sep)
-    # z_namen=np.arange(mw.shape[0])
+    mw,z_namen=hd.read_data(filename)
+    for i in range(len(mw)):
+        print(z_namen[i],end=' ')
+        for j in range(len(mw[i])):
+            print(mw[i,j],end=' ')
+        print()
+    
+    
     for i in range(len(mw)):
         print(z_namen[i],end=' ')
         for j in range(len(mw[i])):
@@ -65,6 +68,6 @@ def main():
         hd.print_hd(gx,level,args.m,'succ',eval(args.color),eval(args.shift))
     if(args.d=='simple'):
         hasse1.draw_simple(args.m,eval(args.color))
- 
+       
 if __name__ == "__main__":
     main()
